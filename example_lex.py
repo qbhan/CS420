@@ -49,7 +49,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Give the lexer some input
-lexer.input("3+4")
+lexer.input("1+2+30+4+5")
 
 # Tokenize
 while True:

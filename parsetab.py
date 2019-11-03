@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVnonassocUMINUSDIV LPAREN MINUS NUMBER PLUS RPAREN TIMESexpr : expr PLUS exprexpr : expr MINUS exprexpr : MINUS expr %prec UMINUSexpr : expr TIMES expr\n            | expr DIV exprexpr : NUMBERexpr : LPAREN expr RPAREN'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVDIV LPAREN MINUS NUMBER PLUS RPAREN TIMESexpr : expr PLUS exprexpr : expr MINUS exprexpr : expr TIMES expr\n            | expr DIV exprexpr : NUMBERexpr : LPAREN expr RPAREN'
     
-_lr_action_items = {'MINUS':([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,],[2,6,2,-6,2,2,2,2,2,-3,6,-1,-2,-4,-5,-7,]),'NUMBER':([0,2,4,5,6,7,8,],[3,3,3,3,3,3,3,]),'LPAREN':([0,2,4,5,6,7,8,],[4,4,4,4,4,4,4,]),'$end':([1,3,9,11,12,13,14,15,],[0,-6,-3,-1,-2,-4,-5,-7,]),'PLUS':([1,3,9,10,11,12,13,14,15,],[5,-6,-3,5,-1,-2,-4,-5,-7,]),'TIMES':([1,3,9,10,11,12,13,14,15,],[7,-6,-3,7,7,7,-4,-5,-7,]),'DIV':([1,3,9,10,11,12,13,14,15,],[8,-6,-3,8,8,8,-4,-5,-7,]),'RPAREN':([3,9,10,11,12,13,14,15,],[-6,-3,15,-1,-2,-4,-5,-7,]),}
+_lr_action_items = {'NUMBER':([0,3,4,5,6,7,],[2,2,2,2,2,2,]),'LPAREN':([0,3,4,5,6,7,],[3,3,3,3,3,3,]),'$end':([1,2,9,10,11,12,13,],[0,-5,-1,-2,-3,-4,-6,]),'PLUS':([1,2,8,9,10,11,12,13,],[4,-5,4,-1,-2,-3,-4,-6,]),'MINUS':([1,2,8,9,10,11,12,13,],[5,-5,5,-1,-2,-3,-4,-6,]),'TIMES':([1,2,8,9,10,11,12,13,],[6,-5,6,6,6,-3,-4,-6,]),'DIV':([1,2,8,9,10,11,12,13,],[7,-5,7,7,7,-3,-4,-6,]),'RPAREN':([2,8,9,10,11,12,13,],[-5,13,-1,-2,-3,-4,-6,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expr':([0,2,4,5,6,7,8,],[1,9,10,11,12,13,14,]),}
+_lr_goto_items = {'expr':([0,3,4,5,6,7,],[1,8,9,10,11,12,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,11 +27,10 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expr","S'",1,None,None,None),
-  ('expr -> expr PLUS expr','expr',3,'p_add','example_python.py',45),
-  ('expr -> expr MINUS expr','expr',3,'p_sub','example_python.py',49),
-  ('expr -> MINUS expr','expr',2,'p_expr2uminus','example_python.py',53),
-  ('expr -> expr TIMES expr','expr',3,'p_mult_div','example_python.py',57),
-  ('expr -> expr DIV expr','expr',3,'p_mult_div','example_python.py',58),
-  ('expr -> NUMBER','expr',1,'p_expr2NUM','example_python.py',69),
-  ('expr -> LPAREN expr RPAREN','expr',3,'p_parens','example_python.py',73),
+  ('expr -> expr PLUS expr','expr',3,'p_add','example_parser.py',50),
+  ('expr -> expr MINUS expr','expr',3,'p_sub','example_parser.py',54),
+  ('expr -> expr TIMES expr','expr',3,'p_mult_div','example_parser.py',62),
+  ('expr -> expr DIV expr','expr',3,'p_mult_div','example_parser.py',63),
+  ('expr -> NUMBER','expr',1,'p_expr2NUM','example_parser.py',74),
+  ('expr -> LPAREN expr RPAREN','expr',3,'p_parens','example_parser.py',78),
 ]

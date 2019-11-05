@@ -2,22 +2,66 @@ import ply.lex as lex
 
 # List of token names. This is always required
 tokens = [
+
     'NUMBER',
+    'ID',
+
+    # operators
     'PLUS',
     'MINUS',
     'TIMES',
     'DIVIDE',
+    'INCREMENT',
+
+    # comparison
+    'EQ',
+    'NEQ',
+    'GT',
+    'LT',
+    
+
+    # Assignment
+    'EQUAL',
+
+
+    # closures
     'LPAREN',
     'RPAREN',
+    'LBRACE',
+    'RBRACE',
+    'LBRACKET',
+    'RBRACKET',
+
+    # statement forms
+    'IF',
+    'FOR'
 ]
 
-# Regular expression rules for simple tokens
+# Regular expression rules
+t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
+t_INCREMENT = r'\++'
+
+t_EQ = r'=='
+t_NEQ = r'!='
+t_GT = r'>'
+t_LT = r'<'
+#
+t_EQUAL = r'='
+
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
+
+t_IF = r'if'
+t_FOR = r'for'
 
 
 # A regular expression rule with some action code
@@ -39,6 +83,10 @@ def t_newline(t):
 t_ignore = ' \t'
 
 
+# def t_if(t):
+#     r'if'
+#     return t
+
 # Error handling rule
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
@@ -49,7 +97,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Give the lexer some input
-lexer.input("1+2+30+4+5")
+lexer.input("a + if asjioeifw")
 
 # Tokenize
 while True:

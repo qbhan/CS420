@@ -20,9 +20,8 @@ tokens = [
     'LT',
     
 
-    # Assignment
+    # assignment
     'EQUAL',
-
 
     # closures
     'LPAREN',
@@ -31,10 +30,21 @@ tokens = [
     'RBRACE',
     'LBRACKET',
     'RBRACKET',
+    'COMMA',
+    'PERIOD',
+    'SEMICOLON',
+    'COLON',
+    'QUOTE',
+    'DOUBLEQUOTE',
 
     # statement forms
     'IF',
-    'FOR'
+    'FOR',
+
+    # types
+    'INT',
+    'FLOAT',
+    'POINTER'
 ]
 
 # Regular expression rules
@@ -59,9 +69,20 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
+t_COMMA = r'\,'
+t_PERIOD = r'\.'
+t_SEMICOLON = r'\;'
+t_COLON = r':'
+t_QUOTE = r'\''
+t_DOUBLEQUOTE = r'"'
+
 
 t_IF = r'if'
 t_FOR = r'for'
+
+t_INT = r'int'
+t_FLOAT = r'float'
+# t_POINTER = r'*'
 
 
 # A regular expression rule with some action code

@@ -10,7 +10,7 @@ tokens = [
     'PLUS',
     'MINUS',
     'TIMES',
-    'DIVIDE',
+    'DIV',
     'INCREMENT',
 
     # comparison
@@ -53,7 +53,7 @@ t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
-t_DIVIDE = r'/'
+t_DIV = r'/'
 t_INCREMENT = r'\++'
 
 t_EQ = r'=='

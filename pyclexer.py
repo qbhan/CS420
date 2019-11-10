@@ -45,15 +45,17 @@ tokens = [
 
     # types
     'INT',
-    'POINTER'
+    'POINTER',
     'FLOAT',
+    'VOID',
 
     # essentials
     'MAIN',
     'PRINT',
+    'RETURN',
 ]
 
-reserved = {'int': 'INT', 'float': 'FLOAT', 'if': 'IF', 'else': 'ELSE', 'else if': 'ELSE_IF', 'for': 'FOR', 'main': "MAIN", 'printf': 'PRINT', 'include': 'INCLUDE'}
+keyword = {'int': 'INT', 'float': 'FLOAT', 'if': 'IF', 'else': 'ELSE', 'else if': 'ELSE_IF', 'for': 'FOR', 'main': "MAIN", 'printf': 'PRINT', 'include': 'INCLUDE', 'return': 'RETURN', 'void': 'VOID'}
 
 # Regular expression rules
 # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -103,9 +105,9 @@ def t_NUMBER(t):
     return t
 
 def t_reserved(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    if t.value in reserved:
-        t.type = reserved[t.value]
+    r'[a-zA-Z_$][a-zA-Z0-9_$]*'
+    if t.value in keyword:
+        t.type = keyword[t.value]
     else:
         t.type = 'ID'
     return t
@@ -129,14 +131,30 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
+# read file in same directory by line
+# comment it when not in use
+f = open('test.txt', 'r')
+while True:
+    line = f.readline()
+    if not line:
+        break
+    lexer.input(line)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        print(tok)
+f.close()
+
+
 # Give the lexer some input
-lexer.input("a + if asjioeifw")
-lexer.input(r'"string"')
-lexer.input('int')
+# lexer.input("a + if asjioeifw")
+# lexer.input(r'"string"')
+# lexer.input('')
 
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break  # No more input
-    print(tok)
+# while True:
+#     tok = lexer.token()
+#     if not tok:
+#         break  # No more input
+#     print(tok)

@@ -24,7 +24,6 @@ Unused terminals:
     RETURN
     SEMICOLON
     STRING
-    TIMES
     VOID
 
 Grammar
@@ -38,20 +37,20 @@ Rule 5     bool_expr -> bool_expr NEQ arith_expr
 Rule 6     bool_expr -> bool_expr GT arith_expr
 Rule 7     bool_expr -> bool_expr LT arith_expr
 Rule 8     arith_expr -> arith_expr PLUS term
-Rule 9     arith_expr -> arith_expr MINUS term
-Rule 10    arith_expr -> term
-Rule 11    arith_expr -> MINUS arith_expr
-Rule 12    term -> term MULTIPLE factor
-Rule 13    term -> term DIV factor
-Rule 14    term -> factor
-Rule 15    factor -> NUMBER
-Rule 16    arith_expr -> LPAREN arith_expr RPAREN
+Rule 9     arith_expr -> term
+Rule 10    term -> term TIMES factor
+Rule 11    term -> term DIV factor
+Rule 12    term -> factor
+Rule 13    factor -> MINUS factor
+Rule 14    factor -> LPAREN expr RPAREN
+Rule 15    factor -> ID
+Rule 16    factor -> NUMBER
 
 Terminals, with rules where they appear
 
 COLON                : 
 COMMA                : 
-DIV                  : 13
+DIV                  : 11
 DOUBLEQUOTE          : 
 ELSE                 : 
 ELSE_IF              : 
@@ -60,18 +59,18 @@ EQUAL                : 1
 FLOAT                : 
 FOR                  : 
 GT                   : 6
-ID                   : 1
+ID                   : 1 15
 IF                   : 
 INCREMENT            : 
 INT                  : 
 LBRACE               : 
 LBRACKET             : 
-LPAREN               : 16
+LPAREN               : 14
 LT                   : 7
 MAIN                 : 
-MINUS                : 9 11
+MINUS                : 13
 NEQ                  : 5
-NUMBER               : 15
+NUMBER               : 16
 PERIOD               : 
 PLUS                 : 8
 POINTER              : 
@@ -80,19 +79,520 @@ QUOTE                :
 RBRACE               : 
 RBRACKET             : 
 RETURN               : 
-RPAREN               : 16
+RPAREN               : 14
 SEMICOLON            : 
 STRING               : 
-TIMES                : 
+TIMES                : 10
 VOID                 : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-MULTIPLE             : 12
-arith_expr           : 1 3 4 5 6 7 8 9 11 16
+arith_expr           : 1 3 4 5 6 7 8
 bool_expr            : 2 4 5 6 7
-expr                 : 0
-factor               : 12 13 14
-term                 : 8 9 10 12 13
+expr                 : 14 0
+factor               : 10 11 12 13
+term                 : 8 9 10 11
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expr
+    (1) expr -> . ID EQUAL arith_expr
+    (2) expr -> . bool_expr
+    (3) bool_expr -> . arith_expr
+    (4) bool_expr -> . bool_expr EQ arith_expr
+    (5) bool_expr -> . bool_expr NEQ arith_expr
+    (6) bool_expr -> . bool_expr GT arith_expr
+    (7) bool_expr -> . bool_expr LT arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    ID              shift and go to state 2
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    NUMBER          shift and go to state 9
+
+    expr                           shift and go to state 1
+    arith_expr                     shift and go to state 3
+    bool_expr                      shift and go to state 4
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 1
+
+    (0) S' -> expr .
+
+
+
+state 2
+
+    (1) expr -> ID . EQUAL arith_expr
+    (15) factor -> ID .
+
+    EQUAL           shift and go to state 10
+    TIMES           reduce using rule 15 (factor -> ID .)
+    DIV             reduce using rule 15 (factor -> ID .)
+    PLUS            reduce using rule 15 (factor -> ID .)
+    EQ              reduce using rule 15 (factor -> ID .)
+    NEQ             reduce using rule 15 (factor -> ID .)
+    GT              reduce using rule 15 (factor -> ID .)
+    LT              reduce using rule 15 (factor -> ID .)
+    $end            reduce using rule 15 (factor -> ID .)
+    RPAREN          reduce using rule 15 (factor -> ID .)
+
+
+state 3
+
+    (3) bool_expr -> arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    EQ              reduce using rule 3 (bool_expr -> arith_expr .)
+    NEQ             reduce using rule 3 (bool_expr -> arith_expr .)
+    GT              reduce using rule 3 (bool_expr -> arith_expr .)
+    LT              reduce using rule 3 (bool_expr -> arith_expr .)
+    $end            reduce using rule 3 (bool_expr -> arith_expr .)
+    RPAREN          reduce using rule 3 (bool_expr -> arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 4
+
+    (2) expr -> bool_expr .
+    (4) bool_expr -> bool_expr . EQ arith_expr
+    (5) bool_expr -> bool_expr . NEQ arith_expr
+    (6) bool_expr -> bool_expr . GT arith_expr
+    (7) bool_expr -> bool_expr . LT arith_expr
+
+    $end            reduce using rule 2 (expr -> bool_expr .)
+    RPAREN          reduce using rule 2 (expr -> bool_expr .)
+    EQ              shift and go to state 12
+    NEQ             shift and go to state 13
+    GT              shift and go to state 14
+    LT              shift and go to state 15
+
+
+state 5
+
+    (9) arith_expr -> term .
+    (10) term -> term . TIMES factor
+    (11) term -> term . DIV factor
+
+    PLUS            reduce using rule 9 (arith_expr -> term .)
+    EQ              reduce using rule 9 (arith_expr -> term .)
+    NEQ             reduce using rule 9 (arith_expr -> term .)
+    GT              reduce using rule 9 (arith_expr -> term .)
+    LT              reduce using rule 9 (arith_expr -> term .)
+    $end            reduce using rule 9 (arith_expr -> term .)
+    RPAREN          reduce using rule 9 (arith_expr -> term .)
+    TIMES           shift and go to state 16
+    DIV             shift and go to state 17
+
+
+state 6
+
+    (12) term -> factor .
+
+    TIMES           reduce using rule 12 (term -> factor .)
+    DIV             reduce using rule 12 (term -> factor .)
+    PLUS            reduce using rule 12 (term -> factor .)
+    EQ              reduce using rule 12 (term -> factor .)
+    NEQ             reduce using rule 12 (term -> factor .)
+    GT              reduce using rule 12 (term -> factor .)
+    LT              reduce using rule 12 (term -> factor .)
+    $end            reduce using rule 12 (term -> factor .)
+    RPAREN          reduce using rule 12 (term -> factor .)
+
+
+state 7
+
+    (13) factor -> MINUS . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    factor                         shift and go to state 18
+
+state 8
+
+    (14) factor -> LPAREN . expr RPAREN
+    (1) expr -> . ID EQUAL arith_expr
+    (2) expr -> . bool_expr
+    (3) bool_expr -> . arith_expr
+    (4) bool_expr -> . bool_expr EQ arith_expr
+    (5) bool_expr -> . bool_expr NEQ arith_expr
+    (6) bool_expr -> . bool_expr GT arith_expr
+    (7) bool_expr -> . bool_expr LT arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    ID              shift and go to state 2
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    NUMBER          shift and go to state 9
+
+    expr                           shift and go to state 20
+    arith_expr                     shift and go to state 3
+    bool_expr                      shift and go to state 4
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 9
+
+    (16) factor -> NUMBER .
+
+    TIMES           reduce using rule 16 (factor -> NUMBER .)
+    DIV             reduce using rule 16 (factor -> NUMBER .)
+    PLUS            reduce using rule 16 (factor -> NUMBER .)
+    EQ              reduce using rule 16 (factor -> NUMBER .)
+    NEQ             reduce using rule 16 (factor -> NUMBER .)
+    GT              reduce using rule 16 (factor -> NUMBER .)
+    LT              reduce using rule 16 (factor -> NUMBER .)
+    $end            reduce using rule 16 (factor -> NUMBER .)
+    RPAREN          reduce using rule 16 (factor -> NUMBER .)
+
+
+state 10
+
+    (1) expr -> ID EQUAL . arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    arith_expr                     shift and go to state 21
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 11
+
+    (8) arith_expr -> arith_expr PLUS . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    term                           shift and go to state 22
+    factor                         shift and go to state 6
+
+state 12
+
+    (4) bool_expr -> bool_expr EQ . arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    arith_expr                     shift and go to state 23
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 13
+
+    (5) bool_expr -> bool_expr NEQ . arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    arith_expr                     shift and go to state 24
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 14
+
+    (6) bool_expr -> bool_expr GT . arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    arith_expr                     shift and go to state 25
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 15
+
+    (7) bool_expr -> bool_expr LT . arith_expr
+    (8) arith_expr -> . arith_expr PLUS term
+    (9) arith_expr -> . term
+    (10) term -> . term TIMES factor
+    (11) term -> . term DIV factor
+    (12) term -> . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    arith_expr                     shift and go to state 26
+    term                           shift and go to state 5
+    factor                         shift and go to state 6
+
+state 16
+
+    (10) term -> term TIMES . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    factor                         shift and go to state 27
+
+state 17
+
+    (11) term -> term DIV . factor
+    (13) factor -> . MINUS factor
+    (14) factor -> . LPAREN expr RPAREN
+    (15) factor -> . ID
+    (16) factor -> . NUMBER
+
+    MINUS           shift and go to state 7
+    LPAREN          shift and go to state 8
+    ID              shift and go to state 19
+    NUMBER          shift and go to state 9
+
+    factor                         shift and go to state 28
+
+state 18
+
+    (13) factor -> MINUS factor .
+
+    TIMES           reduce using rule 13 (factor -> MINUS factor .)
+    DIV             reduce using rule 13 (factor -> MINUS factor .)
+    PLUS            reduce using rule 13 (factor -> MINUS factor .)
+    EQ              reduce using rule 13 (factor -> MINUS factor .)
+    NEQ             reduce using rule 13 (factor -> MINUS factor .)
+    GT              reduce using rule 13 (factor -> MINUS factor .)
+    LT              reduce using rule 13 (factor -> MINUS factor .)
+    $end            reduce using rule 13 (factor -> MINUS factor .)
+    RPAREN          reduce using rule 13 (factor -> MINUS factor .)
+
+
+state 19
+
+    (15) factor -> ID .
+
+    TIMES           reduce using rule 15 (factor -> ID .)
+    DIV             reduce using rule 15 (factor -> ID .)
+    PLUS            reduce using rule 15 (factor -> ID .)
+    EQ              reduce using rule 15 (factor -> ID .)
+    NEQ             reduce using rule 15 (factor -> ID .)
+    GT              reduce using rule 15 (factor -> ID .)
+    LT              reduce using rule 15 (factor -> ID .)
+    $end            reduce using rule 15 (factor -> ID .)
+    RPAREN          reduce using rule 15 (factor -> ID .)
+
+
+state 20
+
+    (14) factor -> LPAREN expr . RPAREN
+
+    RPAREN          shift and go to state 29
+
+
+state 21
+
+    (1) expr -> ID EQUAL arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    $end            reduce using rule 1 (expr -> ID EQUAL arith_expr .)
+    RPAREN          reduce using rule 1 (expr -> ID EQUAL arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 22
+
+    (8) arith_expr -> arith_expr PLUS term .
+    (10) term -> term . TIMES factor
+    (11) term -> term . DIV factor
+
+    PLUS            reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    EQ              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    NEQ             reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    GT              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    LT              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    $end            reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    RPAREN          reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
+    TIMES           shift and go to state 16
+    DIV             shift and go to state 17
+
+
+state 23
+
+    (4) bool_expr -> bool_expr EQ arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    EQ              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    NEQ             reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    GT              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    LT              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    $end            reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    RPAREN          reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 24
+
+    (5) bool_expr -> bool_expr NEQ arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    EQ              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    NEQ             reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    GT              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    LT              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    $end            reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    RPAREN          reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 25
+
+    (6) bool_expr -> bool_expr GT arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    EQ              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    NEQ             reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    GT              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    LT              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    $end            reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    RPAREN          reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 26
+
+    (7) bool_expr -> bool_expr LT arith_expr .
+    (8) arith_expr -> arith_expr . PLUS term
+
+    EQ              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    NEQ             reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    GT              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    LT              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    $end            reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    RPAREN          reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
+    PLUS            shift and go to state 11
+
+
+state 27
+
+    (10) term -> term TIMES factor .
+
+    TIMES           reduce using rule 10 (term -> term TIMES factor .)
+    DIV             reduce using rule 10 (term -> term TIMES factor .)
+    PLUS            reduce using rule 10 (term -> term TIMES factor .)
+    EQ              reduce using rule 10 (term -> term TIMES factor .)
+    NEQ             reduce using rule 10 (term -> term TIMES factor .)
+    GT              reduce using rule 10 (term -> term TIMES factor .)
+    LT              reduce using rule 10 (term -> term TIMES factor .)
+    $end            reduce using rule 10 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 10 (term -> term TIMES factor .)
+
+
+state 28
+
+    (11) term -> term DIV factor .
+
+    TIMES           reduce using rule 11 (term -> term DIV factor .)
+    DIV             reduce using rule 11 (term -> term DIV factor .)
+    PLUS            reduce using rule 11 (term -> term DIV factor .)
+    EQ              reduce using rule 11 (term -> term DIV factor .)
+    NEQ             reduce using rule 11 (term -> term DIV factor .)
+    GT              reduce using rule 11 (term -> term DIV factor .)
+    LT              reduce using rule 11 (term -> term DIV factor .)
+    $end            reduce using rule 11 (term -> term DIV factor .)
+    RPAREN          reduce using rule 11 (term -> term DIV factor .)
+
+
+state 29
+
+    (14) factor -> LPAREN expr RPAREN .
+
+    TIMES           reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    DIV             reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    EQ              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    NEQ             reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    GT              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    LT              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    $end            reduce using rule 14 (factor -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 14 (factor -> LPAREN expr RPAREN .)
 

@@ -133,18 +133,18 @@ lexer = lex.lex()
 
 # read file in same directory by line
 # comment it when not in use
-f = open('test.txt', 'r')
-while True:
-    line = f.readline()
-    if not line:
-        break
-    lexer.input(line)
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        print(tok)
-f.close()
+# f = open('test.txt', 'r')
+# while True:
+#     line = f.readline()
+#     if not line:
+#         break
+#     lexer.input(line)
+#     while True:
+#         tok = lexer.token()
+#         if not tok:
+#             break
+#         print(tok)
+# f.close()
 
 
 # Give the lexer some input

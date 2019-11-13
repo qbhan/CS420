@@ -5,351 +5,94 @@ Unused terminals:
     COLON
     COMMA
     DOUBLEQUOTE
-    EQ
-    EQUAL
+    ELSE
+    ELSE_IF
     FLOAT
     FOR
-    GT
-    ID
     IF
     INCREMENT
     INT
     LBRACE
     LBRACKET
-    LT
-    NEQ
+    MAIN
     PERIOD
     POINTER
+    PRINT
     QUOTE
     RBRACE
     RBRACKET
+    RETURN
     SEMICOLON
     STRING
+    TIMES
+    VOID
 
 Grammar
 
-Rule 0     S' -> arith_expr
-Rule 1     arith_expr -> arith_expr PLUS arith_expr
-Rule 2     arith_expr -> arith_expr MINUS arith_expr
-Rule 3     arith_expr -> MINUS arith_expr
-Rule 4     arith_expr -> arith_expr TIMES arith_expr
-Rule 5     arith_expr -> arith_expr DIV arith_expr
-Rule 6     arith_expr -> NUMBER
-Rule 7     arith_expr -> LPAREN arith_expr RPAREN
+Rule 0     S' -> expr
+Rule 1     expr -> ID EQUAL arith_expr
+Rule 2     expr -> bool_expr
+Rule 3     bool_expr -> arith_expr
+Rule 4     bool_expr -> bool_expr EQ arith_expr
+Rule 5     bool_expr -> bool_expr NEQ arith_expr
+Rule 6     bool_expr -> bool_expr GT arith_expr
+Rule 7     bool_expr -> bool_expr LT arith_expr
+Rule 8     arith_expr -> arith_expr PLUS term
+Rule 9     arith_expr -> arith_expr MINUS term
+Rule 10    arith_expr -> term
+Rule 11    arith_expr -> MINUS arith_expr
+Rule 12    term -> term MULTIPLE factor
+Rule 13    term -> term DIV factor
+Rule 14    term -> factor
+Rule 15    factor -> NUMBER
+Rule 16    arith_expr -> LPAREN arith_expr RPAREN
 
 Terminals, with rules where they appear
 
 COLON                : 
 COMMA                : 
-DIV                  : 5
+DIV                  : 13
 DOUBLEQUOTE          : 
-EQ                   : 
-EQUAL                : 
+ELSE                 : 
+ELSE_IF              : 
+EQ                   : 4
+EQUAL                : 1
 FLOAT                : 
 FOR                  : 
-GT                   : 
-ID                   : 
+GT                   : 6
+ID                   : 1
 IF                   : 
 INCREMENT            : 
 INT                  : 
 LBRACE               : 
 LBRACKET             : 
-LPAREN               : 7
-LT                   : 
-MINUS                : 2 3
-NEQ                  : 
-NUMBER               : 6
+LPAREN               : 16
+LT                   : 7
+MAIN                 : 
+MINUS                : 9 11
+NEQ                  : 5
+NUMBER               : 15
 PERIOD               : 
-PLUS                 : 1
+PLUS                 : 8
 POINTER              : 
+PRINT                : 
 QUOTE                : 
 RBRACE               : 
 RBRACKET             : 
-RPAREN               : 7
+RETURN               : 
+RPAREN               : 16
 SEMICOLON            : 
 STRING               : 
-TIMES                : 4
+TIMES                : 
+VOID                 : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-arith_expr           : 1 1 2 2 3 4 4 5 5 7 0
-
-Parsing method: LALR
-
-state 0
-
-    (0) S' -> . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 1
-
-state 1
-
-    (0) S' -> arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            shift and go to state 5
-    MINUS           shift and go to state 6
-    TIMES           shift and go to state 7
-    DIV             shift and go to state 8
-
-
-state 2
-
-    (3) arith_expr -> MINUS . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 9
-
-state 3
-
-    (6) arith_expr -> NUMBER .
-
-    PLUS            reduce using rule 6 (arith_expr -> NUMBER .)
-    MINUS           reduce using rule 6 (arith_expr -> NUMBER .)
-    TIMES           reduce using rule 6 (arith_expr -> NUMBER .)
-    DIV             reduce using rule 6 (arith_expr -> NUMBER .)
-    $end            reduce using rule 6 (arith_expr -> NUMBER .)
-    RPAREN          reduce using rule 6 (arith_expr -> NUMBER .)
-
-
-state 4
-
-    (7) arith_expr -> LPAREN . arith_expr RPAREN
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 10
-
-state 5
-
-    (1) arith_expr -> arith_expr PLUS . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 11
-
-state 6
-
-    (2) arith_expr -> arith_expr MINUS . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 12
-
-state 7
-
-    (4) arith_expr -> arith_expr TIMES . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 13
-
-state 8
-
-    (5) arith_expr -> arith_expr DIV . arith_expr
-    (1) arith_expr -> . arith_expr PLUS arith_expr
-    (2) arith_expr -> . arith_expr MINUS arith_expr
-    (3) arith_expr -> . MINUS arith_expr
-    (4) arith_expr -> . arith_expr TIMES arith_expr
-    (5) arith_expr -> . arith_expr DIV arith_expr
-    (6) arith_expr -> . NUMBER
-    (7) arith_expr -> . LPAREN arith_expr RPAREN
-
-    MINUS           shift and go to state 2
-    NUMBER          shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    arith_expr                     shift and go to state 14
-
-state 9
-
-    (3) arith_expr -> MINUS arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-    MINUS           reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-    TIMES           reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-    DIV             reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-    $end            reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-    RPAREN          reduce using rule 3 (arith_expr -> MINUS arith_expr .)
-
-  ! PLUS            [ shift and go to state 5 ]
-  ! MINUS           [ shift and go to state 6 ]
-  ! TIMES           [ shift and go to state 7 ]
-  ! DIV             [ shift and go to state 8 ]
-
-
-state 10
-
-    (7) arith_expr -> LPAREN arith_expr . RPAREN
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    RPAREN          shift and go to state 15
-    PLUS            shift and go to state 5
-    MINUS           shift and go to state 6
-    TIMES           shift and go to state 7
-    DIV             shift and go to state 8
-
-
-state 11
-
-    (1) arith_expr -> arith_expr PLUS arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .)
-    MINUS           reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .)
-    $end            reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .)
-    RPAREN          reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .)
-    TIMES           shift and go to state 7
-    DIV             shift and go to state 8
-
-  ! TIMES           [ reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .) ]
-  ! DIV             [ reduce using rule 1 (arith_expr -> arith_expr PLUS arith_expr .) ]
-  ! PLUS            [ shift and go to state 5 ]
-  ! MINUS           [ shift and go to state 6 ]
-
-
-state 12
-
-    (2) arith_expr -> arith_expr MINUS arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .)
-    MINUS           reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .)
-    $end            reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .)
-    RPAREN          reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .)
-    TIMES           shift and go to state 7
-    DIV             shift and go to state 8
-
-  ! TIMES           [ reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .) ]
-  ! DIV             [ reduce using rule 2 (arith_expr -> arith_expr MINUS arith_expr .) ]
-  ! PLUS            [ shift and go to state 5 ]
-  ! MINUS           [ shift and go to state 6 ]
-
-
-state 13
-
-    (4) arith_expr -> arith_expr TIMES arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-    MINUS           reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-    TIMES           reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-    DIV             reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-    $end            reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-    RPAREN          reduce using rule 4 (arith_expr -> arith_expr TIMES arith_expr .)
-
-  ! PLUS            [ shift and go to state 5 ]
-  ! MINUS           [ shift and go to state 6 ]
-  ! TIMES           [ shift and go to state 7 ]
-  ! DIV             [ shift and go to state 8 ]
-
-
-state 14
-
-    (5) arith_expr -> arith_expr DIV arith_expr .
-    (1) arith_expr -> arith_expr . PLUS arith_expr
-    (2) arith_expr -> arith_expr . MINUS arith_expr
-    (4) arith_expr -> arith_expr . TIMES arith_expr
-    (5) arith_expr -> arith_expr . DIV arith_expr
-
-    PLUS            reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-    MINUS           reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-    TIMES           reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-    DIV             reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-    $end            reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-    RPAREN          reduce using rule 5 (arith_expr -> arith_expr DIV arith_expr .)
-
-  ! PLUS            [ shift and go to state 5 ]
-  ! MINUS           [ shift and go to state 6 ]
-  ! TIMES           [ shift and go to state 7 ]
-  ! DIV             [ shift and go to state 8 ]
-
-
-state 15
-
-    (7) arith_expr -> LPAREN arith_expr RPAREN .
-
-    PLUS            reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
-    MINUS           reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
-    TIMES           reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
-    DIV             reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
-    $end            reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
-    RPAREN          reduce using rule 7 (arith_expr -> LPAREN arith_expr RPAREN .)
+MULTIPLE             : 12
+arith_expr           : 1 3 4 5 6 7 8 9 11 16
+bool_expr            : 2 4 5 6 7
+expr                 : 0
+factor               : 12 13 14
+term                 : 8 9 10 12 13
 

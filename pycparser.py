@@ -93,10 +93,6 @@ def p_term_factor(p):
     '''term : factor'''
     p[0] = p[1]
 
-def p_factor_neg(p):
-    '''factor : MINUS factor'''
-    p[0] = -p[2]
-
 def p_factor_parens(p):
     '''factor : LPAREN expr RPAREN'''
     p[0] = p[2]
@@ -105,9 +101,13 @@ def p_factor_id(p):
     '''factor : ID'''
     p[0] = p[1]
 
-def p_factor_number(p):
-    '''factor : NUMBER'''
-    p[0] = p[1]
+def p_factor_fnum(p):
+    '''factor : FNUM'''
+    p[0] = float(p[1])
+
+def p_factor_inum(p):
+    '''factor : INUM'''
+    p[0] = int(p[1])
 
 def p_empty(p):
     'empty :'
@@ -118,5 +118,5 @@ def p_error( p ):
 
 parser = yacc.yacc()
 
-res = parser.parse("3 + -4") # the input
+res = parser.parse("x = 3.45") # the input
 print(res)

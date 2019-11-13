@@ -3,7 +3,8 @@ import ply.lex as lex
 # List of token names. This is always required
 tokens = [
 
-    'NUMBER',
+    'INUM',
+    'FNUM',
     'ID',
     'STRING',
 
@@ -99,8 +100,13 @@ t_DOUBLEQUOTE = r'"'
 
 
 # Define rule to get number
-def t_NUMBER(t):
-    r'\d+'
+
+def t_FNUM(t):
+    r'[-]?[0-9]*\.?[0-9]+'
+    return t
+
+def t_INUM(t):
+    r'\[-]?d+'
     t.value = int(t.value)
     return t
 
@@ -150,7 +156,7 @@ lexer = lex.lex()
 # Give the lexer some input
 # lexer.input("a + if asjioeifw")
 # lexer.input(r'"string"')
-lexer.input('3+4')
+lexer.input('3.5+-4.2+-5')
 
 # Tokenize
 while True:

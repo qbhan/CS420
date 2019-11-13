@@ -1,603 +1,3 @@
-<<<<<<< HEAD
-Created by PLY version 3.11 (http://www.dabeaz.com/ply)
-
-Unused terminals:
-
-    COLON
-    COMMA
-    DOUBLEQUOTE
-    ELSE
-    ELSE_IF
-    FLOAT
-    FOR
-    IF
-    INCREMENT
-    INT
-    LBRACE
-    LBRACKET
-    MAIN
-    PERIOD
-    POINTER
-    PRINT
-    QUOTE
-    RBRACE
-    RBRACKET
-    RETURN
-    SEMICOLON
-    STRING
-    VOID
-
-Grammar
-
-Rule 0     S' -> expr
-Rule 1     expr -> ID EQUAL arith_expr
-Rule 2     expr -> bool_expr
-Rule 3     bool_expr -> arith_expr
-Rule 4     bool_expr -> bool_expr EQ arith_expr
-Rule 5     bool_expr -> bool_expr NEQ arith_expr
-Rule 6     bool_expr -> bool_expr GT arith_expr
-Rule 7     bool_expr -> bool_expr LT arith_expr
-Rule 8     arith_expr -> arith_expr PLUS term
-Rule 9     arith_expr -> term
-Rule 10    term -> term TIMES factor
-Rule 11    term -> term DIV factor
-Rule 12    term -> factor
-Rule 13    factor -> MINUS factor
-Rule 14    factor -> LPAREN expr RPAREN
-Rule 15    factor -> ID
-Rule 16    factor -> NUMBER
-
-Terminals, with rules where they appear
-
-COLON                : 
-COMMA                : 
-DIV                  : 11
-DOUBLEQUOTE          : 
-ELSE                 : 
-ELSE_IF              : 
-EQ                   : 4
-EQUAL                : 1
-FLOAT                : 
-FOR                  : 
-GT                   : 6
-ID                   : 1 15
-IF                   : 
-INCREMENT            : 
-INT                  : 
-LBRACE               : 
-LBRACKET             : 
-LPAREN               : 14
-LT                   : 7
-MAIN                 : 
-MINUS                : 13
-NEQ                  : 5
-NUMBER               : 16
-PERIOD               : 
-PLUS                 : 8
-POINTER              : 
-PRINT                : 
-QUOTE                : 
-RBRACE               : 
-RBRACKET             : 
-RETURN               : 
-RPAREN               : 14
-SEMICOLON            : 
-STRING               : 
-TIMES                : 10
-VOID                 : 
-error                : 
-
-Nonterminals, with rules where they appear
-
-arith_expr           : 1 3 4 5 6 7 8
-bool_expr            : 2 4 5 6 7
-expr                 : 14 0
-factor               : 10 11 12 13
-term                 : 8 9 10 11
-
-Parsing method: LALR
-
-state 0
-
-    (0) S' -> . expr
-    (1) expr -> . ID EQUAL arith_expr
-    (2) expr -> . bool_expr
-    (3) bool_expr -> . arith_expr
-    (4) bool_expr -> . bool_expr EQ arith_expr
-    (5) bool_expr -> . bool_expr NEQ arith_expr
-    (6) bool_expr -> . bool_expr GT arith_expr
-    (7) bool_expr -> . bool_expr LT arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    ID              shift and go to state 2
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    NUMBER          shift and go to state 9
-
-    expr                           shift and go to state 1
-    arith_expr                     shift and go to state 3
-    bool_expr                      shift and go to state 4
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 1
-
-    (0) S' -> expr .
-
-
-
-state 2
-
-    (1) expr -> ID . EQUAL arith_expr
-    (15) factor -> ID .
-
-    EQUAL           shift and go to state 10
-    TIMES           reduce using rule 15 (factor -> ID .)
-    DIV             reduce using rule 15 (factor -> ID .)
-    PLUS            reduce using rule 15 (factor -> ID .)
-    EQ              reduce using rule 15 (factor -> ID .)
-    NEQ             reduce using rule 15 (factor -> ID .)
-    GT              reduce using rule 15 (factor -> ID .)
-    LT              reduce using rule 15 (factor -> ID .)
-    $end            reduce using rule 15 (factor -> ID .)
-    RPAREN          reduce using rule 15 (factor -> ID .)
-
-
-state 3
-
-    (3) bool_expr -> arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    EQ              reduce using rule 3 (bool_expr -> arith_expr .)
-    NEQ             reduce using rule 3 (bool_expr -> arith_expr .)
-    GT              reduce using rule 3 (bool_expr -> arith_expr .)
-    LT              reduce using rule 3 (bool_expr -> arith_expr .)
-    $end            reduce using rule 3 (bool_expr -> arith_expr .)
-    RPAREN          reduce using rule 3 (bool_expr -> arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 4
-
-    (2) expr -> bool_expr .
-    (4) bool_expr -> bool_expr . EQ arith_expr
-    (5) bool_expr -> bool_expr . NEQ arith_expr
-    (6) bool_expr -> bool_expr . GT arith_expr
-    (7) bool_expr -> bool_expr . LT arith_expr
-
-    $end            reduce using rule 2 (expr -> bool_expr .)
-    RPAREN          reduce using rule 2 (expr -> bool_expr .)
-    EQ              shift and go to state 12
-    NEQ             shift and go to state 13
-    GT              shift and go to state 14
-    LT              shift and go to state 15
-
-
-state 5
-
-    (9) arith_expr -> term .
-    (10) term -> term . TIMES factor
-    (11) term -> term . DIV factor
-
-    PLUS            reduce using rule 9 (arith_expr -> term .)
-    EQ              reduce using rule 9 (arith_expr -> term .)
-    NEQ             reduce using rule 9 (arith_expr -> term .)
-    GT              reduce using rule 9 (arith_expr -> term .)
-    LT              reduce using rule 9 (arith_expr -> term .)
-    $end            reduce using rule 9 (arith_expr -> term .)
-    RPAREN          reduce using rule 9 (arith_expr -> term .)
-    TIMES           shift and go to state 16
-    DIV             shift and go to state 17
-
-
-state 6
-
-    (12) term -> factor .
-
-    TIMES           reduce using rule 12 (term -> factor .)
-    DIV             reduce using rule 12 (term -> factor .)
-    PLUS            reduce using rule 12 (term -> factor .)
-    EQ              reduce using rule 12 (term -> factor .)
-    NEQ             reduce using rule 12 (term -> factor .)
-    GT              reduce using rule 12 (term -> factor .)
-    LT              reduce using rule 12 (term -> factor .)
-    $end            reduce using rule 12 (term -> factor .)
-    RPAREN          reduce using rule 12 (term -> factor .)
-
-
-state 7
-
-    (13) factor -> MINUS . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    factor                         shift and go to state 18
-
-state 8
-
-    (14) factor -> LPAREN . expr RPAREN
-    (1) expr -> . ID EQUAL arith_expr
-    (2) expr -> . bool_expr
-    (3) bool_expr -> . arith_expr
-    (4) bool_expr -> . bool_expr EQ arith_expr
-    (5) bool_expr -> . bool_expr NEQ arith_expr
-    (6) bool_expr -> . bool_expr GT arith_expr
-    (7) bool_expr -> . bool_expr LT arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    ID              shift and go to state 2
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    NUMBER          shift and go to state 9
-
-    expr                           shift and go to state 20
-    arith_expr                     shift and go to state 3
-    bool_expr                      shift and go to state 4
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 9
-
-    (16) factor -> NUMBER .
-
-    TIMES           reduce using rule 16 (factor -> NUMBER .)
-    DIV             reduce using rule 16 (factor -> NUMBER .)
-    PLUS            reduce using rule 16 (factor -> NUMBER .)
-    EQ              reduce using rule 16 (factor -> NUMBER .)
-    NEQ             reduce using rule 16 (factor -> NUMBER .)
-    GT              reduce using rule 16 (factor -> NUMBER .)
-    LT              reduce using rule 16 (factor -> NUMBER .)
-    $end            reduce using rule 16 (factor -> NUMBER .)
-    RPAREN          reduce using rule 16 (factor -> NUMBER .)
-
-
-state 10
-
-    (1) expr -> ID EQUAL . arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    arith_expr                     shift and go to state 21
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 11
-
-    (8) arith_expr -> arith_expr PLUS . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    term                           shift and go to state 22
-    factor                         shift and go to state 6
-
-state 12
-
-    (4) bool_expr -> bool_expr EQ . arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    arith_expr                     shift and go to state 23
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 13
-
-    (5) bool_expr -> bool_expr NEQ . arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    arith_expr                     shift and go to state 24
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 14
-
-    (6) bool_expr -> bool_expr GT . arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    arith_expr                     shift and go to state 25
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 15
-
-    (7) bool_expr -> bool_expr LT . arith_expr
-    (8) arith_expr -> . arith_expr PLUS term
-    (9) arith_expr -> . term
-    (10) term -> . term TIMES factor
-    (11) term -> . term DIV factor
-    (12) term -> . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    arith_expr                     shift and go to state 26
-    term                           shift and go to state 5
-    factor                         shift and go to state 6
-
-state 16
-
-    (10) term -> term TIMES . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    factor                         shift and go to state 27
-
-state 17
-
-    (11) term -> term DIV . factor
-    (13) factor -> . MINUS factor
-    (14) factor -> . LPAREN expr RPAREN
-    (15) factor -> . ID
-    (16) factor -> . NUMBER
-
-    MINUS           shift and go to state 7
-    LPAREN          shift and go to state 8
-    ID              shift and go to state 19
-    NUMBER          shift and go to state 9
-
-    factor                         shift and go to state 28
-
-state 18
-
-    (13) factor -> MINUS factor .
-
-    TIMES           reduce using rule 13 (factor -> MINUS factor .)
-    DIV             reduce using rule 13 (factor -> MINUS factor .)
-    PLUS            reduce using rule 13 (factor -> MINUS factor .)
-    EQ              reduce using rule 13 (factor -> MINUS factor .)
-    NEQ             reduce using rule 13 (factor -> MINUS factor .)
-    GT              reduce using rule 13 (factor -> MINUS factor .)
-    LT              reduce using rule 13 (factor -> MINUS factor .)
-    $end            reduce using rule 13 (factor -> MINUS factor .)
-    RPAREN          reduce using rule 13 (factor -> MINUS factor .)
-
-
-state 19
-
-    (15) factor -> ID .
-
-    TIMES           reduce using rule 15 (factor -> ID .)
-    DIV             reduce using rule 15 (factor -> ID .)
-    PLUS            reduce using rule 15 (factor -> ID .)
-    EQ              reduce using rule 15 (factor -> ID .)
-    NEQ             reduce using rule 15 (factor -> ID .)
-    GT              reduce using rule 15 (factor -> ID .)
-    LT              reduce using rule 15 (factor -> ID .)
-    $end            reduce using rule 15 (factor -> ID .)
-    RPAREN          reduce using rule 15 (factor -> ID .)
-
-
-state 20
-
-    (14) factor -> LPAREN expr . RPAREN
-
-    RPAREN          shift and go to state 29
-
-
-state 21
-
-    (1) expr -> ID EQUAL arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    $end            reduce using rule 1 (expr -> ID EQUAL arith_expr .)
-    RPAREN          reduce using rule 1 (expr -> ID EQUAL arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 22
-
-    (8) arith_expr -> arith_expr PLUS term .
-    (10) term -> term . TIMES factor
-    (11) term -> term . DIV factor
-
-    PLUS            reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    EQ              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    NEQ             reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    GT              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    LT              reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    $end            reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    RPAREN          reduce using rule 8 (arith_expr -> arith_expr PLUS term .)
-    TIMES           shift and go to state 16
-    DIV             shift and go to state 17
-
-
-state 23
-
-    (4) bool_expr -> bool_expr EQ arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    EQ              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    NEQ             reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    GT              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    LT              reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    $end            reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    RPAREN          reduce using rule 4 (bool_expr -> bool_expr EQ arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 24
-
-    (5) bool_expr -> bool_expr NEQ arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    EQ              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    NEQ             reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    GT              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    LT              reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    $end            reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    RPAREN          reduce using rule 5 (bool_expr -> bool_expr NEQ arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 25
-
-    (6) bool_expr -> bool_expr GT arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    EQ              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    NEQ             reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    GT              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    LT              reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    $end            reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    RPAREN          reduce using rule 6 (bool_expr -> bool_expr GT arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 26
-
-    (7) bool_expr -> bool_expr LT arith_expr .
-    (8) arith_expr -> arith_expr . PLUS term
-
-    EQ              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    NEQ             reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    GT              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    LT              reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    $end            reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    RPAREN          reduce using rule 7 (bool_expr -> bool_expr LT arith_expr .)
-    PLUS            shift and go to state 11
-
-
-state 27
-
-    (10) term -> term TIMES factor .
-
-    TIMES           reduce using rule 10 (term -> term TIMES factor .)
-    DIV             reduce using rule 10 (term -> term TIMES factor .)
-    PLUS            reduce using rule 10 (term -> term TIMES factor .)
-    EQ              reduce using rule 10 (term -> term TIMES factor .)
-    NEQ             reduce using rule 10 (term -> term TIMES factor .)
-    GT              reduce using rule 10 (term -> term TIMES factor .)
-    LT              reduce using rule 10 (term -> term TIMES factor .)
-    $end            reduce using rule 10 (term -> term TIMES factor .)
-    RPAREN          reduce using rule 10 (term -> term TIMES factor .)
-
-
-state 28
-
-    (11) term -> term DIV factor .
-
-    TIMES           reduce using rule 11 (term -> term DIV factor .)
-    DIV             reduce using rule 11 (term -> term DIV factor .)
-    PLUS            reduce using rule 11 (term -> term DIV factor .)
-    EQ              reduce using rule 11 (term -> term DIV factor .)
-    NEQ             reduce using rule 11 (term -> term DIV factor .)
-    GT              reduce using rule 11 (term -> term DIV factor .)
-    LT              reduce using rule 11 (term -> term DIV factor .)
-    $end            reduce using rule 11 (term -> term DIV factor .)
-    RPAREN          reduce using rule 11 (term -> term DIV factor .)
-
-
-state 29
-
-    (14) factor -> LPAREN expr RPAREN .
-
-    TIMES           reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    DIV             reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    PLUS            reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    EQ              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    NEQ             reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    GT              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    LT              reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    $end            reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-    RPAREN          reduce using rule 14 (factor -> LPAREN expr RPAREN .)
-
-=======
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
@@ -646,8 +46,8 @@ Rule 20    arith_expr -> term
 Rule 21    term -> term TIMES factor
 Rule 22    term -> term DIV factor
 Rule 23    term -> factor
-Rule 24    factor -> LPAREN expr RPAREN
-Rule 25    factor -> MINUS factor
+Rule 24    factor -> MINUS factor
+Rule 25    factor -> LPAREN expr RPAREN
 Rule 26    factor -> ID
 Rule 27    factor -> NUMBER
 Rule 28    empty -> <empty>
@@ -671,10 +71,10 @@ INCREMENT            :
 INT                  : 5
 LBRACE               : 8
 LBRACKET             : 
-LPAREN               : 24
+LPAREN               : 25
 LT                   : 17
 MAIN                 : 
-MINUS                : 19 25
+MINUS                : 19 24
 NEQ                  : 15
 NUMBER               : 27
 PERIOD               : 
@@ -685,7 +85,7 @@ QUOTE                :
 RBRACE               : 8
 RBRACKET             : 
 RETURN               : 
-RPAREN               : 24
+RPAREN               : 25
 SEMICOLON            : 4 5 6 7
 STRING               : 
 TIMES                : 21
@@ -698,8 +98,8 @@ arith_expr           : 13 14 15 16 17 18 19
 bool_expr            : 12 14 15 16 17
 declaration          : 2
 empty                : 10
-expr                 : 1 11 24
-factor               : 21 22 23 25
+expr                 : 1 11 25
+factor               : 21 22 23 24
 stmt                 : 9 0
 stmt_block           : 3
 stmt_list            : 8 9
@@ -731,8 +131,8 @@ state 0
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
@@ -742,8 +142,8 @@ state 0
     FLOAT           shift and go to state 9
     VOID            shift and go to state 10
     LBRACE          shift and go to state 11
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     NUMBER          shift and go to state 17
 
     stmt                           shift and go to state 1
@@ -773,8 +173,8 @@ state 2
     FLOAT           reduce using rule 1 (stmt -> expr .)
     VOID            reduce using rule 1 (stmt -> expr .)
     LBRACE          reduce using rule 1 (stmt -> expr .)
-    LPAREN          reduce using rule 1 (stmt -> expr .)
     MINUS           reduce using rule 1 (stmt -> expr .)
+    LPAREN          reduce using rule 1 (stmt -> expr .)
     NUMBER          reduce using rule 1 (stmt -> expr .)
 
 
@@ -790,8 +190,8 @@ state 3
     FLOAT           reduce using rule 2 (stmt -> declaration .)
     VOID            reduce using rule 2 (stmt -> declaration .)
     LBRACE          reduce using rule 2 (stmt -> declaration .)
-    LPAREN          reduce using rule 2 (stmt -> declaration .)
     MINUS           reduce using rule 2 (stmt -> declaration .)
+    LPAREN          reduce using rule 2 (stmt -> declaration .)
     NUMBER          reduce using rule 2 (stmt -> declaration .)
 
 
@@ -807,8 +207,8 @@ state 4
     FLOAT           reduce using rule 3 (stmt -> stmt_block .)
     VOID            reduce using rule 3 (stmt -> stmt_block .)
     LBRACE          reduce using rule 3 (stmt -> stmt_block .)
-    LPAREN          reduce using rule 3 (stmt -> stmt_block .)
     MINUS           reduce using rule 3 (stmt -> stmt_block .)
+    LPAREN          reduce using rule 3 (stmt -> stmt_block .)
     NUMBER          reduce using rule 3 (stmt -> stmt_block .)
 
 
@@ -824,8 +224,8 @@ state 5
     FLOAT           reduce using rule 4 (stmt -> SEMICOLON .)
     VOID            reduce using rule 4 (stmt -> SEMICOLON .)
     LBRACE          reduce using rule 4 (stmt -> SEMICOLON .)
-    LPAREN          reduce using rule 4 (stmt -> SEMICOLON .)
     MINUS           reduce using rule 4 (stmt -> SEMICOLON .)
+    LPAREN          reduce using rule 4 (stmt -> SEMICOLON .)
     NUMBER          reduce using rule 4 (stmt -> SEMICOLON .)
 
 
@@ -873,8 +273,8 @@ state 7
     FLOAT           reduce using rule 12 (expr -> bool_expr .)
     VOID            reduce using rule 12 (expr -> bool_expr .)
     LBRACE          reduce using rule 12 (expr -> bool_expr .)
-    LPAREN          reduce using rule 12 (expr -> bool_expr .)
     MINUS           reduce using rule 12 (expr -> bool_expr .)
+    LPAREN          reduce using rule 12 (expr -> bool_expr .)
     NUMBER          reduce using rule 12 (expr -> bool_expr .)
     EQ              shift and go to state 19
     NEQ             shift and go to state 20
@@ -917,8 +317,8 @@ state 11
     FLOAT           reduce using rule 28 (empty -> .)
     VOID            reduce using rule 28 (empty -> .)
     LBRACE          reduce using rule 28 (empty -> .)
-    LPAREN          reduce using rule 28 (empty -> .)
     MINUS           reduce using rule 28 (empty -> .)
+    LPAREN          reduce using rule 28 (empty -> .)
     NUMBER          reduce using rule 28 (empty -> .)
 
     stmt_list                      shift and go to state 26
@@ -981,14 +381,14 @@ state 13
 
 state 14
 
-    (25) factor -> MINUS . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> MINUS . factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1021,7 +421,7 @@ state 15
 
 state 16
 
-    (24) factor -> LPAREN . expr RPAREN
+    (25) factor -> LPAREN . expr RPAREN
     (11) expr -> . ID EQUAL expr
     (12) expr -> . bool_expr
     (13) bool_expr -> . arith_expr
@@ -1035,14 +435,14 @@ state 16
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
     ID              shift and go to state 6
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     NUMBER          shift and go to state 17
 
     expr                           shift and go to state 34
@@ -1092,14 +492,14 @@ state 18
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
     ID              shift and go to state 6
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     NUMBER          shift and go to state 17
 
     expr                           shift and go to state 35
@@ -1117,13 +517,13 @@ state 19
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1140,13 +540,13 @@ state 20
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1163,13 +563,13 @@ state 21
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1186,13 +586,13 @@ state 22
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1246,8 +646,8 @@ state 26
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
@@ -1258,8 +658,8 @@ state 26
     FLOAT           shift and go to state 9
     VOID            shift and go to state 10
     LBRACE          shift and go to state 11
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     NUMBER          shift and go to state 17
 
     stmt                           shift and go to state 44
@@ -1282,8 +682,8 @@ state 27
     FLOAT           reduce using rule 10 (stmt_list -> empty .)
     VOID            reduce using rule 10 (stmt_list -> empty .)
     LBRACE          reduce using rule 10 (stmt_list -> empty .)
-    LPAREN          reduce using rule 10 (stmt_list -> empty .)
     MINUS           reduce using rule 10 (stmt_list -> empty .)
+    LPAREN          reduce using rule 10 (stmt_list -> empty .)
     NUMBER          reduce using rule 10 (stmt_list -> empty .)
 
 
@@ -1293,13 +693,13 @@ state 28
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1312,13 +712,13 @@ state 29
     (21) term -> . term TIMES factor
     (22) term -> . term DIV factor
     (23) term -> . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1328,13 +728,13 @@ state 29
 state 30
 
     (21) term -> term TIMES . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1343,13 +743,13 @@ state 30
 state 31
 
     (22) term -> term DIV . factor
-    (24) factor -> . LPAREN expr RPAREN
-    (25) factor -> . MINUS factor
+    (24) factor -> . MINUS factor
+    (25) factor -> . LPAREN expr RPAREN
     (26) factor -> . ID
     (27) factor -> . NUMBER
 
-    LPAREN          shift and go to state 16
     MINUS           shift and go to state 14
+    LPAREN          shift and go to state 16
     ID              shift and go to state 33
     NUMBER          shift and go to state 17
 
@@ -1357,27 +757,27 @@ state 31
 
 state 32
 
-    (25) factor -> MINUS factor .
+    (24) factor -> MINUS factor .
 
-    TIMES           reduce using rule 25 (factor -> MINUS factor .)
-    DIV             reduce using rule 25 (factor -> MINUS factor .)
-    PLUS            reduce using rule 25 (factor -> MINUS factor .)
-    MINUS           reduce using rule 25 (factor -> MINUS factor .)
-    EQ              reduce using rule 25 (factor -> MINUS factor .)
-    NEQ             reduce using rule 25 (factor -> MINUS factor .)
-    GT              reduce using rule 25 (factor -> MINUS factor .)
-    LT              reduce using rule 25 (factor -> MINUS factor .)
-    $end            reduce using rule 25 (factor -> MINUS factor .)
-    RPAREN          reduce using rule 25 (factor -> MINUS factor .)
-    RBRACE          reduce using rule 25 (factor -> MINUS factor .)
-    SEMICOLON       reduce using rule 25 (factor -> MINUS factor .)
-    ID              reduce using rule 25 (factor -> MINUS factor .)
-    INT             reduce using rule 25 (factor -> MINUS factor .)
-    FLOAT           reduce using rule 25 (factor -> MINUS factor .)
-    VOID            reduce using rule 25 (factor -> MINUS factor .)
-    LBRACE          reduce using rule 25 (factor -> MINUS factor .)
-    LPAREN          reduce using rule 25 (factor -> MINUS factor .)
-    NUMBER          reduce using rule 25 (factor -> MINUS factor .)
+    TIMES           reduce using rule 24 (factor -> MINUS factor .)
+    DIV             reduce using rule 24 (factor -> MINUS factor .)
+    PLUS            reduce using rule 24 (factor -> MINUS factor .)
+    MINUS           reduce using rule 24 (factor -> MINUS factor .)
+    EQ              reduce using rule 24 (factor -> MINUS factor .)
+    NEQ             reduce using rule 24 (factor -> MINUS factor .)
+    GT              reduce using rule 24 (factor -> MINUS factor .)
+    LT              reduce using rule 24 (factor -> MINUS factor .)
+    $end            reduce using rule 24 (factor -> MINUS factor .)
+    RPAREN          reduce using rule 24 (factor -> MINUS factor .)
+    RBRACE          reduce using rule 24 (factor -> MINUS factor .)
+    SEMICOLON       reduce using rule 24 (factor -> MINUS factor .)
+    ID              reduce using rule 24 (factor -> MINUS factor .)
+    INT             reduce using rule 24 (factor -> MINUS factor .)
+    FLOAT           reduce using rule 24 (factor -> MINUS factor .)
+    VOID            reduce using rule 24 (factor -> MINUS factor .)
+    LBRACE          reduce using rule 24 (factor -> MINUS factor .)
+    LPAREN          reduce using rule 24 (factor -> MINUS factor .)
+    NUMBER          reduce using rule 24 (factor -> MINUS factor .)
 
 
 state 33
@@ -1407,7 +807,7 @@ state 33
 
 state 34
 
-    (24) factor -> LPAREN expr . RPAREN
+    (25) factor -> LPAREN expr . RPAREN
 
     RPAREN          shift and go to state 49
 
@@ -1425,8 +825,8 @@ state 35
     FLOAT           reduce using rule 11 (expr -> ID EQUAL expr .)
     VOID            reduce using rule 11 (expr -> ID EQUAL expr .)
     LBRACE          reduce using rule 11 (expr -> ID EQUAL expr .)
-    LPAREN          reduce using rule 11 (expr -> ID EQUAL expr .)
     MINUS           reduce using rule 11 (expr -> ID EQUAL expr .)
+    LPAREN          reduce using rule 11 (expr -> ID EQUAL expr .)
     NUMBER          reduce using rule 11 (expr -> ID EQUAL expr .)
 
 
@@ -1554,8 +954,8 @@ state 40
     FLOAT           reduce using rule 5 (declaration -> INT ID SEMICOLON .)
     VOID            reduce using rule 5 (declaration -> INT ID SEMICOLON .)
     LBRACE          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    LPAREN          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
     MINUS           reduce using rule 5 (declaration -> INT ID SEMICOLON .)
+    LPAREN          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
     NUMBER          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
 
 
@@ -1571,8 +971,8 @@ state 41
     FLOAT           reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
     VOID            reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
     LBRACE          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    LPAREN          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
     MINUS           reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
+    LPAREN          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
     NUMBER          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
 
 
@@ -1588,8 +988,8 @@ state 42
     FLOAT           reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
     VOID            reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
     LBRACE          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    LPAREN          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
     MINUS           reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
+    LPAREN          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
     NUMBER          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
 
 
@@ -1605,8 +1005,8 @@ state 43
     FLOAT           reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
     VOID            reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
     LBRACE          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    LPAREN          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
     MINUS           reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
+    LPAREN          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
     NUMBER          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
 
 
@@ -1621,8 +1021,8 @@ state 44
     FLOAT           reduce using rule 9 (stmt_list -> stmt_list stmt .)
     VOID            reduce using rule 9 (stmt_list -> stmt_list stmt .)
     LBRACE          reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    LPAREN          reduce using rule 9 (stmt_list -> stmt_list stmt .)
     MINUS           reduce using rule 9 (stmt_list -> stmt_list stmt .)
+    LPAREN          reduce using rule 9 (stmt_list -> stmt_list stmt .)
     NUMBER          reduce using rule 9 (stmt_list -> stmt_list stmt .)
 
 
@@ -1732,27 +1132,27 @@ state 48
 
 state 49
 
-    (24) factor -> LPAREN expr RPAREN .
+    (25) factor -> LPAREN expr RPAREN .
 
-    TIMES           reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    DIV             reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    PLUS            reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    MINUS           reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    EQ              reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    NEQ             reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    GT              reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    LT              reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    $end            reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    RPAREN          reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    RBRACE          reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    SEMICOLON       reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    ID              reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    INT             reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    FLOAT           reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    VOID            reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    LBRACE          reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    LPAREN          reduce using rule 24 (factor -> LPAREN expr RPAREN .)
-    NUMBER          reduce using rule 24 (factor -> LPAREN expr RPAREN .)
+    TIMES           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    DIV             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    EQ              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    NEQ             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    GT              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    LT              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    $end            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    RBRACE          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    SEMICOLON       reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    ID              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    INT             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    FLOAT           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    VOID            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    LBRACE          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    LPAREN          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    NUMBER          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
 
 WARNING: 
 WARNING: Conflicts:
@@ -1762,4 +1162,3 @@ WARNING: shift/reduce conflict for MINUS in state 36 resolved as shift
 WARNING: shift/reduce conflict for MINUS in state 37 resolved as shift
 WARNING: shift/reduce conflict for MINUS in state 38 resolved as shift
 WARNING: shift/reduce conflict for MINUS in state 39 resolved as shift
->>>>>>> study

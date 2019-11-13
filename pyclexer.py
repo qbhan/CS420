@@ -65,7 +65,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIV = r'/'
-t_INCREMENT = r'\++'
+# t_INCREMENT = r'\++'
 
 t_EQ = r'=='
 t_NEQ = r'!='
@@ -150,11 +150,11 @@ lexer = lex.lex()
 # Give the lexer some input
 # lexer.input("a + if asjioeifw")
 # lexer.input(r'"string"')
-# lexer.input('')
+lexer.input('3+4')
 
 # Tokenize
-# while True:
-#     tok = lexer.token()
-#     if not tok:
-#         break  # No more input
-#     print(tok)
+while True:
+    tok = lexer.token()
+    if not tok:
+        break  # No more input
+    print(tok)

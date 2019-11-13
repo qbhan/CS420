@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVnonassocUMINUSCOLON COMMA DIV DOUBLEQUOTE ELSE ELSE_IF EQ EQUAL FLOAT FOR GT ID IF INCREMENT INT LBRACE LBRACKET LPAREN LT MAIN MINUS NEQ NUMBER PERIOD PLUS POINTER PRINT QUOTE RBRACE RBRACKET RETURN RPAREN SEMICOLON STRING TIMES VOIDexpr : ID EQUAL arith_exprexpr : bool_exprbool_expr : arith_exprbool_expr : bool_expr EQ arith_exprbool_expr : bool_expr NEQ arith_exprbool_expr : bool_expr GT arith_exprbool_expr : bool_expr LT arith_exprarith_expr : arith_expr PLUS arith_exprarith_expr : arith_expr MINUS arith_exprarith_expr : MINUS arith_expr %prec UMINUSarith_expr : arith_expr TIMES arith_expr\n            | arith_expr DIV arith_exprarith_expr : NUMBERarith_expr : LPAREN arith_expr RPAREN'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVCOLON COMMA DIV DOUBLEQUOTE ELSE ELSE_IF EQ EQUAL FLOAT FOR GT ID IF INCREMENT INT LBRACE LBRACKET LPAREN LT MAIN MINUS NEQ NUMBER PERIOD PLUS POINTER PRINT QUOTE RBRACE RBRACKET RETURN RPAREN SEMICOLON STRING TIMES VOIDexpr : ID EQUAL arith_exprexpr : bool_exprbool_expr : arith_exprbool_expr : bool_expr EQ arith_exprbool_expr : bool_expr NEQ arith_exprbool_expr : bool_expr GT arith_exprbool_expr : bool_expr LT arith_exprarith_expr : arith_expr PLUS termarith_expr : arith_expr MINUS termarith_expr : termterm : term TIMES factorterm : term DIV factorterm : factorfactor : LPAREN expr RPARENfactor : MINUS factorfactor : IDfactor : NUMBER'
     
-_lr_action_items = {'ID':([0,],[2,]),'MINUS':([0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,],[5,10,5,-13,5,5,5,5,5,5,5,5,5,5,-10,10,10,-8,-9,-11,-12,10,10,10,10,-14,]),'NUMBER':([0,5,7,8,9,10,11,12,13,14,15,16,],[6,6,6,6,6,6,6,6,6,6,6,6,]),'LPAREN':([0,5,7,8,9,10,11,12,13,14,15,16,],[7,7,7,7,7,7,7,7,7,7,7,7,]),'$end':([1,3,4,6,17,19,20,21,22,23,24,25,26,27,28,],[0,-3,-2,-13,-10,-1,-8,-9,-11,-12,-4,-5,-6,-7,-14,]),'EQUAL':([2,],[8,]),'EQ':([3,4,6,17,20,21,22,23,24,25,26,27,28,],[-3,13,-13,-10,-8,-9,-11,-12,-4,-5,-6,-7,-14,]),'NEQ':([3,4,6,17,20,21,22,23,24,25,26,27,28,],[-3,14,-13,-10,-8,-9,-11,-12,-4,-5,-6,-7,-14,]),'GT':([3,4,6,17,20,21,22,23,24,25,26,27,28,],[-3,15,-13,-10,-8,-9,-11,-12,-4,-5,-6,-7,-14,]),'LT':([3,4,6,17,20,21,22,23,24,25,26,27,28,],[-3,16,-13,-10,-8,-9,-11,-12,-4,-5,-6,-7,-14,]),'PLUS':([3,6,17,18,19,20,21,22,23,24,25,26,27,28,],[9,-13,-10,9,9,-8,-9,-11,-12,9,9,9,9,-14,]),'TIMES':([3,6,17,18,19,20,21,22,23,24,25,26,27,28,],[11,-13,-10,11,11,11,11,-11,-12,11,11,11,11,-14,]),'DIV':([3,6,17,18,19,20,21,22,23,24,25,26,27,28,],[12,-13,-10,12,12,12,12,-11,-12,12,12,12,12,-14,]),'RPAREN':([6,17,18,20,21,22,23,28,],[-13,-10,28,-8,-9,-11,-12,-14,]),}
+_lr_action_items = {'ID':([0,6,8,10,11,12,13,14,15,16,17,18,],[2,20,2,20,20,20,20,20,20,20,20,20,]),'LPAREN':([0,6,8,10,11,12,13,14,15,16,17,18,],[8,8,8,8,8,8,8,8,8,8,8,8,]),'MINUS':([0,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,23,24,25,26,27,28,29,30,31,],[6,-16,12,-10,6,-13,6,-17,6,6,6,6,6,6,6,6,6,-15,-16,12,-8,-9,12,12,12,12,-11,-12,-14,]),'NUMBER':([0,6,8,10,11,12,13,14,15,16,17,18,],[9,9,9,9,9,9,9,9,9,9,9,9,]),'$end':([1,2,3,4,5,7,9,19,20,22,23,24,25,26,27,28,29,30,31,],[0,-16,-3,-2,-10,-13,-17,-15,-16,-1,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),'EQUAL':([2,],[10,]),'TIMES':([2,5,7,9,19,20,23,24,29,30,31,],[-16,17,-13,-17,-15,-16,17,17,-11,-12,-14,]),'DIV':([2,5,7,9,19,20,23,24,29,30,31,],[-16,18,-13,-17,-15,-16,18,18,-11,-12,-14,]),'PLUS':([2,3,5,7,9,19,20,22,23,24,25,26,27,28,29,30,31,],[-16,11,-10,-13,-17,-15,-16,11,-8,-9,11,11,11,11,-11,-12,-14,]),'EQ':([2,3,4,5,7,9,19,20,23,24,25,26,27,28,29,30,31,],[-16,-3,13,-10,-13,-17,-15,-16,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),'NEQ':([2,3,4,5,7,9,19,20,23,24,25,26,27,28,29,30,31,],[-16,-3,14,-10,-13,-17,-15,-16,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),'GT':([2,3,4,5,7,9,19,20,23,24,25,26,27,28,29,30,31,],[-16,-3,15,-10,-13,-17,-15,-16,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),'LT':([2,3,4,5,7,9,19,20,23,24,25,26,27,28,29,30,31,],[-16,-3,16,-10,-13,-17,-15,-16,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),'RPAREN':([2,3,4,5,7,9,19,20,21,22,23,24,25,26,27,28,29,30,31,],[-16,-3,-2,-10,-13,-17,-15,-16,31,-1,-8,-9,-4,-5,-6,-7,-11,-12,-14,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expr':([0,],[1,]),'arith_expr':([0,5,7,8,9,10,11,12,13,14,15,16,],[3,17,18,19,20,21,22,23,24,25,26,27,]),'bool_expr':([0,],[4,]),}
+_lr_goto_items = {'expr':([0,8,],[1,21,]),'arith_expr':([0,8,10,13,14,15,16,],[3,3,22,25,26,27,28,]),'bool_expr':([0,8,],[4,4,]),'term':([0,8,10,11,12,13,14,15,16,],[5,5,5,23,24,5,5,5,5,]),'factor':([0,6,8,10,11,12,13,14,15,16,17,18,],[7,19,7,7,7,7,7,7,7,7,29,30,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -34,11 +34,14 @@ _lr_productions = [
   ('bool_expr -> bool_expr NEQ arith_expr','bool_expr',3,'p_compare_expr_neq','pycparser.py',33),
   ('bool_expr -> bool_expr GT arith_expr','bool_expr',3,'p_compare_expr_gt','pycparser.py',37),
   ('bool_expr -> bool_expr LT arith_expr','bool_expr',3,'p_compare_expr_lt','pycparser.py',41),
-  ('arith_expr -> arith_expr PLUS arith_expr','arith_expr',3,'p_add','pycparser.py',53),
-  ('arith_expr -> arith_expr MINUS arith_expr','arith_expr',3,'p_sub','pycparser.py',61),
-  ('arith_expr -> MINUS arith_expr','arith_expr',2,'p_expr2uminus','pycparser.py',69),
-  ('arith_expr -> arith_expr TIMES arith_expr','arith_expr',3,'p_mult_div','pycparser.py',73),
-  ('arith_expr -> arith_expr DIV arith_expr','arith_expr',3,'p_mult_div','pycparser.py',74),
-  ('arith_expr -> NUMBER','arith_expr',1,'p_expr2NUM','pycparser.py',97),
-  ('arith_expr -> LPAREN arith_expr RPAREN','arith_expr',3,'p_parens','pycparser.py',105),
+  ('arith_expr -> arith_expr PLUS term','arith_expr',3,'p_arith_add','pycparser.py',77),
+  ('arith_expr -> arith_expr MINUS term','arith_expr',3,'p_arith_sub','pycparser.py',81),
+  ('arith_expr -> term','arith_expr',1,'p_arith_term','pycparser.py',85),
+  ('term -> term TIMES factor','term',3,'p_term_mult','pycparser.py',89),
+  ('term -> term DIV factor','term',3,'p_term_div','pycparser.py',93),
+  ('term -> factor','term',1,'p_term_factor','pycparser.py',99),
+  ('factor -> LPAREN expr RPAREN','factor',3,'p_factor_parens','pycparser.py',103),
+  ('factor -> MINUS factor','factor',2,'p_factor_neg','pycparser.py',107),
+  ('factor -> ID','factor',1,'p_factor_id','pycparser.py',111),
+  ('factor -> NUMBER','factor',1,'p_factor_number','pycparser.py',115),
 ]

@@ -60,6 +60,7 @@ keyword = {'int': 'INT', 'float': 'FLOAT', 'if': 'IF', 'else': 'ELSE', 'else if'
 
 # Regular expression rules
 # t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+r_NUM = r'[-]?[0-9]*\.?[0-9]+'
 t_STRING = r'"([^"\n]|(\\"))*"'
 
 t_PLUS = r'\+'
@@ -88,25 +89,15 @@ t_COLON = r':'
 t_QUOTE = r'\''
 t_DOUBLEQUOTE = r'"'
 
-
-# t_IF = r'if'
-# t_FOR = r'for'
-
-# t_INT = r'int'
-# t_FLOAT = r'float'
-
-
-# t_POINTER = r'*'
-
-
 # Define rule to get number
 
 def t_FNUM(t):
-    r'[-]?[0-9]*\.?[0-9]+'
+    r'\d+\.\d+'
+    t.value = float(t.value)
     return t
 
 def t_INUM(t):
-    r'\[-]?d+'
+    r'\d+'
     t.value = int(t.value)
     return t
 
@@ -120,7 +111,7 @@ def t_reserved(t):
 
 # Define a rule so we can track line numbers
 def t_newline(t):
-    r'\n+'
+    r'[-]?\n+'
     t.lexer.lineno += len(t.value)
 
 
@@ -156,7 +147,7 @@ lexer = lex.lex()
 # Give the lexer some input
 # lexer.input("a + if asjioeifw")
 # lexer.input(r'"string"')
-lexer.input('3.5+-4.2+-5')
+lexer.input('-3.1 + -4')
 
 # Tokenize
 while True:

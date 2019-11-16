@@ -39,34 +39,42 @@ def p_expr_assign( p ):
     '''expr : ID EQUAL expr'''
     p[0] = p[3]
 
-def p_expr_bool( p ):
-    '''expr : bool_expr'''
+def p_expr_basic( p ):
+    '''expr : basic_expr'''
     p[0] = p[1]
 
-# boolean expression might be a number(0 or not), or a comparison
-# comparison with EQ, NEQ, GT, LT
-def p_bool_expr_arith( p ):
-    '''bool_expr : arith_expr'''
+# def p_expr_inc1(p):
+#     '''expr : inc1'''
+#     p[0] = p[1] + 1
+#
+# def p_expr_inc2(p):
+#     '''expr : inc2'''
+#     p[0] = p[1]
+
+def p_basic_expr_compare(p):
+    '''basic_expr : basic_expr compare arith_expr'''
+    if p[2] == '==':
+        p[0] = p[1]==p[3]
+    elif p[2] == '!=':
+        p[0] = p[1]!=p[3]
+    elif p[2] == '>':
+        p[0] = p[1] > p[3]
+    elif p[3] == '<':
+        p[0] = p[1] < p[3]
+
+def p_basic_expr_arith_expr(p):
+    '''basic_expr : arith_expr'''
     p[0] = p[1]
 
-def p_bool_expr_eq( p ):
-    '''bool_expr : bool_expr EQ arith_expr'''
-    p[0] = (p[1] == p[3])
+def p_compare(p):
+    '''compare : EQ
+               | NEQ
+               | GT
+               | LT'''
+    p[0] = p[1]
 
-def p_bool_expr_neq( p ):
-    '''bool_expr : bool_expr NEQ arith_expr'''
-    p[0] = (p[1] != p[3])
-
-def p_bool_expr_gt( p ):
-    '''bool_expr : bool_expr GT arith_expr'''
-    p[0] = (p[1] > p[3])
-
-def p_bool_expr_lt( p ):
-    '''bool_expr : bool_expr LT arith_expr'''
-    p[0] = (p[1] < p[3])
-
-# Basic arithmetic expression and calculation
 # increment not done yet
+
 def p_arith_add(p):
     '''arith_expr : arith_expr PLUS term'''
     p[0] = p[1] + p[3]
@@ -97,6 +105,10 @@ def p_factor_parens(p):
     '''factor : LPAREN expr RPAREN'''
     p[0] = p[2]
 
+def p_factor_neg(p):
+    '''factor : MINUS factor'''
+    p[0] = -p[2]
+
 def p_factor_id(p):
     '''factor : ID'''
     p[0] = p[1]
@@ -118,5 +130,5 @@ def p_error( p ):
 
 parser = yacc.yacc()
 
-res = parser.parse("x = 3.45") # the input
+res = parser.parse("- 4 > - 3.45") # the input
 print(res)

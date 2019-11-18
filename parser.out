@@ -3,1116 +3,1210 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     COLON
-    COMMA
     DOUBLEQUOTE
     ELSE
     ELSE_IF
     FOR
     IF
     INCREMENT
-    LBRACKET
     MAIN
     PERIOD
     POINTER
     PRINT
     QUOTE
-    RBRACKET
-    RETURN
     STRING
 
 Grammar
 
-Rule 0     S' -> stmt
-Rule 1     stmt -> expr
-Rule 2     stmt -> declaration
-Rule 3     stmt -> stmt_block
-Rule 4     stmt -> SEMICOLON
-Rule 5     declaration -> INT ID SEMICOLON
-Rule 6     declaration -> FLOAT ID SEMICOLON
-Rule 7     declaration -> VOID ID SEMICOLON
-Rule 8     stmt_block -> LBRACE stmt_list RBRACE
-Rule 9     stmt_list -> stmt_list stmt
-Rule 10    stmt_list -> empty
-Rule 11    expr -> ID EQUAL expr
-Rule 12    expr -> basic_expr
-Rule 13    basic_expr -> basic_expr compare arith_expr
-Rule 14    basic_expr -> arith_expr
-Rule 15    compare -> EQ
-Rule 16    compare -> NEQ
-Rule 17    compare -> GT
-Rule 18    compare -> LT
-Rule 19    arith_expr -> arith_expr PLUS term
-Rule 20    arith_expr -> arith_expr MINUS term
-Rule 21    arith_expr -> term
-Rule 22    term -> term TIMES factor
-Rule 23    term -> term DIV factor
-Rule 24    term -> factor
-Rule 25    factor -> LPAREN expr RPAREN
-Rule 26    factor -> MINUS factor
-Rule 27    factor -> ID
-Rule 28    factor -> FNUM
-Rule 29    factor -> INUM
-Rule 30    empty -> <empty>
+Rule 0     S' -> program
+Rule 1     program -> func_declaration_list
+Rule 2     func_declaration_list -> func_declaration_list func_declaration
+Rule 3     func_declaration_list -> empty
+Rule 4     func_declaration -> type ID LPAREN arg_list RPAREN stmt_block
+Rule 5     arg_list -> empty
+Rule 6     arg_list -> arg_list COMMA arg
+Rule 7     arg -> type ID
+Rule 8     stmt -> expr SEMICOLON
+Rule 9     stmt -> local_declaration
+Rule 10    stmt -> stmt_block
+Rule 11    stmt -> stmt_return
+Rule 12    stmt -> SEMICOLON
+Rule 13    local_declaration -> type ID SEMICOLON
+Rule 14    local_declaration -> type TIMES ID SEMICOLON
+Rule 15    local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON
+Rule 16    type -> INT
+Rule 17    type -> FLOAT
+Rule 18    type -> VOID
+Rule 19    stmt_block -> LBRACE stmt_list RBRACE
+Rule 20    stmt_list -> stmt_list stmt
+Rule 21    stmt_list -> empty
+Rule 22    expr -> ID EQUAL expr
+Rule 23    expr -> basic_expr
+Rule 24    stmt_return -> RETURN expr SEMICOLON
+Rule 25    stmt_return -> RETURN SEMICOLON
+Rule 26    basic_expr -> basic_expr compare arith_expr
+Rule 27    basic_expr -> arith_expr
+Rule 28    compare -> EQ
+Rule 29    compare -> NEQ
+Rule 30    compare -> GT
+Rule 31    compare -> LT
+Rule 32    arith_expr -> MINUS arith_expr
+Rule 33    arith_expr -> LPAREN arith_expr RPAREN
+Rule 34    arith_expr -> arith_expr PLUS arith_expr
+Rule 35    arith_expr -> arith_expr MINUS arith_expr
+Rule 36    arith_expr -> arith_expr TIMES arith_expr
+Rule 37    arith_expr -> arith_expr DIV arith_expr
+Rule 38    arith_expr -> ID
+Rule 39    arith_expr -> FNUM
+Rule 40    arith_expr -> INUM
+Rule 41    empty -> <empty>
 
 Terminals, with rules where they appear
 
 COLON                : 
-COMMA                : 
-DIV                  : 23
+COMMA                : 6
+DIV                  : 37
 DOUBLEQUOTE          : 
 ELSE                 : 
 ELSE_IF              : 
-EQ                   : 15
-EQUAL                : 11
-FLOAT                : 6
-FNUM                 : 28
+EQ                   : 28
+EQUAL                : 22
+FLOAT                : 17
+FNUM                 : 39
 FOR                  : 
-GT                   : 17
-ID                   : 5 6 7 11 27
+GT                   : 30
+ID                   : 4 7 13 14 22 38
 IF                   : 
 INCREMENT            : 
-INT                  : 5
-INUM                 : 29
-LBRACE               : 8
-LBRACKET             : 
-LPAREN               : 25
-LT                   : 18
+INT                  : 16
+INUM                 : 40
+LBRACE               : 19
+LBRACKET             : 15
+LPAREN               : 4 33
+LT                   : 31
 MAIN                 : 
-MINUS                : 20 26
-NEQ                  : 16
+MINUS                : 32 35
+NEQ                  : 29
 PERIOD               : 
-PLUS                 : 19
+PLUS                 : 34
 POINTER              : 
 PRINT                : 
 QUOTE                : 
-RBRACE               : 8
-RBRACKET             : 
-RETURN               : 
-RPAREN               : 25
-SEMICOLON            : 4 5 6 7
+RBRACE               : 19
+RBRACKET             : 15
+RETURN               : 24 25
+RPAREN               : 4 33
+SEMICOLON            : 8 12 13 14 15 24 25
 STRING               : 
-TIMES                : 22
-VOID                 : 7
+TIMES                : 14 15 36
+VOID                 : 18
 error                : 
 
 Nonterminals, with rules where they appear
 
-arith_expr           : 13 14 19 20
-basic_expr           : 12 13
-compare              : 13
-declaration          : 2
-empty                : 10
-expr                 : 1 11 25
-factor               : 22 23 24 26
-stmt                 : 9 0
-stmt_block           : 3
-stmt_list            : 8 9
-term                 : 19 20 21 22 23
+arg                  : 6
+arg_list             : 4 6
+arith_expr           : 26 27 32 33 34 34 35 35 36 36 37 37
+basic_expr           : 23 26
+compare              : 26
+empty                : 3 5 21
+expr                 : 8 22 24
+func_declaration     : 2
+func_declaration_list : 1 2
+local_declaration    : 9
+program              : 0
+stmt                 : 20
+stmt_block           : 4 10
+stmt_list            : 19 20
+stmt_return          : 11
+type                 : 4 7 13 14 15
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . stmt
-    (1) stmt -> . expr
-    (2) stmt -> . declaration
-    (3) stmt -> . stmt_block
-    (4) stmt -> . SEMICOLON
-    (11) expr -> . ID EQUAL expr
-    (12) expr -> . basic_expr
-    (5) declaration -> . INT ID SEMICOLON
-    (6) declaration -> . FLOAT ID SEMICOLON
-    (7) declaration -> . VOID ID SEMICOLON
-    (8) stmt_block -> . LBRACE stmt_list RBRACE
-    (13) basic_expr -> . basic_expr compare arith_expr
-    (14) basic_expr -> . arith_expr
-    (19) arith_expr -> . arith_expr PLUS term
-    (20) arith_expr -> . arith_expr MINUS term
-    (21) arith_expr -> . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (0) S' -> . program
+    (1) program -> . func_declaration_list
+    (2) func_declaration_list -> . func_declaration_list func_declaration
+    (3) func_declaration_list -> . empty
+    (41) empty -> .
 
-    SEMICOLON       shift and go to state 5
-    ID              shift and go to state 6
-    INT             shift and go to state 8
-    FLOAT           shift and go to state 9
-    VOID            shift and go to state 10
-    LBRACE          shift and go to state 11
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    INT             reduce using rule 41 (empty -> .)
+    FLOAT           reduce using rule 41 (empty -> .)
+    VOID            reduce using rule 41 (empty -> .)
+    $end            reduce using rule 41 (empty -> .)
 
-    stmt                           shift and go to state 1
-    expr                           shift and go to state 2
-    declaration                    shift and go to state 3
-    stmt_block                     shift and go to state 4
-    basic_expr                     shift and go to state 7
-    arith_expr                     shift and go to state 12
-    term                           shift and go to state 13
-    factor                         shift and go to state 15
+    program                        shift and go to state 1
+    func_declaration_list          shift and go to state 2
+    empty                          shift and go to state 3
 
 state 1
 
-    (0) S' -> stmt .
+    (0) S' -> program .
 
 
 
 state 2
 
-    (1) stmt -> expr .
+    (1) program -> func_declaration_list .
+    (2) func_declaration_list -> func_declaration_list . func_declaration
+    (4) func_declaration -> . type ID LPAREN arg_list RPAREN stmt_block
+    (16) type -> . INT
+    (17) type -> . FLOAT
+    (18) type -> . VOID
 
-    $end            reduce using rule 1 (stmt -> expr .)
-    RBRACE          reduce using rule 1 (stmt -> expr .)
-    SEMICOLON       reduce using rule 1 (stmt -> expr .)
-    ID              reduce using rule 1 (stmt -> expr .)
-    INT             reduce using rule 1 (stmt -> expr .)
-    FLOAT           reduce using rule 1 (stmt -> expr .)
-    VOID            reduce using rule 1 (stmt -> expr .)
-    LBRACE          reduce using rule 1 (stmt -> expr .)
-    LPAREN          reduce using rule 1 (stmt -> expr .)
-    MINUS           reduce using rule 1 (stmt -> expr .)
-    FNUM            reduce using rule 1 (stmt -> expr .)
-    INUM            reduce using rule 1 (stmt -> expr .)
+    $end            reduce using rule 1 (program -> func_declaration_list .)
+    INT             shift and go to state 6
+    FLOAT           shift and go to state 7
+    VOID            shift and go to state 8
 
+    func_declaration               shift and go to state 4
+    type                           shift and go to state 5
 
 state 3
 
-    (2) stmt -> declaration .
+    (3) func_declaration_list -> empty .
 
-    $end            reduce using rule 2 (stmt -> declaration .)
-    RBRACE          reduce using rule 2 (stmt -> declaration .)
-    SEMICOLON       reduce using rule 2 (stmt -> declaration .)
-    ID              reduce using rule 2 (stmt -> declaration .)
-    INT             reduce using rule 2 (stmt -> declaration .)
-    FLOAT           reduce using rule 2 (stmt -> declaration .)
-    VOID            reduce using rule 2 (stmt -> declaration .)
-    LBRACE          reduce using rule 2 (stmt -> declaration .)
-    LPAREN          reduce using rule 2 (stmt -> declaration .)
-    MINUS           reduce using rule 2 (stmt -> declaration .)
-    FNUM            reduce using rule 2 (stmt -> declaration .)
-    INUM            reduce using rule 2 (stmt -> declaration .)
+    INT             reduce using rule 3 (func_declaration_list -> empty .)
+    FLOAT           reduce using rule 3 (func_declaration_list -> empty .)
+    VOID            reduce using rule 3 (func_declaration_list -> empty .)
+    $end            reduce using rule 3 (func_declaration_list -> empty .)
 
 
 state 4
 
-    (3) stmt -> stmt_block .
+    (2) func_declaration_list -> func_declaration_list func_declaration .
 
-    $end            reduce using rule 3 (stmt -> stmt_block .)
-    RBRACE          reduce using rule 3 (stmt -> stmt_block .)
-    SEMICOLON       reduce using rule 3 (stmt -> stmt_block .)
-    ID              reduce using rule 3 (stmt -> stmt_block .)
-    INT             reduce using rule 3 (stmt -> stmt_block .)
-    FLOAT           reduce using rule 3 (stmt -> stmt_block .)
-    VOID            reduce using rule 3 (stmt -> stmt_block .)
-    LBRACE          reduce using rule 3 (stmt -> stmt_block .)
-    LPAREN          reduce using rule 3 (stmt -> stmt_block .)
-    MINUS           reduce using rule 3 (stmt -> stmt_block .)
-    FNUM            reduce using rule 3 (stmt -> stmt_block .)
-    INUM            reduce using rule 3 (stmt -> stmt_block .)
+    INT             reduce using rule 2 (func_declaration_list -> func_declaration_list func_declaration .)
+    FLOAT           reduce using rule 2 (func_declaration_list -> func_declaration_list func_declaration .)
+    VOID            reduce using rule 2 (func_declaration_list -> func_declaration_list func_declaration .)
+    $end            reduce using rule 2 (func_declaration_list -> func_declaration_list func_declaration .)
 
 
 state 5
 
-    (4) stmt -> SEMICOLON .
+    (4) func_declaration -> type . ID LPAREN arg_list RPAREN stmt_block
 
-    $end            reduce using rule 4 (stmt -> SEMICOLON .)
-    RBRACE          reduce using rule 4 (stmt -> SEMICOLON .)
-    SEMICOLON       reduce using rule 4 (stmt -> SEMICOLON .)
-    ID              reduce using rule 4 (stmt -> SEMICOLON .)
-    INT             reduce using rule 4 (stmt -> SEMICOLON .)
-    FLOAT           reduce using rule 4 (stmt -> SEMICOLON .)
-    VOID            reduce using rule 4 (stmt -> SEMICOLON .)
-    LBRACE          reduce using rule 4 (stmt -> SEMICOLON .)
-    LPAREN          reduce using rule 4 (stmt -> SEMICOLON .)
-    MINUS           reduce using rule 4 (stmt -> SEMICOLON .)
-    FNUM            reduce using rule 4 (stmt -> SEMICOLON .)
-    INUM            reduce using rule 4 (stmt -> SEMICOLON .)
+    ID              shift and go to state 9
 
 
 state 6
 
-    (11) expr -> ID . EQUAL expr
-    (27) factor -> ID .
+    (16) type -> INT .
 
-    EQUAL           shift and go to state 19
-    TIMES           reduce using rule 27 (factor -> ID .)
-    DIV             reduce using rule 27 (factor -> ID .)
-    PLUS            reduce using rule 27 (factor -> ID .)
-    MINUS           reduce using rule 27 (factor -> ID .)
-    EQ              reduce using rule 27 (factor -> ID .)
-    NEQ             reduce using rule 27 (factor -> ID .)
-    GT              reduce using rule 27 (factor -> ID .)
-    LT              reduce using rule 27 (factor -> ID .)
-    $end            reduce using rule 27 (factor -> ID .)
-    RPAREN          reduce using rule 27 (factor -> ID .)
-    RBRACE          reduce using rule 27 (factor -> ID .)
-    SEMICOLON       reduce using rule 27 (factor -> ID .)
-    ID              reduce using rule 27 (factor -> ID .)
-    INT             reduce using rule 27 (factor -> ID .)
-    FLOAT           reduce using rule 27 (factor -> ID .)
-    VOID            reduce using rule 27 (factor -> ID .)
-    LBRACE          reduce using rule 27 (factor -> ID .)
-    LPAREN          reduce using rule 27 (factor -> ID .)
-    FNUM            reduce using rule 27 (factor -> ID .)
-    INUM            reduce using rule 27 (factor -> ID .)
+    ID              reduce using rule 16 (type -> INT .)
+    TIMES           reduce using rule 16 (type -> INT .)
 
 
 state 7
 
-    (12) expr -> basic_expr .
-    (13) basic_expr -> basic_expr . compare arith_expr
-    (15) compare -> . EQ
-    (16) compare -> . NEQ
-    (17) compare -> . GT
-    (18) compare -> . LT
+    (17) type -> FLOAT .
 
-    $end            reduce using rule 12 (expr -> basic_expr .)
-    RPAREN          reduce using rule 12 (expr -> basic_expr .)
-    RBRACE          reduce using rule 12 (expr -> basic_expr .)
-    SEMICOLON       reduce using rule 12 (expr -> basic_expr .)
-    ID              reduce using rule 12 (expr -> basic_expr .)
-    INT             reduce using rule 12 (expr -> basic_expr .)
-    FLOAT           reduce using rule 12 (expr -> basic_expr .)
-    VOID            reduce using rule 12 (expr -> basic_expr .)
-    LBRACE          reduce using rule 12 (expr -> basic_expr .)
-    LPAREN          reduce using rule 12 (expr -> basic_expr .)
-    MINUS           reduce using rule 12 (expr -> basic_expr .)
-    FNUM            reduce using rule 12 (expr -> basic_expr .)
-    INUM            reduce using rule 12 (expr -> basic_expr .)
-    EQ              shift and go to state 21
-    NEQ             shift and go to state 22
-    GT              shift and go to state 23
-    LT              shift and go to state 24
+    ID              reduce using rule 17 (type -> FLOAT .)
+    TIMES           reduce using rule 17 (type -> FLOAT .)
 
-    compare                        shift and go to state 20
 
 state 8
 
-    (5) declaration -> INT . ID SEMICOLON
+    (18) type -> VOID .
 
-    ID              shift and go to state 25
+    ID              reduce using rule 18 (type -> VOID .)
+    TIMES           reduce using rule 18 (type -> VOID .)
 
 
 state 9
 
-    (6) declaration -> FLOAT . ID SEMICOLON
+    (4) func_declaration -> type ID . LPAREN arg_list RPAREN stmt_block
 
-    ID              shift and go to state 26
+    LPAREN          shift and go to state 10
 
 
 state 10
 
-    (7) declaration -> VOID . ID SEMICOLON
+    (4) func_declaration -> type ID LPAREN . arg_list RPAREN stmt_block
+    (5) arg_list -> . empty
+    (6) arg_list -> . arg_list COMMA arg
+    (41) empty -> .
 
-    ID              shift and go to state 27
+    RPAREN          reduce using rule 41 (empty -> .)
+    COMMA           reduce using rule 41 (empty -> .)
 
+    arg_list                       shift and go to state 11
+    empty                          shift and go to state 12
 
 state 11
 
-    (8) stmt_block -> LBRACE . stmt_list RBRACE
-    (9) stmt_list -> . stmt_list stmt
-    (10) stmt_list -> . empty
-    (30) empty -> .
+    (4) func_declaration -> type ID LPAREN arg_list . RPAREN stmt_block
+    (6) arg_list -> arg_list . COMMA arg
 
-    RBRACE          reduce using rule 30 (empty -> .)
-    SEMICOLON       reduce using rule 30 (empty -> .)
-    ID              reduce using rule 30 (empty -> .)
-    INT             reduce using rule 30 (empty -> .)
-    FLOAT           reduce using rule 30 (empty -> .)
-    VOID            reduce using rule 30 (empty -> .)
-    LBRACE          reduce using rule 30 (empty -> .)
-    LPAREN          reduce using rule 30 (empty -> .)
-    MINUS           reduce using rule 30 (empty -> .)
-    FNUM            reduce using rule 30 (empty -> .)
-    INUM            reduce using rule 30 (empty -> .)
+    RPAREN          shift and go to state 13
+    COMMA           shift and go to state 14
 
-    stmt_list                      shift and go to state 28
-    empty                          shift and go to state 29
 
 state 12
 
-    (14) basic_expr -> arith_expr .
-    (19) arith_expr -> arith_expr . PLUS term
-    (20) arith_expr -> arith_expr . MINUS term
+    (5) arg_list -> empty .
 
-  ! shift/reduce conflict for MINUS resolved as shift
-    EQ              reduce using rule 14 (basic_expr -> arith_expr .)
-    NEQ             reduce using rule 14 (basic_expr -> arith_expr .)
-    GT              reduce using rule 14 (basic_expr -> arith_expr .)
-    LT              reduce using rule 14 (basic_expr -> arith_expr .)
-    $end            reduce using rule 14 (basic_expr -> arith_expr .)
-    RPAREN          reduce using rule 14 (basic_expr -> arith_expr .)
-    RBRACE          reduce using rule 14 (basic_expr -> arith_expr .)
-    SEMICOLON       reduce using rule 14 (basic_expr -> arith_expr .)
-    ID              reduce using rule 14 (basic_expr -> arith_expr .)
-    INT             reduce using rule 14 (basic_expr -> arith_expr .)
-    FLOAT           reduce using rule 14 (basic_expr -> arith_expr .)
-    VOID            reduce using rule 14 (basic_expr -> arith_expr .)
-    LBRACE          reduce using rule 14 (basic_expr -> arith_expr .)
-    LPAREN          reduce using rule 14 (basic_expr -> arith_expr .)
-    FNUM            reduce using rule 14 (basic_expr -> arith_expr .)
-    INUM            reduce using rule 14 (basic_expr -> arith_expr .)
-    PLUS            shift and go to state 30
-    MINUS           shift and go to state 31
-
-  ! MINUS           [ reduce using rule 14 (basic_expr -> arith_expr .) ]
+    RPAREN          reduce using rule 5 (arg_list -> empty .)
+    COMMA           reduce using rule 5 (arg_list -> empty .)
 
 
 state 13
 
-    (21) arith_expr -> term .
-    (22) term -> term . TIMES factor
-    (23) term -> term . DIV factor
+    (4) func_declaration -> type ID LPAREN arg_list RPAREN . stmt_block
+    (19) stmt_block -> . LBRACE stmt_list RBRACE
 
-    PLUS            reduce using rule 21 (arith_expr -> term .)
-    MINUS           reduce using rule 21 (arith_expr -> term .)
-    EQ              reduce using rule 21 (arith_expr -> term .)
-    NEQ             reduce using rule 21 (arith_expr -> term .)
-    GT              reduce using rule 21 (arith_expr -> term .)
-    LT              reduce using rule 21 (arith_expr -> term .)
-    $end            reduce using rule 21 (arith_expr -> term .)
-    RPAREN          reduce using rule 21 (arith_expr -> term .)
-    RBRACE          reduce using rule 21 (arith_expr -> term .)
-    SEMICOLON       reduce using rule 21 (arith_expr -> term .)
-    ID              reduce using rule 21 (arith_expr -> term .)
-    INT             reduce using rule 21 (arith_expr -> term .)
-    FLOAT           reduce using rule 21 (arith_expr -> term .)
-    VOID            reduce using rule 21 (arith_expr -> term .)
-    LBRACE          reduce using rule 21 (arith_expr -> term .)
-    LPAREN          reduce using rule 21 (arith_expr -> term .)
-    FNUM            reduce using rule 21 (arith_expr -> term .)
-    INUM            reduce using rule 21 (arith_expr -> term .)
-    TIMES           shift and go to state 32
-    DIV             shift and go to state 33
+    LBRACE          shift and go to state 16
 
+    stmt_block                     shift and go to state 15
 
 state 14
 
-    (26) factor -> MINUS . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (6) arg_list -> arg_list COMMA . arg
+    (7) arg -> . type ID
+    (16) type -> . INT
+    (17) type -> . FLOAT
+    (18) type -> . VOID
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    INT             shift and go to state 6
+    FLOAT           shift and go to state 7
+    VOID            shift and go to state 8
 
-    factor                         shift and go to state 34
+    arg                            shift and go to state 17
+    type                           shift and go to state 18
 
 state 15
 
-    (24) term -> factor .
+    (4) func_declaration -> type ID LPAREN arg_list RPAREN stmt_block .
 
-    TIMES           reduce using rule 24 (term -> factor .)
-    DIV             reduce using rule 24 (term -> factor .)
-    PLUS            reduce using rule 24 (term -> factor .)
-    MINUS           reduce using rule 24 (term -> factor .)
-    EQ              reduce using rule 24 (term -> factor .)
-    NEQ             reduce using rule 24 (term -> factor .)
-    GT              reduce using rule 24 (term -> factor .)
-    LT              reduce using rule 24 (term -> factor .)
-    $end            reduce using rule 24 (term -> factor .)
-    RPAREN          reduce using rule 24 (term -> factor .)
-    RBRACE          reduce using rule 24 (term -> factor .)
-    SEMICOLON       reduce using rule 24 (term -> factor .)
-    ID              reduce using rule 24 (term -> factor .)
-    INT             reduce using rule 24 (term -> factor .)
-    FLOAT           reduce using rule 24 (term -> factor .)
-    VOID            reduce using rule 24 (term -> factor .)
-    LBRACE          reduce using rule 24 (term -> factor .)
-    LPAREN          reduce using rule 24 (term -> factor .)
-    FNUM            reduce using rule 24 (term -> factor .)
-    INUM            reduce using rule 24 (term -> factor .)
+    INT             reduce using rule 4 (func_declaration -> type ID LPAREN arg_list RPAREN stmt_block .)
+    FLOAT           reduce using rule 4 (func_declaration -> type ID LPAREN arg_list RPAREN stmt_block .)
+    VOID            reduce using rule 4 (func_declaration -> type ID LPAREN arg_list RPAREN stmt_block .)
+    $end            reduce using rule 4 (func_declaration -> type ID LPAREN arg_list RPAREN stmt_block .)
 
 
 state 16
 
-    (25) factor -> LPAREN . expr RPAREN
-    (11) expr -> . ID EQUAL expr
-    (12) expr -> . basic_expr
-    (13) basic_expr -> . basic_expr compare arith_expr
-    (14) basic_expr -> . arith_expr
-    (19) arith_expr -> . arith_expr PLUS term
-    (20) arith_expr -> . arith_expr MINUS term
-    (21) arith_expr -> . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (19) stmt_block -> LBRACE . stmt_list RBRACE
+    (20) stmt_list -> . stmt_list stmt
+    (21) stmt_list -> . empty
+    (41) empty -> .
 
-    ID              shift and go to state 6
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    RBRACE          reduce using rule 41 (empty -> .)
+    SEMICOLON       reduce using rule 41 (empty -> .)
+    ID              reduce using rule 41 (empty -> .)
+    LBRACE          reduce using rule 41 (empty -> .)
+    RETURN          reduce using rule 41 (empty -> .)
+    INT             reduce using rule 41 (empty -> .)
+    FLOAT           reduce using rule 41 (empty -> .)
+    VOID            reduce using rule 41 (empty -> .)
+    MINUS           reduce using rule 41 (empty -> .)
+    LPAREN          reduce using rule 41 (empty -> .)
+    FNUM            reduce using rule 41 (empty -> .)
+    INUM            reduce using rule 41 (empty -> .)
 
-    expr                           shift and go to state 36
-    basic_expr                     shift and go to state 7
-    arith_expr                     shift and go to state 12
-    term                           shift and go to state 13
-    factor                         shift and go to state 15
+    stmt_list                      shift and go to state 19
+    empty                          shift and go to state 20
 
 state 17
 
-    (28) factor -> FNUM .
+    (6) arg_list -> arg_list COMMA arg .
 
-    TIMES           reduce using rule 28 (factor -> FNUM .)
-    DIV             reduce using rule 28 (factor -> FNUM .)
-    PLUS            reduce using rule 28 (factor -> FNUM .)
-    MINUS           reduce using rule 28 (factor -> FNUM .)
-    EQ              reduce using rule 28 (factor -> FNUM .)
-    NEQ             reduce using rule 28 (factor -> FNUM .)
-    GT              reduce using rule 28 (factor -> FNUM .)
-    LT              reduce using rule 28 (factor -> FNUM .)
-    $end            reduce using rule 28 (factor -> FNUM .)
-    RPAREN          reduce using rule 28 (factor -> FNUM .)
-    RBRACE          reduce using rule 28 (factor -> FNUM .)
-    SEMICOLON       reduce using rule 28 (factor -> FNUM .)
-    ID              reduce using rule 28 (factor -> FNUM .)
-    INT             reduce using rule 28 (factor -> FNUM .)
-    FLOAT           reduce using rule 28 (factor -> FNUM .)
-    VOID            reduce using rule 28 (factor -> FNUM .)
-    LBRACE          reduce using rule 28 (factor -> FNUM .)
-    LPAREN          reduce using rule 28 (factor -> FNUM .)
-    FNUM            reduce using rule 28 (factor -> FNUM .)
-    INUM            reduce using rule 28 (factor -> FNUM .)
+    RPAREN          reduce using rule 6 (arg_list -> arg_list COMMA arg .)
+    COMMA           reduce using rule 6 (arg_list -> arg_list COMMA arg .)
 
 
 state 18
 
-    (29) factor -> INUM .
+    (7) arg -> type . ID
 
-    TIMES           reduce using rule 29 (factor -> INUM .)
-    DIV             reduce using rule 29 (factor -> INUM .)
-    PLUS            reduce using rule 29 (factor -> INUM .)
-    MINUS           reduce using rule 29 (factor -> INUM .)
-    EQ              reduce using rule 29 (factor -> INUM .)
-    NEQ             reduce using rule 29 (factor -> INUM .)
-    GT              reduce using rule 29 (factor -> INUM .)
-    LT              reduce using rule 29 (factor -> INUM .)
-    $end            reduce using rule 29 (factor -> INUM .)
-    RPAREN          reduce using rule 29 (factor -> INUM .)
-    RBRACE          reduce using rule 29 (factor -> INUM .)
-    SEMICOLON       reduce using rule 29 (factor -> INUM .)
-    ID              reduce using rule 29 (factor -> INUM .)
-    INT             reduce using rule 29 (factor -> INUM .)
-    FLOAT           reduce using rule 29 (factor -> INUM .)
-    VOID            reduce using rule 29 (factor -> INUM .)
-    LBRACE          reduce using rule 29 (factor -> INUM .)
-    LPAREN          reduce using rule 29 (factor -> INUM .)
-    FNUM            reduce using rule 29 (factor -> INUM .)
-    INUM            reduce using rule 29 (factor -> INUM .)
+    ID              shift and go to state 21
 
 
 state 19
 
-    (11) expr -> ID EQUAL . expr
-    (11) expr -> . ID EQUAL expr
-    (12) expr -> . basic_expr
-    (13) basic_expr -> . basic_expr compare arith_expr
-    (14) basic_expr -> . arith_expr
-    (19) arith_expr -> . arith_expr PLUS term
-    (20) arith_expr -> . arith_expr MINUS term
-    (21) arith_expr -> . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (19) stmt_block -> LBRACE stmt_list . RBRACE
+    (20) stmt_list -> stmt_list . stmt
+    (8) stmt -> . expr SEMICOLON
+    (9) stmt -> . local_declaration
+    (10) stmt -> . stmt_block
+    (11) stmt -> . stmt_return
+    (12) stmt -> . SEMICOLON
+    (22) expr -> . ID EQUAL expr
+    (23) expr -> . basic_expr
+    (13) local_declaration -> . type ID SEMICOLON
+    (14) local_declaration -> . type TIMES ID SEMICOLON
+    (15) local_declaration -> . type TIMES LBRACKET RBRACKET SEMICOLON
+    (19) stmt_block -> . LBRACE stmt_list RBRACE
+    (24) stmt_return -> . RETURN expr SEMICOLON
+    (25) stmt_return -> . RETURN SEMICOLON
+    (26) basic_expr -> . basic_expr compare arith_expr
+    (27) basic_expr -> . arith_expr
+    (16) type -> . INT
+    (17) type -> . FLOAT
+    (18) type -> . VOID
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    ID              shift and go to state 6
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    RBRACE          shift and go to state 22
+    SEMICOLON       shift and go to state 25
+    ID              shift and go to state 29
+    LBRACE          shift and go to state 16
+    RETURN          shift and go to state 32
+    INT             shift and go to state 6
+    FLOAT           shift and go to state 7
+    VOID            shift and go to state 8
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
-    expr                           shift and go to state 37
-    basic_expr                     shift and go to state 7
-    arith_expr                     shift and go to state 12
-    term                           shift and go to state 13
-    factor                         shift and go to state 15
+    stmt                           shift and go to state 23
+    expr                           shift and go to state 24
+    local_declaration              shift and go to state 26
+    stmt_block                     shift and go to state 27
+    stmt_return                    shift and go to state 28
+    basic_expr                     shift and go to state 30
+    type                           shift and go to state 31
+    arith_expr                     shift and go to state 33
 
 state 20
 
-    (13) basic_expr -> basic_expr compare . arith_expr
-    (19) arith_expr -> . arith_expr PLUS term
-    (20) arith_expr -> . arith_expr MINUS term
-    (21) arith_expr -> . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (21) stmt_list -> empty .
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    RBRACE          reduce using rule 21 (stmt_list -> empty .)
+    SEMICOLON       reduce using rule 21 (stmt_list -> empty .)
+    ID              reduce using rule 21 (stmt_list -> empty .)
+    LBRACE          reduce using rule 21 (stmt_list -> empty .)
+    RETURN          reduce using rule 21 (stmt_list -> empty .)
+    INT             reduce using rule 21 (stmt_list -> empty .)
+    FLOAT           reduce using rule 21 (stmt_list -> empty .)
+    VOID            reduce using rule 21 (stmt_list -> empty .)
+    MINUS           reduce using rule 21 (stmt_list -> empty .)
+    LPAREN          reduce using rule 21 (stmt_list -> empty .)
+    FNUM            reduce using rule 21 (stmt_list -> empty .)
+    INUM            reduce using rule 21 (stmt_list -> empty .)
 
-    arith_expr                     shift and go to state 38
-    term                           shift and go to state 13
-    factor                         shift and go to state 15
 
 state 21
 
-    (15) compare -> EQ .
+    (7) arg -> type ID .
 
-    LPAREN          reduce using rule 15 (compare -> EQ .)
-    MINUS           reduce using rule 15 (compare -> EQ .)
-    ID              reduce using rule 15 (compare -> EQ .)
-    FNUM            reduce using rule 15 (compare -> EQ .)
-    INUM            reduce using rule 15 (compare -> EQ .)
+    RPAREN          reduce using rule 7 (arg -> type ID .)
+    COMMA           reduce using rule 7 (arg -> type ID .)
 
 
 state 22
 
-    (16) compare -> NEQ .
+    (19) stmt_block -> LBRACE stmt_list RBRACE .
 
-    LPAREN          reduce using rule 16 (compare -> NEQ .)
-    MINUS           reduce using rule 16 (compare -> NEQ .)
-    ID              reduce using rule 16 (compare -> NEQ .)
-    FNUM            reduce using rule 16 (compare -> NEQ .)
-    INUM            reduce using rule 16 (compare -> NEQ .)
+    INT             reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    FLOAT           reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    VOID            reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    $end            reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    RBRACE          reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    SEMICOLON       reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    ID              reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    LBRACE          reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    RETURN          reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    MINUS           reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    LPAREN          reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    FNUM            reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
+    INUM            reduce using rule 19 (stmt_block -> LBRACE stmt_list RBRACE .)
 
 
 state 23
 
-    (17) compare -> GT .
+    (20) stmt_list -> stmt_list stmt .
 
-    LPAREN          reduce using rule 17 (compare -> GT .)
-    MINUS           reduce using rule 17 (compare -> GT .)
-    ID              reduce using rule 17 (compare -> GT .)
-    FNUM            reduce using rule 17 (compare -> GT .)
-    INUM            reduce using rule 17 (compare -> GT .)
+    RBRACE          reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    SEMICOLON       reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    ID              reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    LBRACE          reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    RETURN          reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    INT             reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    FLOAT           reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    VOID            reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    MINUS           reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    LPAREN          reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    FNUM            reduce using rule 20 (stmt_list -> stmt_list stmt .)
+    INUM            reduce using rule 20 (stmt_list -> stmt_list stmt .)
 
 
 state 24
 
-    (18) compare -> LT .
+    (8) stmt -> expr . SEMICOLON
 
-    LPAREN          reduce using rule 18 (compare -> LT .)
-    MINUS           reduce using rule 18 (compare -> LT .)
-    ID              reduce using rule 18 (compare -> LT .)
-    FNUM            reduce using rule 18 (compare -> LT .)
-    INUM            reduce using rule 18 (compare -> LT .)
+    SEMICOLON       shift and go to state 38
 
 
 state 25
 
-    (5) declaration -> INT ID . SEMICOLON
+    (12) stmt -> SEMICOLON .
 
-    SEMICOLON       shift and go to state 39
+    RBRACE          reduce using rule 12 (stmt -> SEMICOLON .)
+    SEMICOLON       reduce using rule 12 (stmt -> SEMICOLON .)
+    ID              reduce using rule 12 (stmt -> SEMICOLON .)
+    LBRACE          reduce using rule 12 (stmt -> SEMICOLON .)
+    RETURN          reduce using rule 12 (stmt -> SEMICOLON .)
+    INT             reduce using rule 12 (stmt -> SEMICOLON .)
+    FLOAT           reduce using rule 12 (stmt -> SEMICOLON .)
+    VOID            reduce using rule 12 (stmt -> SEMICOLON .)
+    MINUS           reduce using rule 12 (stmt -> SEMICOLON .)
+    LPAREN          reduce using rule 12 (stmt -> SEMICOLON .)
+    FNUM            reduce using rule 12 (stmt -> SEMICOLON .)
+    INUM            reduce using rule 12 (stmt -> SEMICOLON .)
 
 
 state 26
 
-    (6) declaration -> FLOAT ID . SEMICOLON
+    (9) stmt -> local_declaration .
 
-    SEMICOLON       shift and go to state 40
+    RBRACE          reduce using rule 9 (stmt -> local_declaration .)
+    SEMICOLON       reduce using rule 9 (stmt -> local_declaration .)
+    ID              reduce using rule 9 (stmt -> local_declaration .)
+    LBRACE          reduce using rule 9 (stmt -> local_declaration .)
+    RETURN          reduce using rule 9 (stmt -> local_declaration .)
+    INT             reduce using rule 9 (stmt -> local_declaration .)
+    FLOAT           reduce using rule 9 (stmt -> local_declaration .)
+    VOID            reduce using rule 9 (stmt -> local_declaration .)
+    MINUS           reduce using rule 9 (stmt -> local_declaration .)
+    LPAREN          reduce using rule 9 (stmt -> local_declaration .)
+    FNUM            reduce using rule 9 (stmt -> local_declaration .)
+    INUM            reduce using rule 9 (stmt -> local_declaration .)
 
 
 state 27
 
-    (7) declaration -> VOID ID . SEMICOLON
+    (10) stmt -> stmt_block .
 
-    SEMICOLON       shift and go to state 41
+    RBRACE          reduce using rule 10 (stmt -> stmt_block .)
+    SEMICOLON       reduce using rule 10 (stmt -> stmt_block .)
+    ID              reduce using rule 10 (stmt -> stmt_block .)
+    LBRACE          reduce using rule 10 (stmt -> stmt_block .)
+    RETURN          reduce using rule 10 (stmt -> stmt_block .)
+    INT             reduce using rule 10 (stmt -> stmt_block .)
+    FLOAT           reduce using rule 10 (stmt -> stmt_block .)
+    VOID            reduce using rule 10 (stmt -> stmt_block .)
+    MINUS           reduce using rule 10 (stmt -> stmt_block .)
+    LPAREN          reduce using rule 10 (stmt -> stmt_block .)
+    FNUM            reduce using rule 10 (stmt -> stmt_block .)
+    INUM            reduce using rule 10 (stmt -> stmt_block .)
 
 
 state 28
 
-    (8) stmt_block -> LBRACE stmt_list . RBRACE
-    (9) stmt_list -> stmt_list . stmt
-    (1) stmt -> . expr
-    (2) stmt -> . declaration
-    (3) stmt -> . stmt_block
-    (4) stmt -> . SEMICOLON
-    (11) expr -> . ID EQUAL expr
-    (12) expr -> . basic_expr
-    (5) declaration -> . INT ID SEMICOLON
-    (6) declaration -> . FLOAT ID SEMICOLON
-    (7) declaration -> . VOID ID SEMICOLON
-    (8) stmt_block -> . LBRACE stmt_list RBRACE
-    (13) basic_expr -> . basic_expr compare arith_expr
-    (14) basic_expr -> . arith_expr
-    (19) arith_expr -> . arith_expr PLUS term
-    (20) arith_expr -> . arith_expr MINUS term
-    (21) arith_expr -> . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (11) stmt -> stmt_return .
 
-    RBRACE          shift and go to state 42
-    SEMICOLON       shift and go to state 5
-    ID              shift and go to state 6
-    INT             shift and go to state 8
-    FLOAT           shift and go to state 9
-    VOID            shift and go to state 10
-    LBRACE          shift and go to state 11
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    RBRACE          reduce using rule 11 (stmt -> stmt_return .)
+    SEMICOLON       reduce using rule 11 (stmt -> stmt_return .)
+    ID              reduce using rule 11 (stmt -> stmt_return .)
+    LBRACE          reduce using rule 11 (stmt -> stmt_return .)
+    RETURN          reduce using rule 11 (stmt -> stmt_return .)
+    INT             reduce using rule 11 (stmt -> stmt_return .)
+    FLOAT           reduce using rule 11 (stmt -> stmt_return .)
+    VOID            reduce using rule 11 (stmt -> stmt_return .)
+    MINUS           reduce using rule 11 (stmt -> stmt_return .)
+    LPAREN          reduce using rule 11 (stmt -> stmt_return .)
+    FNUM            reduce using rule 11 (stmt -> stmt_return .)
+    INUM            reduce using rule 11 (stmt -> stmt_return .)
 
-    stmt                           shift and go to state 43
-    expr                           shift and go to state 2
-    declaration                    shift and go to state 3
-    stmt_block                     shift and go to state 4
-    basic_expr                     shift and go to state 7
-    arith_expr                     shift and go to state 12
-    term                           shift and go to state 13
-    factor                         shift and go to state 15
 
 state 29
 
-    (10) stmt_list -> empty .
+    (22) expr -> ID . EQUAL expr
+    (38) arith_expr -> ID .
 
-    RBRACE          reduce using rule 10 (stmt_list -> empty .)
-    SEMICOLON       reduce using rule 10 (stmt_list -> empty .)
-    ID              reduce using rule 10 (stmt_list -> empty .)
-    INT             reduce using rule 10 (stmt_list -> empty .)
-    FLOAT           reduce using rule 10 (stmt_list -> empty .)
-    VOID            reduce using rule 10 (stmt_list -> empty .)
-    LBRACE          reduce using rule 10 (stmt_list -> empty .)
-    LPAREN          reduce using rule 10 (stmt_list -> empty .)
-    MINUS           reduce using rule 10 (stmt_list -> empty .)
-    FNUM            reduce using rule 10 (stmt_list -> empty .)
-    INUM            reduce using rule 10 (stmt_list -> empty .)
+    EQUAL           shift and go to state 39
+    PLUS            reduce using rule 38 (arith_expr -> ID .)
+    MINUS           reduce using rule 38 (arith_expr -> ID .)
+    TIMES           reduce using rule 38 (arith_expr -> ID .)
+    DIV             reduce using rule 38 (arith_expr -> ID .)
+    EQ              reduce using rule 38 (arith_expr -> ID .)
+    NEQ             reduce using rule 38 (arith_expr -> ID .)
+    GT              reduce using rule 38 (arith_expr -> ID .)
+    LT              reduce using rule 38 (arith_expr -> ID .)
+    SEMICOLON       reduce using rule 38 (arith_expr -> ID .)
 
 
 state 30
 
-    (19) arith_expr -> arith_expr PLUS . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (23) expr -> basic_expr .
+    (26) basic_expr -> basic_expr . compare arith_expr
+    (28) compare -> . EQ
+    (29) compare -> . NEQ
+    (30) compare -> . GT
+    (31) compare -> . LT
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    SEMICOLON       reduce using rule 23 (expr -> basic_expr .)
+    EQ              shift and go to state 41
+    NEQ             shift and go to state 42
+    GT              shift and go to state 43
+    LT              shift and go to state 44
 
-    term                           shift and go to state 44
-    factor                         shift and go to state 15
+    compare                        shift and go to state 40
 
 state 31
 
-    (20) arith_expr -> arith_expr MINUS . term
-    (22) term -> . term TIMES factor
-    (23) term -> . term DIV factor
-    (24) term -> . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (13) local_declaration -> type . ID SEMICOLON
+    (14) local_declaration -> type . TIMES ID SEMICOLON
+    (15) local_declaration -> type . TIMES LBRACKET RBRACKET SEMICOLON
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    ID              shift and go to state 45
+    TIMES           shift and go to state 46
 
-    term                           shift and go to state 45
-    factor                         shift and go to state 15
 
 state 32
 
-    (22) term -> term TIMES . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (24) stmt_return -> RETURN . expr SEMICOLON
+    (25) stmt_return -> RETURN . SEMICOLON
+    (22) expr -> . ID EQUAL expr
+    (23) expr -> . basic_expr
+    (26) basic_expr -> . basic_expr compare arith_expr
+    (27) basic_expr -> . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    SEMICOLON       shift and go to state 48
+    ID              shift and go to state 29
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
-    factor                         shift and go to state 46
+    expr                           shift and go to state 47
+    basic_expr                     shift and go to state 30
+    arith_expr                     shift and go to state 33
 
 state 33
 
-    (23) term -> term DIV . factor
-    (25) factor -> . LPAREN expr RPAREN
-    (26) factor -> . MINUS factor
-    (27) factor -> . ID
-    (28) factor -> . FNUM
-    (29) factor -> . INUM
+    (27) basic_expr -> arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
 
-    LPAREN          shift and go to state 16
-    MINUS           shift and go to state 14
-    ID              shift and go to state 35
-    FNUM            shift and go to state 17
-    INUM            shift and go to state 18
+    EQ              reduce using rule 27 (basic_expr -> arith_expr .)
+    NEQ             reduce using rule 27 (basic_expr -> arith_expr .)
+    GT              reduce using rule 27 (basic_expr -> arith_expr .)
+    LT              reduce using rule 27 (basic_expr -> arith_expr .)
+    SEMICOLON       reduce using rule 27 (basic_expr -> arith_expr .)
+    PLUS            shift and go to state 49
+    MINUS           shift and go to state 50
+    TIMES           shift and go to state 51
+    DIV             shift and go to state 52
 
-    factor                         shift and go to state 47
 
 state 34
 
-    (26) factor -> MINUS factor .
+    (32) arith_expr -> MINUS . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    TIMES           reduce using rule 26 (factor -> MINUS factor .)
-    DIV             reduce using rule 26 (factor -> MINUS factor .)
-    PLUS            reduce using rule 26 (factor -> MINUS factor .)
-    MINUS           reduce using rule 26 (factor -> MINUS factor .)
-    EQ              reduce using rule 26 (factor -> MINUS factor .)
-    NEQ             reduce using rule 26 (factor -> MINUS factor .)
-    GT              reduce using rule 26 (factor -> MINUS factor .)
-    LT              reduce using rule 26 (factor -> MINUS factor .)
-    $end            reduce using rule 26 (factor -> MINUS factor .)
-    RPAREN          reduce using rule 26 (factor -> MINUS factor .)
-    RBRACE          reduce using rule 26 (factor -> MINUS factor .)
-    SEMICOLON       reduce using rule 26 (factor -> MINUS factor .)
-    ID              reduce using rule 26 (factor -> MINUS factor .)
-    INT             reduce using rule 26 (factor -> MINUS factor .)
-    FLOAT           reduce using rule 26 (factor -> MINUS factor .)
-    VOID            reduce using rule 26 (factor -> MINUS factor .)
-    LBRACE          reduce using rule 26 (factor -> MINUS factor .)
-    LPAREN          reduce using rule 26 (factor -> MINUS factor .)
-    FNUM            reduce using rule 26 (factor -> MINUS factor .)
-    INUM            reduce using rule 26 (factor -> MINUS factor .)
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
+    arith_expr                     shift and go to state 53
 
 state 35
 
-    (27) factor -> ID .
+    (33) arith_expr -> LPAREN . arith_expr RPAREN
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    TIMES           reduce using rule 27 (factor -> ID .)
-    DIV             reduce using rule 27 (factor -> ID .)
-    PLUS            reduce using rule 27 (factor -> ID .)
-    MINUS           reduce using rule 27 (factor -> ID .)
-    EQ              reduce using rule 27 (factor -> ID .)
-    NEQ             reduce using rule 27 (factor -> ID .)
-    GT              reduce using rule 27 (factor -> ID .)
-    LT              reduce using rule 27 (factor -> ID .)
-    $end            reduce using rule 27 (factor -> ID .)
-    RPAREN          reduce using rule 27 (factor -> ID .)
-    RBRACE          reduce using rule 27 (factor -> ID .)
-    SEMICOLON       reduce using rule 27 (factor -> ID .)
-    ID              reduce using rule 27 (factor -> ID .)
-    INT             reduce using rule 27 (factor -> ID .)
-    FLOAT           reduce using rule 27 (factor -> ID .)
-    VOID            reduce using rule 27 (factor -> ID .)
-    LBRACE          reduce using rule 27 (factor -> ID .)
-    LPAREN          reduce using rule 27 (factor -> ID .)
-    FNUM            reduce using rule 27 (factor -> ID .)
-    INUM            reduce using rule 27 (factor -> ID .)
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
+    arith_expr                     shift and go to state 55
 
 state 36
 
-    (25) factor -> LPAREN expr . RPAREN
+    (39) arith_expr -> FNUM .
 
-    RPAREN          shift and go to state 48
+    PLUS            reduce using rule 39 (arith_expr -> FNUM .)
+    MINUS           reduce using rule 39 (arith_expr -> FNUM .)
+    TIMES           reduce using rule 39 (arith_expr -> FNUM .)
+    DIV             reduce using rule 39 (arith_expr -> FNUM .)
+    EQ              reduce using rule 39 (arith_expr -> FNUM .)
+    NEQ             reduce using rule 39 (arith_expr -> FNUM .)
+    GT              reduce using rule 39 (arith_expr -> FNUM .)
+    LT              reduce using rule 39 (arith_expr -> FNUM .)
+    SEMICOLON       reduce using rule 39 (arith_expr -> FNUM .)
+    RPAREN          reduce using rule 39 (arith_expr -> FNUM .)
 
 
 state 37
 
-    (11) expr -> ID EQUAL expr .
+    (40) arith_expr -> INUM .
 
-    $end            reduce using rule 11 (expr -> ID EQUAL expr .)
-    RPAREN          reduce using rule 11 (expr -> ID EQUAL expr .)
-    RBRACE          reduce using rule 11 (expr -> ID EQUAL expr .)
-    SEMICOLON       reduce using rule 11 (expr -> ID EQUAL expr .)
-    ID              reduce using rule 11 (expr -> ID EQUAL expr .)
-    INT             reduce using rule 11 (expr -> ID EQUAL expr .)
-    FLOAT           reduce using rule 11 (expr -> ID EQUAL expr .)
-    VOID            reduce using rule 11 (expr -> ID EQUAL expr .)
-    LBRACE          reduce using rule 11 (expr -> ID EQUAL expr .)
-    LPAREN          reduce using rule 11 (expr -> ID EQUAL expr .)
-    MINUS           reduce using rule 11 (expr -> ID EQUAL expr .)
-    FNUM            reduce using rule 11 (expr -> ID EQUAL expr .)
-    INUM            reduce using rule 11 (expr -> ID EQUAL expr .)
+    PLUS            reduce using rule 40 (arith_expr -> INUM .)
+    MINUS           reduce using rule 40 (arith_expr -> INUM .)
+    TIMES           reduce using rule 40 (arith_expr -> INUM .)
+    DIV             reduce using rule 40 (arith_expr -> INUM .)
+    EQ              reduce using rule 40 (arith_expr -> INUM .)
+    NEQ             reduce using rule 40 (arith_expr -> INUM .)
+    GT              reduce using rule 40 (arith_expr -> INUM .)
+    LT              reduce using rule 40 (arith_expr -> INUM .)
+    SEMICOLON       reduce using rule 40 (arith_expr -> INUM .)
+    RPAREN          reduce using rule 40 (arith_expr -> INUM .)
 
 
 state 38
 
-    (13) basic_expr -> basic_expr compare arith_expr .
-    (19) arith_expr -> arith_expr . PLUS term
-    (20) arith_expr -> arith_expr . MINUS term
+    (8) stmt -> expr SEMICOLON .
 
-  ! shift/reduce conflict for MINUS resolved as shift
-    EQ              reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    NEQ             reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    GT              reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    LT              reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    $end            reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    RPAREN          reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    RBRACE          reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    SEMICOLON       reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    ID              reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    INT             reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    FLOAT           reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    VOID            reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    LBRACE          reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    LPAREN          reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    FNUM            reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    INUM            reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .)
-    PLUS            shift and go to state 30
-    MINUS           shift and go to state 31
-
-  ! MINUS           [ reduce using rule 13 (basic_expr -> basic_expr compare arith_expr .) ]
+    RBRACE          reduce using rule 8 (stmt -> expr SEMICOLON .)
+    SEMICOLON       reduce using rule 8 (stmt -> expr SEMICOLON .)
+    ID              reduce using rule 8 (stmt -> expr SEMICOLON .)
+    LBRACE          reduce using rule 8 (stmt -> expr SEMICOLON .)
+    RETURN          reduce using rule 8 (stmt -> expr SEMICOLON .)
+    INT             reduce using rule 8 (stmt -> expr SEMICOLON .)
+    FLOAT           reduce using rule 8 (stmt -> expr SEMICOLON .)
+    VOID            reduce using rule 8 (stmt -> expr SEMICOLON .)
+    MINUS           reduce using rule 8 (stmt -> expr SEMICOLON .)
+    LPAREN          reduce using rule 8 (stmt -> expr SEMICOLON .)
+    FNUM            reduce using rule 8 (stmt -> expr SEMICOLON .)
+    INUM            reduce using rule 8 (stmt -> expr SEMICOLON .)
 
 
 state 39
 
-    (5) declaration -> INT ID SEMICOLON .
+    (22) expr -> ID EQUAL . expr
+    (22) expr -> . ID EQUAL expr
+    (23) expr -> . basic_expr
+    (26) basic_expr -> . basic_expr compare arith_expr
+    (27) basic_expr -> . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    $end            reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    RBRACE          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    SEMICOLON       reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    ID              reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    INT             reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    FLOAT           reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    VOID            reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    LBRACE          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    LPAREN          reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    MINUS           reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    FNUM            reduce using rule 5 (declaration -> INT ID SEMICOLON .)
-    INUM            reduce using rule 5 (declaration -> INT ID SEMICOLON .)
+    ID              shift and go to state 29
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
+    expr                           shift and go to state 56
+    basic_expr                     shift and go to state 30
+    arith_expr                     shift and go to state 33
 
 state 40
 
-    (6) declaration -> FLOAT ID SEMICOLON .
+    (26) basic_expr -> basic_expr compare . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
 
-    $end            reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    RBRACE          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    SEMICOLON       reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    ID              reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    INT             reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    FLOAT           reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    VOID            reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    LBRACE          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    LPAREN          reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    MINUS           reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    FNUM            reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
-    INUM            reduce using rule 6 (declaration -> FLOAT ID SEMICOLON .)
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
 
+    arith_expr                     shift and go to state 57
 
 state 41
 
-    (7) declaration -> VOID ID SEMICOLON .
+    (28) compare -> EQ .
 
-    $end            reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    RBRACE          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    SEMICOLON       reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    ID              reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    INT             reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    FLOAT           reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    VOID            reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    LBRACE          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    LPAREN          reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    MINUS           reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    FNUM            reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
-    INUM            reduce using rule 7 (declaration -> VOID ID SEMICOLON .)
+    MINUS           reduce using rule 28 (compare -> EQ .)
+    LPAREN          reduce using rule 28 (compare -> EQ .)
+    ID              reduce using rule 28 (compare -> EQ .)
+    FNUM            reduce using rule 28 (compare -> EQ .)
+    INUM            reduce using rule 28 (compare -> EQ .)
 
 
 state 42
 
-    (8) stmt_block -> LBRACE stmt_list RBRACE .
+    (29) compare -> NEQ .
 
-    $end            reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    RBRACE          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    SEMICOLON       reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    ID              reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    INT             reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    FLOAT           reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    VOID            reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    LBRACE          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    LPAREN          reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    MINUS           reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    FNUM            reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
-    INUM            reduce using rule 8 (stmt_block -> LBRACE stmt_list RBRACE .)
+    MINUS           reduce using rule 29 (compare -> NEQ .)
+    LPAREN          reduce using rule 29 (compare -> NEQ .)
+    ID              reduce using rule 29 (compare -> NEQ .)
+    FNUM            reduce using rule 29 (compare -> NEQ .)
+    INUM            reduce using rule 29 (compare -> NEQ .)
 
 
 state 43
 
-    (9) stmt_list -> stmt_list stmt .
+    (30) compare -> GT .
 
-    RBRACE          reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    SEMICOLON       reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    ID              reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    INT             reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    FLOAT           reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    VOID            reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    LBRACE          reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    LPAREN          reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    MINUS           reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    FNUM            reduce using rule 9 (stmt_list -> stmt_list stmt .)
-    INUM            reduce using rule 9 (stmt_list -> stmt_list stmt .)
+    MINUS           reduce using rule 30 (compare -> GT .)
+    LPAREN          reduce using rule 30 (compare -> GT .)
+    ID              reduce using rule 30 (compare -> GT .)
+    FNUM            reduce using rule 30 (compare -> GT .)
+    INUM            reduce using rule 30 (compare -> GT .)
 
 
 state 44
 
-    (19) arith_expr -> arith_expr PLUS term .
-    (22) term -> term . TIMES factor
-    (23) term -> term . DIV factor
+    (31) compare -> LT .
 
-    PLUS            reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    MINUS           reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    EQ              reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    NEQ             reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    GT              reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    LT              reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    $end            reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    RPAREN          reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    RBRACE          reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    SEMICOLON       reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    ID              reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    INT             reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    FLOAT           reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    VOID            reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    LBRACE          reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    LPAREN          reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    FNUM            reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    INUM            reduce using rule 19 (arith_expr -> arith_expr PLUS term .)
-    TIMES           shift and go to state 32
-    DIV             shift and go to state 33
+    MINUS           reduce using rule 31 (compare -> LT .)
+    LPAREN          reduce using rule 31 (compare -> LT .)
+    ID              reduce using rule 31 (compare -> LT .)
+    FNUM            reduce using rule 31 (compare -> LT .)
+    INUM            reduce using rule 31 (compare -> LT .)
 
 
 state 45
 
-    (20) arith_expr -> arith_expr MINUS term .
-    (22) term -> term . TIMES factor
-    (23) term -> term . DIV factor
+    (13) local_declaration -> type ID . SEMICOLON
 
-    PLUS            reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    MINUS           reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    EQ              reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    NEQ             reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    GT              reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    LT              reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    $end            reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    RPAREN          reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    RBRACE          reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    SEMICOLON       reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    ID              reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    INT             reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    FLOAT           reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    VOID            reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    LBRACE          reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    LPAREN          reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    FNUM            reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    INUM            reduce using rule 20 (arith_expr -> arith_expr MINUS term .)
-    TIMES           shift and go to state 32
-    DIV             shift and go to state 33
+    SEMICOLON       shift and go to state 58
 
 
 state 46
 
-    (22) term -> term TIMES factor .
+    (14) local_declaration -> type TIMES . ID SEMICOLON
+    (15) local_declaration -> type TIMES . LBRACKET RBRACKET SEMICOLON
 
-    TIMES           reduce using rule 22 (term -> term TIMES factor .)
-    DIV             reduce using rule 22 (term -> term TIMES factor .)
-    PLUS            reduce using rule 22 (term -> term TIMES factor .)
-    MINUS           reduce using rule 22 (term -> term TIMES factor .)
-    EQ              reduce using rule 22 (term -> term TIMES factor .)
-    NEQ             reduce using rule 22 (term -> term TIMES factor .)
-    GT              reduce using rule 22 (term -> term TIMES factor .)
-    LT              reduce using rule 22 (term -> term TIMES factor .)
-    $end            reduce using rule 22 (term -> term TIMES factor .)
-    RPAREN          reduce using rule 22 (term -> term TIMES factor .)
-    RBRACE          reduce using rule 22 (term -> term TIMES factor .)
-    SEMICOLON       reduce using rule 22 (term -> term TIMES factor .)
-    ID              reduce using rule 22 (term -> term TIMES factor .)
-    INT             reduce using rule 22 (term -> term TIMES factor .)
-    FLOAT           reduce using rule 22 (term -> term TIMES factor .)
-    VOID            reduce using rule 22 (term -> term TIMES factor .)
-    LBRACE          reduce using rule 22 (term -> term TIMES factor .)
-    LPAREN          reduce using rule 22 (term -> term TIMES factor .)
-    FNUM            reduce using rule 22 (term -> term TIMES factor .)
-    INUM            reduce using rule 22 (term -> term TIMES factor .)
+    ID              shift and go to state 59
+    LBRACKET        shift and go to state 60
 
 
 state 47
 
-    (23) term -> term DIV factor .
+    (24) stmt_return -> RETURN expr . SEMICOLON
 
-    TIMES           reduce using rule 23 (term -> term DIV factor .)
-    DIV             reduce using rule 23 (term -> term DIV factor .)
-    PLUS            reduce using rule 23 (term -> term DIV factor .)
-    MINUS           reduce using rule 23 (term -> term DIV factor .)
-    EQ              reduce using rule 23 (term -> term DIV factor .)
-    NEQ             reduce using rule 23 (term -> term DIV factor .)
-    GT              reduce using rule 23 (term -> term DIV factor .)
-    LT              reduce using rule 23 (term -> term DIV factor .)
-    $end            reduce using rule 23 (term -> term DIV factor .)
-    RPAREN          reduce using rule 23 (term -> term DIV factor .)
-    RBRACE          reduce using rule 23 (term -> term DIV factor .)
-    SEMICOLON       reduce using rule 23 (term -> term DIV factor .)
-    ID              reduce using rule 23 (term -> term DIV factor .)
-    INT             reduce using rule 23 (term -> term DIV factor .)
-    FLOAT           reduce using rule 23 (term -> term DIV factor .)
-    VOID            reduce using rule 23 (term -> term DIV factor .)
-    LBRACE          reduce using rule 23 (term -> term DIV factor .)
-    LPAREN          reduce using rule 23 (term -> term DIV factor .)
-    FNUM            reduce using rule 23 (term -> term DIV factor .)
-    INUM            reduce using rule 23 (term -> term DIV factor .)
+    SEMICOLON       shift and go to state 61
 
 
 state 48
 
-    (25) factor -> LPAREN expr RPAREN .
+    (25) stmt_return -> RETURN SEMICOLON .
 
-    TIMES           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    DIV             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    PLUS            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    MINUS           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    EQ              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    NEQ             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    GT              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    LT              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    $end            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    RPAREN          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    RBRACE          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    SEMICOLON       reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    ID              reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    INT             reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    FLOAT           reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    VOID            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    LBRACE          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    LPAREN          reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    FNUM            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
-    INUM            reduce using rule 25 (factor -> LPAREN expr RPAREN .)
+    RBRACE          reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    SEMICOLON       reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    ID              reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    LBRACE          reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    RETURN          reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    INT             reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    FLOAT           reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    VOID            reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    MINUS           reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    LPAREN          reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    FNUM            reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
+    INUM            reduce using rule 25 (stmt_return -> RETURN SEMICOLON .)
 
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: shift/reduce conflict for MINUS in state 12 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 38 resolved as shift
+
+state 49
+
+    (34) arith_expr -> arith_expr PLUS . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
+
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
+
+    arith_expr                     shift and go to state 62
+
+state 50
+
+    (35) arith_expr -> arith_expr MINUS . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
+
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
+
+    arith_expr                     shift and go to state 63
+
+state 51
+
+    (36) arith_expr -> arith_expr TIMES . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
+
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
+
+    arith_expr                     shift and go to state 64
+
+state 52
+
+    (37) arith_expr -> arith_expr DIV . arith_expr
+    (32) arith_expr -> . MINUS arith_expr
+    (33) arith_expr -> . LPAREN arith_expr RPAREN
+    (34) arith_expr -> . arith_expr PLUS arith_expr
+    (35) arith_expr -> . arith_expr MINUS arith_expr
+    (36) arith_expr -> . arith_expr TIMES arith_expr
+    (37) arith_expr -> . arith_expr DIV arith_expr
+    (38) arith_expr -> . ID
+    (39) arith_expr -> . FNUM
+    (40) arith_expr -> . INUM
+
+    MINUS           shift and go to state 34
+    LPAREN          shift and go to state 35
+    ID              shift and go to state 54
+    FNUM            shift and go to state 36
+    INUM            shift and go to state 37
+
+    arith_expr                     shift and go to state 65
+
+state 53
+
+    (32) arith_expr -> MINUS arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    PLUS            reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    MINUS           reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    TIMES           reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    DIV             reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    EQ              reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    NEQ             reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    GT              reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    LT              reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    SEMICOLON       reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+    RPAREN          reduce using rule 32 (arith_expr -> MINUS arith_expr .)
+
+  ! PLUS            [ shift and go to state 49 ]
+  ! MINUS           [ shift and go to state 50 ]
+  ! TIMES           [ shift and go to state 51 ]
+  ! DIV             [ shift and go to state 52 ]
+
+
+state 54
+
+    (38) arith_expr -> ID .
+
+    PLUS            reduce using rule 38 (arith_expr -> ID .)
+    MINUS           reduce using rule 38 (arith_expr -> ID .)
+    TIMES           reduce using rule 38 (arith_expr -> ID .)
+    DIV             reduce using rule 38 (arith_expr -> ID .)
+    EQ              reduce using rule 38 (arith_expr -> ID .)
+    NEQ             reduce using rule 38 (arith_expr -> ID .)
+    GT              reduce using rule 38 (arith_expr -> ID .)
+    LT              reduce using rule 38 (arith_expr -> ID .)
+    SEMICOLON       reduce using rule 38 (arith_expr -> ID .)
+    RPAREN          reduce using rule 38 (arith_expr -> ID .)
+
+
+state 55
+
+    (33) arith_expr -> LPAREN arith_expr . RPAREN
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    RPAREN          shift and go to state 66
+    PLUS            shift and go to state 49
+    MINUS           shift and go to state 50
+    TIMES           shift and go to state 51
+    DIV             shift and go to state 52
+
+
+state 56
+
+    (22) expr -> ID EQUAL expr .
+
+    SEMICOLON       reduce using rule 22 (expr -> ID EQUAL expr .)
+
+
+state 57
+
+    (26) basic_expr -> basic_expr compare arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    EQ              reduce using rule 26 (basic_expr -> basic_expr compare arith_expr .)
+    NEQ             reduce using rule 26 (basic_expr -> basic_expr compare arith_expr .)
+    GT              reduce using rule 26 (basic_expr -> basic_expr compare arith_expr .)
+    LT              reduce using rule 26 (basic_expr -> basic_expr compare arith_expr .)
+    SEMICOLON       reduce using rule 26 (basic_expr -> basic_expr compare arith_expr .)
+    PLUS            shift and go to state 49
+    MINUS           shift and go to state 50
+    TIMES           shift and go to state 51
+    DIV             shift and go to state 52
+
+
+state 58
+
+    (13) local_declaration -> type ID SEMICOLON .
+
+    RBRACE          reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    SEMICOLON       reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    ID              reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    LBRACE          reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    RETURN          reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    INT             reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    FLOAT           reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    VOID            reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    MINUS           reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    LPAREN          reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    FNUM            reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+    INUM            reduce using rule 13 (local_declaration -> type ID SEMICOLON .)
+
+
+state 59
+
+    (14) local_declaration -> type TIMES ID . SEMICOLON
+
+    SEMICOLON       shift and go to state 67
+
+
+state 60
+
+    (15) local_declaration -> type TIMES LBRACKET . RBRACKET SEMICOLON
+
+    RBRACKET        shift and go to state 68
+
+
+state 61
+
+    (24) stmt_return -> RETURN expr SEMICOLON .
+
+    RBRACE          reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    SEMICOLON       reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    ID              reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    LBRACE          reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    RETURN          reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    INT             reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    FLOAT           reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    VOID            reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    MINUS           reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    LPAREN          reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    FNUM            reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+    INUM            reduce using rule 24 (stmt_return -> RETURN expr SEMICOLON .)
+
+
+state 62
+
+    (34) arith_expr -> arith_expr PLUS arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    PLUS            reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    MINUS           reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    EQ              reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    NEQ             reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    GT              reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    LT              reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    SEMICOLON       reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    RPAREN          reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .)
+    TIMES           shift and go to state 51
+    DIV             shift and go to state 52
+
+  ! TIMES           [ reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .) ]
+  ! DIV             [ reduce using rule 34 (arith_expr -> arith_expr PLUS arith_expr .) ]
+  ! PLUS            [ shift and go to state 49 ]
+  ! MINUS           [ shift and go to state 50 ]
+
+
+state 63
+
+    (35) arith_expr -> arith_expr MINUS arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    PLUS            reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    MINUS           reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    EQ              reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    NEQ             reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    GT              reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    LT              reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    SEMICOLON       reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    RPAREN          reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .)
+    TIMES           shift and go to state 51
+    DIV             shift and go to state 52
+
+  ! TIMES           [ reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .) ]
+  ! DIV             [ reduce using rule 35 (arith_expr -> arith_expr MINUS arith_expr .) ]
+  ! PLUS            [ shift and go to state 49 ]
+  ! MINUS           [ shift and go to state 50 ]
+
+
+state 64
+
+    (36) arith_expr -> arith_expr TIMES arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    PLUS            reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    MINUS           reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    TIMES           reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    DIV             reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    EQ              reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    NEQ             reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    GT              reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    LT              reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    SEMICOLON       reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+    RPAREN          reduce using rule 36 (arith_expr -> arith_expr TIMES arith_expr .)
+
+  ! PLUS            [ shift and go to state 49 ]
+  ! MINUS           [ shift and go to state 50 ]
+  ! TIMES           [ shift and go to state 51 ]
+  ! DIV             [ shift and go to state 52 ]
+
+
+state 65
+
+    (37) arith_expr -> arith_expr DIV arith_expr .
+    (34) arith_expr -> arith_expr . PLUS arith_expr
+    (35) arith_expr -> arith_expr . MINUS arith_expr
+    (36) arith_expr -> arith_expr . TIMES arith_expr
+    (37) arith_expr -> arith_expr . DIV arith_expr
+
+    PLUS            reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    MINUS           reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    TIMES           reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    DIV             reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    EQ              reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    NEQ             reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    GT              reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    LT              reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    SEMICOLON       reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+    RPAREN          reduce using rule 37 (arith_expr -> arith_expr DIV arith_expr .)
+
+  ! PLUS            [ shift and go to state 49 ]
+  ! MINUS           [ shift and go to state 50 ]
+  ! TIMES           [ shift and go to state 51 ]
+  ! DIV             [ shift and go to state 52 ]
+
+
+state 66
+
+    (33) arith_expr -> LPAREN arith_expr RPAREN .
+
+    PLUS            reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    MINUS           reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    TIMES           reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    DIV             reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    EQ              reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    NEQ             reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    GT              reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    LT              reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    SEMICOLON       reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+    RPAREN          reduce using rule 33 (arith_expr -> LPAREN arith_expr RPAREN .)
+
+
+state 67
+
+    (14) local_declaration -> type TIMES ID SEMICOLON .
+
+    RBRACE          reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    SEMICOLON       reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    ID              reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    LBRACE          reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    RETURN          reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    INT             reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    FLOAT           reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    VOID            reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    MINUS           reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    LPAREN          reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    FNUM            reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+    INUM            reduce using rule 14 (local_declaration -> type TIMES ID SEMICOLON .)
+
+
+state 68
+
+    (15) local_declaration -> type TIMES LBRACKET RBRACKET . SEMICOLON
+
+    SEMICOLON       shift and go to state 69
+
+
+state 69
+
+    (15) local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .
+
+    RBRACE          reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    SEMICOLON       reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    ID              reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    LBRACE          reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    RETURN          reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    INT             reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    FLOAT           reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    VOID            reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    MINUS           reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    LPAREN          reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    FNUM            reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+    INUM            reduce using rule 15 (local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON .)
+

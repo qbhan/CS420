@@ -147,7 +147,7 @@ lexer = lex.lex()
 # Give the lexer some input
 # lexer.input("a + if asjioeifw")
 # lexer.input(r'"string"')
-lexer.input('-3.1 + -4')
+lexer.input('int x (){return;}')
 
 # Tokenize
 while True:

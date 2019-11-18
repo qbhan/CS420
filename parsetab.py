@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSMINUSleftTIMESDIVCOLON COMMA DIV DOUBLEQUOTE ELSE ELSE_IF EQ EQUAL FLOAT FNUM FOR GT ID IF INCREMENT INT INUM LBRACE LBRACKET LPAREN LT MAIN MINUS NEQ PERIOD PLUS POINTER PRINT QUOTE RBRACE RBRACKET RETURN RPAREN SEMICOLON STRING TIMES VOIDstmt : expr\n            | declaration\n            | stmt_block\n            | SEMICOLONdeclaration : INT ID SEMICOLON\n                   | FLOAT ID SEMICOLON\n                   | VOID ID SEMICOLONstmt_block : LBRACE stmt_list RBRACEstmt_list : stmt_list stmt\n                 | emptyexpr : ID EQUAL exprexpr : basic_exprbasic_expr : basic_expr compare arith_exprbasic_expr : arith_exprcompare : EQ\n               | NEQ\n               | GT\n               | LTarith_expr : arith_expr PLUS termarith_expr : arith_expr MINUS termarith_expr : termterm : term TIMES factorterm : term DIV factorterm : factorfactor : LPAREN expr RPARENfactor : MINUS factorfactor : IDfactor : FNUMfactor : INUMempty :'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVrightUMINUSCOLON COMMA DIV DOUBLEQUOTE ELSE ELSE_IF EQ EQUAL FLOAT FNUM FOR GT ID IF INCREMENT INT INUM LBRACE LBRACKET LPAREN LT MAIN MINUS NEQ PERIOD PLUS POINTER PRINT QUOTE RBRACE RBRACKET RETURN RPAREN SEMICOLON STRING TIMES VOIDprogram : func_declaration_listfunc_declaration_list : func_declaration_list func_declarationfunc_declaration_list : emptyfunc_declaration : type ID LPAREN arg_list RPAREN stmt_blockarg_list : emptyarg_list : arg_list COMMA argarg : type IDstmt : expr SEMICOLON\n            | local_declaration\n            | stmt_block\n            | stmt_return\n            | SEMICOLONlocal_declaration : type ID SEMICOLON\n                   | type TIMES ID SEMICOLON\n                   | type TIMES LBRACKET RBRACKET SEMICOLONtype : INT\n            | FLOAT\n            | VOIDstmt_block : LBRACE stmt_list RBRACEstmt_list : stmt_list stmt\n                 | emptyexpr : ID EQUAL exprexpr : basic_exprstmt_return : RETURN expr SEMICOLONstmt_return : RETURN SEMICOLONbasic_expr : basic_expr compare arith_exprbasic_expr : arith_exprcompare : EQ\n               | NEQ\n               | GT\n               | LTarith_expr : MINUS arith_expr %prec UMINUSarith_expr : LPAREN arith_expr RPARENarith_expr : arith_expr PLUS arith_exprarith_expr : arith_expr MINUS arith_exprarith_expr : arith_expr TIMES arith_exprarith_expr : arith_expr DIV arith_exprarith_expr : IDarith_expr : FNUMarith_expr : INUMempty :'
     
-_lr_action_items = {'SEMICOLON':([0,2,3,4,5,6,7,11,12,13,15,17,18,25,26,27,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[5,-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,39,40,41,5,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'ID':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[6,-1,-2,-3,-4,-27,-12,25,26,27,-30,-14,-21,35,-24,6,-28,-29,6,35,-15,-16,-17,-18,6,-10,35,35,35,35,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'INT':([0,2,3,4,5,6,7,11,12,13,15,17,18,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[8,-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,8,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'FLOAT':([0,2,3,4,5,6,7,11,12,13,15,17,18,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[9,-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,9,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'VOID':([0,2,3,4,5,6,7,11,12,13,15,17,18,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[10,-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,10,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'LBRACE':([0,2,3,4,5,6,7,11,12,13,15,17,18,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[11,-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,11,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'LPAREN':([0,2,3,4,5,6,7,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[16,-1,-2,-3,-4,-27,-12,-30,-14,-21,16,-24,16,-28,-29,16,16,-15,-16,-17,-18,16,-10,16,16,16,16,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'MINUS':([0,2,3,4,5,6,7,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[14,-1,-2,-3,-4,-27,-12,-30,31,-21,14,-24,14,-28,-29,14,14,-15,-16,-17,-18,14,-10,14,14,14,14,-26,-27,-11,31,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'FNUM':([0,2,3,4,5,6,7,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[17,-1,-2,-3,-4,-27,-12,-30,-14,-21,17,-24,17,-28,-29,17,17,-15,-16,-17,-18,17,-10,17,17,17,17,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'INUM':([0,2,3,4,5,6,7,11,12,13,14,15,16,17,18,19,20,21,22,23,24,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[18,-1,-2,-3,-4,-27,-12,-30,-14,-21,18,-24,18,-28,-29,18,18,-15,-16,-17,-18,18,-10,18,18,18,18,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'$end':([1,2,3,4,5,6,7,12,13,15,17,18,34,35,37,38,39,40,41,42,44,45,46,47,48,],[0,-1,-2,-3,-4,-27,-12,-14,-21,-24,-28,-29,-26,-27,-11,-13,-5,-6,-7,-8,-19,-20,-22,-23,-25,]),'RBRACE':([2,3,4,5,6,7,11,12,13,15,17,18,28,29,34,35,37,38,39,40,41,42,43,44,45,46,47,48,],[-1,-2,-3,-4,-27,-12,-30,-14,-21,-24,-28,-29,42,-10,-26,-27,-11,-13,-5,-6,-7,-8,-9,-19,-20,-22,-23,-25,]),'EQUAL':([6,],[19,]),'TIMES':([6,13,15,17,18,34,35,44,45,46,47,48,],[-27,32,-24,-28,-29,-26,-27,32,32,-22,-23,-25,]),'DIV':([6,13,15,17,18,34,35,44,45,46,47,48,],[-27,33,-24,-28,-29,-26,-27,33,33,-22,-23,-25,]),'PLUS':([6,12,13,15,17,18,34,35,38,44,45,46,47,48,],[-27,30,-21,-24,-28,-29,-26,-27,30,-19,-20,-22,-23,-25,]),'EQ':([6,7,12,13,15,17,18,34,35,38,44,45,46,47,48,],[-27,21,-14,-21,-24,-28,-29,-26,-27,-13,-19,-20,-22,-23,-25,]),'NEQ':([6,7,12,13,15,17,18,34,35,38,44,45,46,47,48,],[-27,22,-14,-21,-24,-28,-29,-26,-27,-13,-19,-20,-22,-23,-25,]),'GT':([6,7,12,13,15,17,18,34,35,38,44,45,46,47,48,],[-27,23,-14,-21,-24,-28,-29,-26,-27,-13,-19,-20,-22,-23,-25,]),'LT':([6,7,12,13,15,17,18,34,35,38,44,45,46,47,48,],[-27,24,-14,-21,-24,-28,-29,-26,-27,-13,-19,-20,-22,-23,-25,]),'RPAREN':([6,7,12,13,15,17,18,34,35,36,37,38,44,45,46,47,48,],[-27,-12,-14,-21,-24,-28,-29,-26,-27,48,-11,-13,-19,-20,-22,-23,-25,]),}
+_lr_action_items = {'INT':([0,2,3,4,14,15,16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[-41,6,-3,-2,6,-4,-41,6,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'FLOAT':([0,2,3,4,14,15,16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[-41,7,-3,-2,7,-4,-41,7,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'VOID':([0,2,3,4,14,15,16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[-41,8,-3,-2,8,-4,-41,8,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'$end':([0,1,2,3,4,15,22,],[-41,0,-1,-3,-2,-4,-19,]),'ID':([5,6,7,8,16,18,19,20,22,23,25,26,27,28,31,32,34,35,38,39,40,41,42,43,44,46,48,49,50,51,52,58,61,67,69,],[9,-16,-17,-18,-41,21,29,-21,-19,-20,-12,-9,-10,-11,45,29,54,54,-8,29,54,-28,-29,-30,-31,59,-25,54,54,54,54,-13,-24,-14,-15,]),'TIMES':([6,7,8,29,31,33,36,37,53,54,55,57,62,63,64,65,66,],[-16,-17,-18,-38,46,51,-39,-40,-32,-38,51,51,51,51,-36,-37,-33,]),'LPAREN':([9,16,19,20,22,23,25,26,27,28,32,34,35,38,39,40,41,42,43,44,48,49,50,51,52,58,61,67,69,],[10,-41,35,-21,-19,-20,-12,-9,-10,-11,35,35,35,-8,35,35,-28,-29,-30,-31,-25,35,35,35,35,-13,-24,-14,-15,]),'RPAREN':([10,11,12,17,21,36,37,53,54,55,62,63,64,65,66,],[-41,13,-5,-6,-7,-39,-40,-32,-38,66,-34,-35,-36,-37,-33,]),'COMMA':([10,11,12,17,21,],[-41,14,-5,-6,-7,]),'LBRACE':([13,16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[16,-41,16,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'RBRACE':([16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[-41,22,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'SEMICOLON':([16,19,20,22,23,24,25,26,27,28,29,30,32,33,36,37,38,45,47,48,53,54,56,57,58,59,61,62,63,64,65,66,67,68,69,],[-41,25,-21,-19,-20,38,-12,-9,-10,-11,-38,-23,48,-27,-39,-40,-8,58,61,-25,-32,-38,-22,-26,-13,67,-24,-34,-35,-36,-37,-33,-14,69,-15,]),'RETURN':([16,19,20,22,23,25,26,27,28,38,48,58,61,67,69,],[-41,32,-21,-19,-20,-12,-9,-10,-11,-8,-25,-13,-24,-14,-15,]),'MINUS':([16,19,20,22,23,25,26,27,28,29,32,33,34,35,36,37,38,39,40,41,42,43,44,48,49,50,51,52,53,54,55,57,58,61,62,63,64,65,66,67,69,],[-41,34,-21,-19,-20,-12,-9,-10,-11,-38,34,50,34,34,-39,-40,-8,34,34,-28,-29,-30,-31,-25,34,34,34,34,-32,-38,50,50,-13,-24,-34,-35,-36,-37,-33,-14,-15,]),'FNUM':([16,19,20,22,23,25,26,27,28,32,34,35,38,39,40,41,42,43,44,48,49,50,51,52,58,61,67,69,],[-41,36,-21,-19,-20,-12,-9,-10,-11,36,36,36,-8,36,36,-28,-29,-30,-31,-25,36,36,36,36,-13,-24,-14,-15,]),'INUM':([16,19,20,22,23,25,26,27,28,32,34,35,38,39,40,41,42,43,44,48,49,50,51,52,58,61,67,69,],[-41,37,-21,-19,-20,-12,-9,-10,-11,37,37,37,-8,37,37,-28,-29,-30,-31,-25,37,37,37,37,-13,-24,-14,-15,]),'EQUAL':([29,],[39,]),'PLUS':([29,33,36,37,53,54,55,57,62,63,64,65,66,],[-38,49,-39,-40,-32,-38,49,49,-34,-35,-36,-37,-33,]),'DIV':([29,33,36,37,53,54,55,57,62,63,64,65,66,],[-38,52,-39,-40,-32,-38,52,52,52,52,-36,-37,-33,]),'EQ':([29,30,33,36,37,53,54,57,62,63,64,65,66,],[-38,41,-27,-39,-40,-32,-38,-26,-34,-35,-36,-37,-33,]),'NEQ':([29,30,33,36,37,53,54,57,62,63,64,65,66,],[-38,42,-27,-39,-40,-32,-38,-26,-34,-35,-36,-37,-33,]),'GT':([29,30,33,36,37,53,54,57,62,63,64,65,66,],[-38,43,-27,-39,-40,-32,-38,-26,-34,-35,-36,-37,-33,]),'LT':([29,30,33,36,37,53,54,57,62,63,64,65,66,],[-38,44,-27,-39,-40,-32,-38,-26,-34,-35,-36,-37,-33,]),'LBRACKET':([46,],[60,]),'RBRACKET':([60,],[68,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'stmt':([0,28,],[1,43,]),'expr':([0,16,19,28,],[2,36,37,2,]),'declaration':([0,28,],[3,3,]),'stmt_block':([0,28,],[4,4,]),'basic_expr':([0,16,19,28,],[7,7,7,7,]),'arith_expr':([0,16,19,20,28,],[12,12,12,38,12,]),'term':([0,16,19,20,28,30,31,],[13,13,13,13,13,44,45,]),'factor':([0,14,16,19,20,28,30,31,32,33,],[15,34,15,15,15,15,15,15,46,47,]),'compare':([7,],[20,]),'stmt_list':([11,],[28,]),'empty':([11,],[29,]),}
+_lr_goto_items = {'program':([0,],[1,]),'func_declaration_list':([0,],[2,]),'empty':([0,10,16,],[3,12,20,]),'func_declaration':([2,],[4,]),'type':([2,14,19,],[5,18,31,]),'arg_list':([10,],[11,]),'stmt_block':([13,19,],[15,27,]),'arg':([14,],[17,]),'stmt_list':([16,],[19,]),'stmt':([19,],[23,]),'expr':([19,32,39,],[24,47,56,]),'local_declaration':([19,],[26,]),'stmt_return':([19,],[28,]),'basic_expr':([19,32,39,],[30,30,30,]),'arith_expr':([19,32,34,35,39,40,49,50,51,52,],[33,33,53,55,33,57,62,63,64,65,]),'compare':([30,],[40,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,35 +26,46 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> stmt","S'",1,None,None,None),
-  ('stmt -> expr','stmt',1,'p_statement','pycparser.py',14),
-  ('stmt -> declaration','stmt',1,'p_statement','pycparser.py',15),
-  ('stmt -> stmt_block','stmt',1,'p_statement','pycparser.py',16),
-  ('stmt -> SEMICOLON','stmt',1,'p_statement','pycparser.py',17),
-  ('declaration -> INT ID SEMICOLON','declaration',3,'p_declaration','pycparser.py',23),
-  ('declaration -> FLOAT ID SEMICOLON','declaration',3,'p_declaration','pycparser.py',24),
-  ('declaration -> VOID ID SEMICOLON','declaration',3,'p_declaration','pycparser.py',25),
-  ('stmt_block -> LBRACE stmt_list RBRACE','stmt_block',3,'p_stmt_block','pycparser.py',30),
-  ('stmt_list -> stmt_list stmt','stmt_list',2,'p_stmt_list','pycparser.py',34),
-  ('stmt_list -> empty','stmt_list',1,'p_stmt_list','pycparser.py',35),
-  ('expr -> ID EQUAL expr','expr',3,'p_expr_assign','pycparser.py',39),
-  ('expr -> basic_expr','expr',1,'p_expr_basic','pycparser.py',43),
-  ('basic_expr -> basic_expr compare arith_expr','basic_expr',3,'p_basic_expr_compare','pycparser.py',55),
-  ('basic_expr -> arith_expr','basic_expr',1,'p_basic_expr_arith_expr','pycparser.py',66),
-  ('compare -> EQ','compare',1,'p_compare','pycparser.py',70),
-  ('compare -> NEQ','compare',1,'p_compare','pycparser.py',71),
-  ('compare -> GT','compare',1,'p_compare','pycparser.py',72),
-  ('compare -> LT','compare',1,'p_compare','pycparser.py',73),
-  ('arith_expr -> arith_expr PLUS term','arith_expr',3,'p_arith_add','pycparser.py',79),
-  ('arith_expr -> arith_expr MINUS term','arith_expr',3,'p_arith_sub','pycparser.py',83),
-  ('arith_expr -> term','arith_expr',1,'p_arith_term','pycparser.py',87),
-  ('term -> term TIMES factor','term',3,'p_term_mult','pycparser.py',91),
-  ('term -> term DIV factor','term',3,'p_term_div','pycparser.py',95),
-  ('term -> factor','term',1,'p_term_factor','pycparser.py',101),
-  ('factor -> LPAREN expr RPAREN','factor',3,'p_factor_parens','pycparser.py',105),
-  ('factor -> MINUS factor','factor',2,'p_factor_neg','pycparser.py',109),
-  ('factor -> ID','factor',1,'p_factor_id','pycparser.py',113),
-  ('factor -> FNUM','factor',1,'p_factor_fnum','pycparser.py',117),
-  ('factor -> INUM','factor',1,'p_factor_inum','pycparser.py',121),
-  ('empty -> <empty>','empty',0,'p_empty','pycparser.py',125),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> func_declaration_list','program',1,'p_program','pycparser.py',12),
+  ('func_declaration_list -> func_declaration_list func_declaration','func_declaration_list',2,'p_func_declaration_list_1','pycparser.py',16),
+  ('func_declaration_list -> empty','func_declaration_list',1,'p_func_declaration_list_2','pycparser.py',19),
+  ('func_declaration -> type ID LPAREN arg_list RPAREN stmt_block','func_declaration',6,'p_func_declaration','pycparser.py',23),
+  ('arg_list -> empty','arg_list',1,'p_arg_list_1','pycparser.py',27),
+  ('arg_list -> arg_list COMMA arg','arg_list',3,'p_arg_list_2','pycparser.py',30),
+  ('arg -> type ID','arg',2,'p_arg','pycparser.py',33),
+  ('stmt -> expr SEMICOLON','stmt',2,'p_statement','pycparser.py',37),
+  ('stmt -> local_declaration','stmt',1,'p_statement','pycparser.py',38),
+  ('stmt -> stmt_block','stmt',1,'p_statement','pycparser.py',39),
+  ('stmt -> stmt_return','stmt',1,'p_statement','pycparser.py',40),
+  ('stmt -> SEMICOLON','stmt',1,'p_statement','pycparser.py',41),
+  ('local_declaration -> type ID SEMICOLON','local_declaration',3,'p_local_declaration','pycparser.py',47),
+  ('local_declaration -> type TIMES ID SEMICOLON','local_declaration',4,'p_local_declaration','pycparser.py',48),
+  ('local_declaration -> type TIMES LBRACKET RBRACKET SEMICOLON','local_declaration',5,'p_local_declaration','pycparser.py',49),
+  ('type -> INT','type',1,'p_type','pycparser.py',53),
+  ('type -> FLOAT','type',1,'p_type','pycparser.py',54),
+  ('type -> VOID','type',1,'p_type','pycparser.py',55),
+  ('stmt_block -> LBRACE stmt_list RBRACE','stmt_block',3,'p_stmt_block','pycparser.py',58),
+  ('stmt_list -> stmt_list stmt','stmt_list',2,'p_stmt_list','pycparser.py',62),
+  ('stmt_list -> empty','stmt_list',1,'p_stmt_list','pycparser.py',63),
+  ('expr -> ID EQUAL expr','expr',3,'p_expr_assign','pycparser.py',67),
+  ('expr -> basic_expr','expr',1,'p_expr_basic','pycparser.py',71),
+  ('stmt_return -> RETURN expr SEMICOLON','stmt_return',3,'p_return_stmt_1','pycparser.py',81),
+  ('stmt_return -> RETURN SEMICOLON','stmt_return',2,'p_return_stmt_2','pycparser.py',84),
+  ('basic_expr -> basic_expr compare arith_expr','basic_expr',3,'p_basic_expr_compare','pycparser.py',87),
+  ('basic_expr -> arith_expr','basic_expr',1,'p_basic_expr_arith_expr','pycparser.py',98),
+  ('compare -> EQ','compare',1,'p_compare','pycparser.py',102),
+  ('compare -> NEQ','compare',1,'p_compare','pycparser.py',103),
+  ('compare -> GT','compare',1,'p_compare','pycparser.py',104),
+  ('compare -> LT','compare',1,'p_compare','pycparser.py',105),
+  ('arith_expr -> MINUS arith_expr','arith_expr',2,'p_arith_uminus','pycparser.py',109),
+  ('arith_expr -> LPAREN arith_expr RPAREN','arith_expr',3,'p_arith_parens','pycparser.py',113),
+  ('arith_expr -> arith_expr PLUS arith_expr','arith_expr',3,'p_arith_add','pycparser.py',117),
+  ('arith_expr -> arith_expr MINUS arith_expr','arith_expr',3,'p_arith_sub','pycparser.py',122),
+  ('arith_expr -> arith_expr TIMES arith_expr','arith_expr',3,'p_arith_mult','pycparser.py',127),
+  ('arith_expr -> arith_expr DIV arith_expr','arith_expr',3,'p_arith_div','pycparser.py',132),
+  ('arith_expr -> ID','arith_expr',1,'p_arith_id','pycparser.py',140),
+  ('arith_expr -> FNUM','arith_expr',1,'p_arith_fnum','pycparser.py',144),
+  ('arith_expr -> INUM','arith_expr',1,'p_arith_inum','pycparser.py',148),
+  ('empty -> <empty>','empty',0,'p_empty','pycparser.py',152),
 ]

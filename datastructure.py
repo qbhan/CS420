@@ -81,6 +81,18 @@ class constant:
         print('const type : ' + str(self.type) + ', value : ' + str(self.value))
 
 
+class stmt_block:
+    def __init__(self, stmt_list, sym_table):
+        self.stmt_list = stmt_list
+        self.sym_table = sym_table
+
+
+class stmt:
+    def __init__(self, ast, lineno):
+        self.ast = ast
+        self.lineno = lineno
+
+
 def bin_op(a, op, b):
     if op == '+':
         add(a, b)

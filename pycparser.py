@@ -45,7 +45,7 @@ def p_arg_list_2(p):
 #
 def p_arg(p):
     '''arg : type ID'''
-    p[0] =
+    p[0] = p[1]
 
 
 # statement derived to expression, declaration,  and ;
@@ -55,8 +55,10 @@ def p_statement(p):
             | stmt_block
             | stmt_return
             | SEMICOLON'''
+    # print(p.lineno(1))
     if p[1] != ';':
         p[0] = p[1]
+    # print(p.lineno(0))
 
 
 # declaration with type of int, float, and void (not implemented pointer yet)
@@ -88,12 +90,14 @@ def p_stmt_list(p):
 def p_expr_assign(p):
     '''expr : ID EQUAL expr'''
     p[0] = p[3]
+    # print(p.lineno(0))
     # get class identifier from symbol table and assign
 
 
 def p_expr_basic(p):
     '''expr : basic_expr'''
     p[0] = p[1]
+    # print(p.lineno(1))
 
 
 def p_return_stmt_1(p):
@@ -102,6 +106,7 @@ def p_return_stmt_1(p):
 
 def p_return_stmt_2(p):
     '''stmt_return : RETURN SEMICOLON'''
+    print(p.lineno(2))
 
 
 def p_basic_expr_compare(p):
@@ -144,21 +149,21 @@ def p_arith_parens(p):
 def p_arith_add(p):
     '''arith_expr : arith_expr PLUS arith_expr'''
     p[0] = p[1] + p[3]
-    print(p[0])
+    # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
 
 
 def p_arith_sub(p):
     '''arith_expr : arith_expr MINUS arith_expr'''
     p[0] = p[1] - p[3]
-    print(p[0])
+    # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
 
 
 def p_arith_mult(p):
     '''arith_expr : arith_expr TIMES arith_expr'''
     p[0] = p[1] * p[3]
-    print(p[0])
+    # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
 
 
@@ -169,7 +174,7 @@ def p_arith_div(p):
         print(p[0])
     else:
         raise ZeroDivisionError('Divison by 0')
-    print(p[0])
+    # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
 
 
@@ -189,6 +194,7 @@ def p_arith_fnum(p):
 
 def p_arith_inum(p):
     '''arith_expr : INUM'''
+    # print(p.lineno(1))
     p[0] = int(p[1])
     # p[0] = constant(int(p[1]))
 
@@ -204,7 +210,7 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-res = parser.parse("int x (){int *x; x = 1; 1+1*4; 2*4+1; return ;}")  # the input
+res = parser.parse("int x (){\nint *x;\n x = 1;\n 1+1*4;\n 2*4+1;\n return ;\n}")  # the input
 print(res)
 # a = constant(4)
 # c = constant(3)

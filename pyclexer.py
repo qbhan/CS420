@@ -111,7 +111,7 @@ def t_reserved(t):
 
 # Define a rule so we can track line numbers
 def t_newline(t):
-    r'[-]?\n+'
+    r'\n+'
     t.lexer.lineno += len(t.value)
 
 
@@ -147,11 +147,11 @@ lexer = lex.lex()
 # Give the lexer some input
 # lexer.input("a + if asjioeifw")
 # lexer.input(r'"string"')
-lexer.input('int x (){return;}')
+# lexer.input("int x (){\nint *x;\n x = 1;\n 1+1*4;\n 2*4+1;\n return ;\n}")
 
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break  # No more input
-    print(tok)
+# while True:
+#     tok = lexer.token()
+#     if not tok:
+#         break  # No more input
+#     print(tok)

@@ -67,7 +67,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIV = r'/'
-# t_INCREMENT = r'\++'
+t_INCREMENT = r'\+\+'
 
 t_EQ = r'=='
 t_NEQ = r'!='
@@ -145,7 +145,7 @@ lexer = lex.lex()
 
 
 # Give the lexer some input
-# lexer.input("a + if asjioeifw")
+# lexer.input("++a")
 # lexer.input(r'"string"')
 # lexer.input("int x (){\nint *x;\n x = 1;\n 1+1*4;\n 2*4+1;\n return ;\n}")
 

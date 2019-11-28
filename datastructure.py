@@ -6,19 +6,19 @@ class Null:
     #     return True
 
 
-class Type:
+# class Type:
+#     def __init__(self, type):
+#         self.type = type
+
+
+class Pointer:
     def __init__(self, type):
         self.type = type
 
 
-class PointerType:
-    def __init__(self, pnttype):
-        self.pnttype = pnttype
-
-
-class FunctionType:
-    def __init__(self, functype):
-        self.functype = functype
+# class FunctionType:
+#     def __init__(self, functype):
+#         self.functype = functype
 
 
 class Constant:
@@ -104,7 +104,7 @@ class DeclStmt:
 
 
 class StmtList:
-    def __init__(self, stmt):
+    def __init__(self):
         self.stmtlist = []
 
     def add(self, stmt):
@@ -112,23 +112,27 @@ class StmtList:
 
 
 class ParameterList:
-    def __init__(self, param):
+    def __init__(self):
         self.paramlist = []
-        if param:
-            self.paramlist.append(param)
 
     def add(self, arg):
         self.arglist.append(arg)
 
 
 class ArgumentList:
-    def __init__(self, arg):
+    def __init__(self):
         self.arglist = []
-        if arg:
-            self.arglist.append(arg)
 
     def add(self, arg):
         self.arglist.append(arg)
+
+
+class FunctionList:
+    def __init__(self):
+        self.funclist = []
+
+    def add(self, func):
+        self.funclist.append(func)
 
 
 class ReturnStmt:
@@ -161,10 +165,10 @@ class StmtBlock:
 
 
 class Function:
-    def __init__(self, type, name, arg_list, body):
+    def __init__(self, type, name, param_list, body):
         self.type = type
         self.name = name
-        self.arg_list = {i: None for i in arg_list}
+        self.param_list = param_list
         self.body = body
         # self.lineno = lineno
 

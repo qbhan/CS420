@@ -15,36 +15,56 @@ precedence = (
 def p_program(p):
     '''program : func_declaration_list'''
     # need to implement
+    p[0] = p[1]
 
 
 #
 def p_func_declaration_list_1(p):
     '''func_declaration_list : func_declaration_list func_declaration'''
+    p[1].add(p[2])
+    p[0] = p[1]
 
 
 def p_func_declaration_list_2(p):
     '''func_declaration_list : empty'''
+    p[0] = FunctionList()
 
 
-#
-def p_func_declaration(p):
-    '''func_declaration : type ID LPAREN arg_list RPAREN stmt_block'''
+def p_func_declaration_1(p):
+    '''func_declaration : type ID LPAREN param_list RPAREN stmt_block'''
+
+    p[0] = Function(p[1], p[2], p[4], p[6])
 
 
-#
-#
-def p_arg_list_1(p):
-    '''arg_list : empty'''
+def p_func_declaration_2(p):
+    '''func_declaration : type TIMES ID LPAREN param_list RPAREN stmt_block'''
+
+    p[0] = Function(Pointer(p[1]), p[2], p[4], p[6])
 
 
-def p_arg_list_2(p):
-    '''arg_list : arg_list COMMA arg'''
+def p_param_list_1(p):
+    '''param_list : empty'''
+
+    p[0] = ParameterList()
 
 
-#
-def p_arg(p):
-    '''arg : type ID'''
+def p_param_list_2(p):
+    '''param_list : param_list COMMA param'''
+
+    p[1].add(p[3])
     p[0] = p[1]
+
+
+def p_param_1(p):
+    '''param : type ID'''
+
+    p[0] = DeclStmt(p[1], p[2])
+
+
+def p_param_2(p):
+    '''param : type TIMES ID'''
+
+    p[0] = DeclStmt(Pointer(p[1]), p[3])
 
 
 # statement derived to expression, declaration,  and ;
@@ -54,75 +74,84 @@ def p_statement(p):
             | stmt_block
             | stmt_return
             | SEMICOLON'''
-    # print(p.lineno(1))
+
     if p[1] != ';':
         p[0] = p[1]
-    # print(p.lineno(0))
+    else:
+        p[0] = None
 
 
-# declaration with type of int, float, and void (not implemented pointer yet)
-def p_local_declaration(p):
-    '''local_declaration : type ID SEMICOLON
-                   | type TIMES ID SEMICOLON
-                   | type TIMES LBRACKET INUM RBRACKET SEMICOLON'''
-    # Need to implement adding to symbol table
-    p[0] = Stmt(Decl_stmt, 'DECLARATION')
-
-
+# declaration with type of int, float, and void
 def p_local_declaration_1(p):
     '''local_declaration : type ID SEMICOLON'''
+
     p[0] = DeclStmt(p[1], p[2])
 
 
 def p_local_declaration_2(p):
     '''local_declaration : type TIMES ID SEMICOLON'''
 
+    p[0] = DeclStmt(Pointer(p[1]), p[3])
+
+
+def p_local_declaration_3(p):
+    '''local_declaration : type LBRACKET INUM RBRACKET ID SEMICOLON'''
+
+    p[0] = DeclStmt(Pointer(p[1]), p[5])
 
 
 def p_type(p):
     '''type : INT
             | FLOAT
             | VOID'''
+
     p[0] = p[1]
 
 
 def p_stmt_block(p):
     '''stmt_block : LBRACE stmt_list RBRACE'''
     # Need to implement scope inside
+
     p[0] = p[1]
 
 # #
 def p_stmt_list_1(p):
     '''stmt_list : stmt_list stmt'''
-    p[0] = p[1].add(p[2])
+
+    p[1].add(p[2])
+    p[0] = p[1]
 
 
 def p_stmt_list_2(p):
     '''stmt_list : empty'''
+
     p[0] = StmtList()
 
 
 def p_return_stmt_1(p):
     '''stmt_return : RETURN expr SEMICOLON'''
+
     p[0] = ReturnStmt(p[2])
 
 
 def p_return_stmt_2(p):
     '''stmt_return : RETURN SEMICOLON'''
-    # print(p.lineno(2))
+
     p[0] = ReturnStmt(None)
 
 
 # expression divided to assignment and boolean value itself
 def p_expr_assign(p):
     '''expr : ID EQUAL expr'''
+
     p[0] = p[3]
-    # print(p.lineno(0))
+
     # get class identifier from symbol table and assign
 
 
 def p_expr_incr(p):
     '''expr : incr_expr'''
+
     p[0] = p[1]
 
 
@@ -142,12 +171,14 @@ def p_basic_expr_compare(p):
     #     p[0] = p[1] > p[3]
     # elif p[3] == '<':
     #     p[0] = p[1] < p[3]
+
     p[0] = Binop(p[1], p[2], p[3])
 
 
 
 def p_basic_expr_arith_expr(p):
     '''basic_expr : arith_expr'''
+
     p[0] = p[1]
 
 
@@ -156,6 +187,7 @@ def p_compare(p):
                | NEQ
                | GT
                | LT'''
+
     p[0] = p[1]
 
 
@@ -164,6 +196,7 @@ def p_incr_expr_1(p):
     # ty = int
     # id = Identifier(p[2], ty.__name__)
     # id.incr()
+
     p[0] = Increment(p[1])
 
 
@@ -173,17 +206,20 @@ def p_incr_expr_2(p):
     # ty = int
     # id = Identifier(p[2], ty.__name__)
     # id.incr()
+
     p[0] = Increment(p[2])
 
 
 def p_arith_uminus(p):
     '''arith_expr : MINUS arith_expr %prec UMINUS'''
     # p[0] = -p[2]
+
     p[0] = Negation(p[2])
 
 
 def p_arith_parens(p):
     '''arith_expr : LPAREN arith_expr RPAREN'''
+
     p[0] = p[2]
 
 
@@ -193,6 +229,7 @@ def p_arith_add(p):
     # p[0] = p[1] + p[3]
     # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
+
     p[0] = Binop(p[1], p[2], p[3])
 
 
@@ -201,6 +238,7 @@ def p_arith_sub(p):
     # p[0] = p[1] - p[3]
     # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
+
     p[0] = Binop(p[1], p[2], p[3])
 
 
@@ -209,6 +247,7 @@ def p_arith_mult(p):
     # p[0] = p[1] * p[3]
     # print(p[0])
     # p[0] = bin_op(p[1], p[2], p[3])
+
     p[0] = Binop(p[1], p[2], p[3])
 
 
@@ -220,6 +259,7 @@ def p_arith_div(p):
     # else:
     #     raise ZeroDivisionError('Divison by 0')
     # print(p[0])
+
     p[0] = Binop(p[1], p[2], p[3])
 
 
@@ -228,7 +268,8 @@ def p_arith_id(p):
     '''arith_expr : ID'''
     # p[0] = p[1]
     # access symbol table and get id as identifier class
-    ty = int
+    # ty = int
+
     p[0] = Identifier(p[1], p.lineno(1))
 
 
@@ -236,6 +277,7 @@ def p_arith_fnum(p):
     '''arith_expr : FNUM'''
     # p[0] = float(p[1])
     # p[0] = constant(float(p[1]))
+
     p[0] = Constant(float(p[1]))
 
 
@@ -243,6 +285,7 @@ def p_arith_inum(p):
     '''arith_expr : INUM'''
     # print(p.lineno(1))
     # p[0] = int(p[1])
+
     p[0] = Constant(int(p[1]))
 
 

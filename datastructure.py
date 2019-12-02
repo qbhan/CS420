@@ -6,6 +6,22 @@
 # TODO Updating and changing symbol table should be done here.
 #  Each class will have evaluate(). Should update and use symbol table here for
 #  line-by-line interpretation.
+
+
+# class Memory:
+#     def __init__(self):
+#         self.memory = []
+#
+#     def getValue(self, index):
+#         if index < len(self.memory) - 1:
+#             return self.memory[index]
+#         else:
+#             return None
+#
+#     def getAddress(self, value):
+#         return self.memory.index(value)
+
+
 class Null:
     def __init__(self):
         self.type = 'void'
@@ -76,8 +92,6 @@ class Array:
         self.type = type
         self.name = name
         self.length = length
-        self.value = None
-        # self.lineno = lineno
 
 
 class Array_index:
@@ -133,6 +147,7 @@ class GetValue:
         self.expr = expr
 
 
+
     # need to make memory
     # def evaluate(self):
     #     return memory[self.expr.evaluate()]
@@ -176,6 +191,12 @@ class If:
         self.else_body = else_body
 
 
+class Assignment:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+
+
 # TODO should make evaluation to handle formatting.
 class Printf:
     def __init__(self, arguments):
@@ -206,41 +227,24 @@ class ArgumentList:
         self.arglist.append(arg)
 
 
-class FunctionList:
+class GlobalList:
     def __init__(self):
-        self.funclist = []
+        self.globallist = []
         self.symboltable = None
 
     def add(self, func):
-        self.funclist.append(func)
+        self.globallist.append(func)
 
     def print(self):
         print('In functionlist ,')
         print(self)
-        for func in self.funclist:
+        for func in self.globallist:
             print(func)
 
 
 class ReturnStmt:
     def __init__(self, expr):
         self.expr = expr
-
-
-class ForStmt:
-    def __init__(self, init_stmt, cond_stmt, incr_stmt, body):
-        self.init_stmt = init_stmt
-        self.cond_stmt = cond_stmt
-        self.incr_stmt = incr_stmt
-        self.body = body
-        # self.lineno = lineno
-
-
-class IfStmt:
-    def __init__(self, cond_stmt, body, else_body):
-        self.cond_stmt = cond_stmt
-        self.body = body
-        self.else_body = else_body
-        # self.lineno = lineno
 
 
 class StmtBlock:

@@ -1,6 +1,6 @@
 import ply.yacc as yacc
-from pyclexer import *
-from datastructure import *
+from CS420.pyclexer import *
+from CS420.datastructure import *
 
 ##########################################################################
 # Define precedence of operators.
@@ -37,11 +37,12 @@ def p_declaration_list_1(p):
 def p_declaration_list_2(p):
     '''declaration_list : declaration_list declaration'''
     p[1].add(p[2])
+    p[0] = p[1]
 
 
 def p_declaration_list_3(p):
     '''declaration_list : empty'''
-    p[0] = FunctionList()
+    p[0] = GlobalList()
 
 
 ##########################################################################
@@ -236,7 +237,7 @@ def p_stmt_block(p):
     '''stmt_block : LBRACE stmt_list RBRACE'''
     # Need to implement scope inside
 
-    p[0] = p[2]
+    p[0] = StmtBlock(p[2], None)
 
 
 ##########################################################################
@@ -290,25 +291,23 @@ def p_return_stmt_2(p):
 # TODO might use id_bracket above to simplify grammar
 def p_expr_assign_1(p):
     '''expr : ID EQUAL expr'''
-
-    p[0] = p[3]
+    p[0] = Assignment(p[1], p[3])
 
     # get class identifier from symbol table and assign
 
 
 def p_expr_assign_2(p):
     '''expr : ID LBRACKET arith_expr RBRACKET EQUAL expr'''
-    p[0] = p[6]
+    p[0] = Assignment(Array_index(p[1], p[3]), p[6])
 
 
 def p_expr_assign_3(p):
     '''expr : TIMES ID EQUAL expr'''
-    p[0] = p[4]
+    p[0] = Assignment(Pointer(p[2]), p[4])
 
 
 def p_expr_incr(p):
     '''expr : incr_expr'''
-
     p[0] = p[1]
 
 ##########################################################################
@@ -317,7 +316,6 @@ def p_expr_incr(p):
 def p_expr_basic(p):
     '''expr : basic_expr'''
     p[0] = p[1]
-    # print(p.lineno(1))
 
 
 def p_basic_expr_compare(p):
@@ -538,4 +536,4 @@ res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())
-print(res.funclist[0].print())
+print(res.globallist[0].body.stmt_list.stmtlist[0].name)

@@ -11,6 +11,9 @@ precedence = (
     ('left', 'TIMES', 'DIV'),
     ('right', 'UMINUS'),
 )
+
+error_flag = 0
+
 ##########################################################################
 # Rules : Derive from Program
 # A program contains variable declarations (which will be global).
@@ -164,6 +167,17 @@ def p_statement(p):
     else:
         p[0] = None
 
+
+def p_statement_error_1(p):
+    '''stmt : expr error'''
+    print('statement lack semicolon line :', int(p.lineno(2)) - 1)
+
+
+# def p_statement_error_2(p):
+#     '''stmt : error stmt_forloop'''
+#     print('statement lack semicolon line :', p.lineno(1))
+
+
 ##########################################################################
 # Rules : Derive calling prinf() function
 ##########################################################################
@@ -264,6 +278,10 @@ def p_forloop(p):
     '''stmt_forloop : FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt'''
     p[0] = For(p[3], p[5], p[7], p[9])
 
+# def p_forloop_error_1(p):
+#     '''stmt_forloop : error FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt'''
+#     print('error in line no :', p.lineno(1))
+
 
 ##########################################################################
 # Rules : Derive RETURN statement
@@ -291,6 +309,9 @@ def p_return_stmt_2(p):
 # TODO might use id_bracket above to simplify grammar
 def p_expr_assign_1(p):
     '''expr : ID EQUAL expr'''
+    # print(1243)
+    # global error_flag
+    # error_flag = 1
     p[0] = Assignment(p[1], p[3])
 
     # get class identifier from symbol table and assign
@@ -315,6 +336,7 @@ def p_expr_incr(p):
 ##########################################################################
 def p_expr_basic(p):
     '''expr : basic_expr'''
+    # print('basic_expr')
     p[0] = p[1]
 
 
@@ -335,7 +357,7 @@ def p_basic_expr_compare(p):
 
 def p_basic_expr_arith_expr(p):
     '''basic_expr : arith_expr'''
-
+    # print('arith_expr')
     p[0] = p[1]
 
 
@@ -382,8 +404,14 @@ def p_arith_uminus(p):
 
 def p_arith_parens(p):
     '''arith_expr : LPAREN arith_expr RPAREN'''
-
+    # print('LPAREN arith_expr RPAREN')
+    # global error_flag
+    # error_flag = 1
     p[0] = p[2]
+
+def p_arith_parens_error(p):
+    '''arith_expr : LPAREN error'''
+    print('Syntax error in parentheses')
 
 
 def p_arith_add(p):
@@ -475,21 +503,36 @@ def p_arith_functioncall(p):
     p[0] = FunctionCall(p[1], p[3])
 
 
+def p_arith_functioncall_error_1(p):
+    '''arith_expr : ID LPAREN argument_list error'''
+    print('Unclosed functioncall ignored in line :', p.lineno(4))
+    p[0] = p[4]
+
+
 ##########################################################################
 # Rules : Derive arguments for function call.
 ##########################################################################
 def p_argument_list_1(p):
     '''argument_list : argument'''
     p[0] = ArgumentList()
-    p[0].add(p[1])
+    if p[1]:
+        p[0].add(p[1])
 
 
 def p_argument_list_2(p):
     '''argument_list : argument_list COMMA argument'''
+    p[1].add(p[3])
+    p[0] = p[1]
+
+
+# def p_argument_list_error(p):
+#     '''argument_list : error'''
+#     print('wrong argument in line :', p.lineno(1))
 
 
 def p_argument_1(p):
     '''argument : empty'''
+    p[0] = None
 
 
 def p_argument_2(p):
@@ -500,7 +543,14 @@ def p_argument_2(p):
 
 def p_argument_3(p):
     '''argument : LITERAL'''
+
     p[0] = Literal(p[1])
+
+
+def p_argument_error(p):
+    '''argument : error'''
+    print('wrong argument ignored in line :', p.lineno(1))
+    p[0] = p[1]
 
 
 def p_empty(p):
@@ -509,7 +559,9 @@ def p_empty(p):
 
 
 def p_error(p):
+    # print('Syntax error not handled!!!')
     print("Syntax error in input!", p)
+
 
 
 parser = yacc.yacc()
@@ -536,4 +588,4 @@ res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())
-print(res.globallist[0].body.stmt_list.stmtlist[0].name)
+print(res.globallist[1].body.stmt_list.stmtlist[5].body.stmt_list.stmtlist[2].value)

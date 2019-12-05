@@ -45,6 +45,76 @@ class PointerType:
 #         self.functype = functype
 
 
+class Node():
+
+    def accept(self, visitor):
+        return self._accept(self.__class__, visitor)
+
+    def _accept(self, klass, visitor):
+        visitor_method = getattr(visitor, klass.__name__, None)
+        if visitor_method == None:
+            base = klass.__bases__
+            return self._accept(base, visitor)
+        else:
+            return visitor_method(self)
+
+
+class Unary(Node):
+
+    def __init__(self, node):
+        self.expr = node
+
+
+class Negation(Unary):
+
+    def evaluate(self):
+        return -self.expr.evaluate()
+
+
+class GetValue(Unary):
+    # get value a from *a
+    pass
+
+    # need to make memory
+    # def evaluate(self):
+    #     return memory[self.expr.evaluate()]
+
+
+class GetAddress(Unary):
+    # get value a from &a
+    pass
+
+    # def evaluate(self):
+    #     return memory.index(self.expr.evaluate)
+
+
+class Increment(Unary):
+    def __init__(self, expr):
+        self.expr = expr
+
+    def evaluate(self):
+        return self.expr.evaluate() + 1
+
+
+class ReturnStmt(Node):
+
+    def __init__(self, expr):
+        self.expr = expr
+
+
+class StmtBlock(Node):
+    def __init__(self, stmt_list, sym_table):
+        self.stmt_list = stmt_list
+        self.sym_table = sym_table
+        # self.lineno = lineno
+
+
+class FunctionCall(Node):
+    def __init__(self, function, arglist):
+        self.function = function
+        self.arglist = arglist
+
+
 class Constant:
     def __init__(self, value):
         self.type = type(value).__name__
@@ -134,39 +204,45 @@ class Binop:
             return None
 
 
-class Negation:
-    def __init__(self, expr):
-        self.expr = expr
-
-    def evaluate(self):
-        return -self.expr.evaluate()
-
-
-class GetValue:
-    def __init__(self, expr):
-        self.expr = expr
+# class Negation:
+#     def __init__(self, expr):
+#         self.expr = expr
+#
+#     def evaluate(self):
+#         return -self.expr.evaluate()
 
 
+
+
+# class GetValue:
+#     def __init__(self, expr):
+#         self.expr = expr
 
     # need to make memory
     # def evaluate(self):
     #     return memory[self.expr.evaluate()]
 
 
-class GetAddress:
-    def __init__(self, expr):
-        self.expr = expr
+
+
+
+# class GetAddress:
+#     def __init__(self, expr):
+#         self.expr = expr
 
     # def evaluate(self):
     #     return memory.index(self.expr.evaluate)
 
 
-class Increment:
-    def __init__(self, expr):
-        self.expr = expr
 
-    def evaluate(self):
-        return self.expr.evaluate() + 1
+
+
+# class Increment:
+#     def __init__(self, expr):
+#         self.expr = expr
+#
+#     def evaluate(self):
+#         return self.expr.evaluate() + 1
 
 
 class DeclStmt:
@@ -242,19 +318,6 @@ class GlobalList:
             print(func)
 
 
-class ReturnStmt:
-    def __init__(self, expr):
-        self.expr = expr
-
-
-class StmtBlock:
-    def __init__(self, stmt_list, sym_table):
-        self.stmt_list = stmt_list
-        self.sym_table = sym_table
-        # self.lineno = lineno
-
-
-class FunctionCall:
-    def __init__(self, function, arglist):
-        self.function = function
-        self.arglist = arglist
+# class ReturnStmt:
+#     def __init__(self, expr):
+#         self.expr = expr

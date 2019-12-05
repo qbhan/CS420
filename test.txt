@@ -19,7 +19,7 @@ int main(void)
     {
         mark[i] = i * 30;
         sum = sum + mark[i];
-        average = avg(i + 1, mark);
+        average = avg(int + 1, mark);
         if(average > 40)
         {
         printf("%f\n", average);

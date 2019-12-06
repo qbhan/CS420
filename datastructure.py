@@ -47,6 +47,12 @@ class PointerType:
 
 class Node():
 
+    # def __init__(self):
+    #     self.lineno = None
+    #
+    # def setlineno(self, n):
+    #     self.lineno = n
+
     def accept(self, visitor):
         return self._accept(self.__class__, visitor)
 
@@ -63,6 +69,10 @@ class Unary(Node):
 
     def __init__(self, node):
         self.expr = node
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Negation(Unary):
@@ -100,29 +110,42 @@ class ReturnStmt(Node):
 
     def __init__(self, expr):
         self.expr = expr
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class StmtBlock(Node):
     def __init__(self, stmt_list, sym_table):
         self.stmt_list = stmt_list
         self.sym_table = sym_table
-        # self.lineno = lineno
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class FunctionCall(Node):
     def __init__(self, function, arglist):
         self.function = function
         self.arglist = arglist
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
-class Constant:
+class Constant(Node):
     def __init__(self, value):
         self.type = type(value).__name__
         self.value = value
-        # self.lineno = lineno
+        self.lineno = None
 
     # def is_const(self):
     #     return True
+    def setlineno(self, n):
+        self.lineno = n
 
     def evaluate(self):
         return self.value
@@ -133,6 +156,10 @@ class Constant:
 class Literal:
     def __init__(self, literal):
         self.value = literal
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Identifier:
@@ -143,10 +170,17 @@ class Identifier:
     def is_id(self):
         return True
 
+    def setlineno(self, n):
+        self.lineno = n
+
 
 class Pointer:
     def __init__(self, id):
         self.id = id
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 ##########################################################################
@@ -155,19 +189,34 @@ class Pointer:
 class Address:
     def __init__(self, value):
         self.value = value
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Array:
-    def __init__(self, name, type, length):
-        self.type = type
+    def __init__(self, name, length):
+        self.type = None
         self.name = name
         self.length = length
+        self.lineno = None
+
+    def settype(self, type):
+        self.type = type
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Array_index:
     def __init__(self, name, index):
         self.name = name
         self.index = index
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Function:
@@ -176,7 +225,10 @@ class Function:
         self.name = name
         self.param_list = param_list
         self.body = body
-        # self.lineno = lineno
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def print(self):
         print_str = 'function name: %s, type: %s, params: %s, '
@@ -191,6 +243,10 @@ class Binop:
         self.left = left
         self.binop = binop
         self.right = right
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def evaluate(self):
         l = self.left.evaluate()
@@ -250,6 +306,10 @@ class DeclStmt:
         self.type = type
         self.name = name
         self.value = None
+        self.lineno = None
+
+    def setlineno(self, i):
+        self.lineno = i
 
 
 class For:
@@ -258,6 +318,10 @@ class For:
         self.cond_stmt = cond_stmt
         self.incr_stmt = incr_stmt
         self.body = body
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class If:
@@ -265,23 +329,39 @@ class If:
         self.cond_stmt = cond_stmt
         self.body = body
         self.else_body = else_body
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class Assignment:
     def __init__(self, id, value):
         self.id = id
         self.value = value
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 # TODO should make evaluation to handle formatting.
 class Printf:
     def __init__(self, arguments):
         self.arguments = arguments
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
 
 class StmtList:
     def __init__(self):
         self.stmtlist = []
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def add(self, stmt):
         self.stmtlist.append(stmt)
@@ -290,6 +370,10 @@ class StmtList:
 class ParameterList:
     def __init__(self):
         self.paramlist = []
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def add(self, arg):
         self.paramlist.append(arg)
@@ -298,6 +382,10 @@ class ParameterList:
 class ArgumentList:
     def __init__(self):
         self.arglist = []
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def add(self, arg):
         self.arglist.append(arg)
@@ -307,6 +395,10 @@ class GlobalList:
     def __init__(self):
         self.globallist = []
         self.symboltable = None
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
 
     def add(self, func):
         self.globallist.append(func)

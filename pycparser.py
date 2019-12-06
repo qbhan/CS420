@@ -133,7 +133,9 @@ def p_general_statement(p):
 def p_matched_statement(p):
     '''mstmt : IF LPAREN expr RPAREN mstmt ELSE mstmt
                 | stmt'''
-    if p[1] == "if": p[0] = If(p[3], p[5], p[7])
+    if p[1] == "if":
+        p[0] = If(p[3], p[5], p[7])
+        p[0].setlineno(p.lineno(1))
     else: p[0] = p[1]
 
 
@@ -144,6 +146,7 @@ def p_unmatched_statement(p):
         p[0] = If(p[3], p[5], None)
     elif len(p) == 8:
         p[0] = If(p[3], p[5], p[7])
+    p[0].setlineno(p.lineno(1))
 
 
 
@@ -163,6 +166,8 @@ def p_statement(p):
             | SEMICOLON'''
 
     if p[1] != ';':
+        if len(p) > 2 and p[2] == ';':
+            p[1].setlineno(p.lineno(2))
         p[0] = p[1]
     else:
         p[0] = None
@@ -198,10 +203,10 @@ def p_declaration_1(p):
     p[0] = DeclStmt(p[1], p[2])
 
 
-def p_declaration_2(p):
-    '''declaration : type TIMES id_list'''
-
-    p[0] = DeclStmt(Pointer(p[1]), p[3])
+# def p_declaration_2(p):
+#     '''declaration : type TIMES id_list'''
+#
+#     p[0] = DeclStmt(Pointer(p[1]), p[3])
 
 ##########################################################################
 # Rules : Derive id_list & id_bracket
@@ -228,8 +233,12 @@ def p_id_bracket_1(p):
 
 def p_id_bracket_2(p):
     '''idbracket : ID LBRACKET INUM RBRACKET'''
-    p[0] = Array(p[1], None, p[3])
+    p[0] = Array(p[1], p[3])
 
+
+def p_id_bracket_3(p):
+    '''idbracket : TIMES ID'''
+    p[0] = Pointer(p[2])
 
 ##########################################################################
 # Rules : Derive basic types
@@ -252,6 +261,7 @@ def p_stmt_block(p):
     # Need to implement scope inside
 
     p[0] = StmtBlock(p[2], None)
+    p[0].setlineno(p.lineno(1))
 
 
 ##########################################################################
@@ -277,6 +287,7 @@ def p_stmt_list_2(p):
 def p_forloop(p):
     '''stmt_forloop : FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt'''
     p[0] = For(p[3], p[5], p[7], p[9])
+    p[0].setlineno(p.lineno(1))
 
 # def p_forloop_error_1(p):
 #     '''stmt_forloop : error FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt'''
@@ -291,12 +302,14 @@ def p_return_stmt_1(p):
     '''stmt_return : RETURN expr SEMICOLON'''
 
     p[0] = ReturnStmt(p[2])
+    p[0].setlineno(p.lineno(3))
 
 
 def p_return_stmt_2(p):
     '''stmt_return : RETURN SEMICOLON'''
 
     p[0] = ReturnStmt(None)
+    p[0].setlineno(p.lineno(2))
 
 
 ##########################################################################
@@ -309,10 +322,8 @@ def p_return_stmt_2(p):
 # TODO might use id_bracket above to simplify grammar
 def p_expr_assign_1(p):
     '''expr : ID EQUAL expr'''
-    # print(1243)
-    # global error_flag
-    # error_flag = 1
-    p[0] = Assignment(p[1], p[3])
+    id = Identifier(p[1], p.lineno(1))
+    p[0] = Assignment(id, p[3])
 
     # get class identifier from symbol table and assign
 
@@ -409,9 +420,9 @@ def p_arith_parens(p):
     # error_flag = 1
     p[0] = p[2]
 
-def p_arith_parens_error(p):
-    '''arith_expr : LPAREN error'''
-    print('Syntax error in parentheses')
+# def p_arith_parens_error(p):
+#     '''arith_expr : LPAREN error'''
+#     print('Syntax error in parentheses')
 
 
 def p_arith_add(p):
@@ -503,10 +514,15 @@ def p_arith_functioncall(p):
     p[0] = FunctionCall(p[1], p[3])
 
 
-def p_arith_functioncall_error_1(p):
-    '''arith_expr : ID LPAREN argument_list error'''
-    print('Unclosed functioncall ignored in line :', p.lineno(4))
-    p[0] = p[4]
+# def p_arith_functioncall_error_1(p):
+#     '''arith_expr : ID LPAREN argument_list RPAREN'''
+#     print('Unclosed functioncall ignored in line :', p.lineno(4))
+#     # p[0] = p[4]
+
+
+# def p_arith_error(p):
+#     '''arith_expr : error'''
+#     print('arith_expr error in line :', p.lineno(1))
 
 
 ##########################################################################
@@ -523,11 +539,6 @@ def p_argument_list_2(p):
     '''argument_list : argument_list COMMA argument'''
     p[1].add(p[3])
     p[0] = p[1]
-
-
-# def p_argument_list_error(p):
-#     '''argument_list : error'''
-#     print('wrong argument in line :', p.lineno(1))
 
 
 def p_argument_1(p):
@@ -588,4 +599,4 @@ res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())
-print(res.globallist[1].body.stmt_list.stmtlist[5].body.stmt_list.stmtlist[2].value)
+print(res.globallist[1].body.stmt_list.stmtlist[5].body.stmt_list.stmtlist[2])

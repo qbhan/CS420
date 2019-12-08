@@ -1,6 +1,8 @@
 import ply.yacc as yacc
 from pyclexer import *
 from datastructure import *
+from CS420.pyclexer import *
+from CS420.datastructure import *
 
 ##########################################################################
 # Define precedence of operators.
@@ -212,14 +214,14 @@ def p_declaration_2(p):
 
 def p_declaration_3(p):
     '''declaration : type idbracket'''
-    p[0] = DeclStmtList(p[1])
-    p[0].add(DeclStmt(p[1], p[2]))
+    p[0] = DeclStmtList(DeclStmt(p[1], p[2]))
+    p[0].settype(p[1])
 
 
 def p_declaration_4(p):
     '''declaration : type TIMES idbracket'''
-    p[0] = DeclStmtList(p[1])
-    p[0].add(DeclStmt(PointerType(p[1]), p[3]))
+    p[0] = DeclStmtList(DeclStmt(PointerType(p[1]), p[3]))
+    p[0].settype(PointerType(p[1]))
 
 
 ##########################################################################
@@ -257,7 +259,7 @@ def p_stmt_block(p):
     '''stmt_block : LBRACE stmt_list RBRACE'''
     # Need to implement scope inside
 
-    p[0] = StmtBlock(p[2], None)
+    p[0] = p[2]
     p[0].setlineno(p.lineno(1))
 
 
@@ -600,4 +602,4 @@ res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())
-print(res.globallist[1].body.stmt_list.stmtlist[5].body.stmt_list.stmtlist[2])
+print(res.nodes[1].body.nodes[1].nodes)

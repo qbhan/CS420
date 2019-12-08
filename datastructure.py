@@ -44,24 +44,46 @@ class PointerType:
 #     def __init__(self, functype):
 #         self.functype = functype
 
-
 class Node():
 
-    # def __init__(self):
-    #     self.lineno = None
-    #
-    # def setlineno(self, n):
-    #     self.lineno = n
-
     def accept(self, visitor):
+        print("\n\nIN ACCEPT\nvisitor is", visitor)
         return self._accept(self.__class__, visitor)
 
     def _accept(self, klass, visitor):
-        visitor_method = getattr(visitor, klass.__name__, None)
-        if visitor_method == None:
-            base = klass.__bases__
-            return self._accept(base, visitor)
+        print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
+        visitor_method = getattr(visitor, "s%s" % klass.__name__, None)
+        print(visitor_method)
+        if visitor_method is None:
+            if klass.__name__ == 'object':
+                print("It's an object class.")
+                return
+            else:
+                print("It's a subclass of Unary or NodeList.")
+                base = klass.__bases__
+                return self._accept(base[0], visitor)
         else:
+            print("It's an attribute in SymtabVisitor.")
+            return visitor_method(self)
+
+    def interp(self, visitor):
+        print("\n\nIN ACCEPT\nvisitor is", visitor)
+        return self._interp(self.__class__, visitor)
+
+    def _interp(self, klass, visitor):
+        print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
+        visitor_method = getattr(visitor, "i%s" % klass.__name__, None)
+        print(visitor_method)
+        if visitor_method is None:
+            if klass.__name__ == 'object':
+                print("It's an object class.")
+                return
+            else:
+                print("It's a subclass of Unary or NodeList.")
+                base = klass.__bases__
+                return self._accept(base[0], visitor)
+        else:
+            print("It's an attribute in InterpVisitor.")
             return visitor_method(self)
 
 
@@ -154,7 +176,7 @@ class Constant(Node):
 ##########################################################################
 # Made for string literals for printf usage.
 ##########################################################################
-class Literal:
+class Literal(Node):
     def __init__(self, literal):
         self.value = literal
         self.lineno = None
@@ -163,7 +185,7 @@ class Literal:
         self.lineno = n
 
 
-class Identifier:
+class Identifier(Node):
     def __init__(self, name, lineno):
         self.name = name
         self.lineno = lineno
@@ -175,7 +197,7 @@ class Identifier:
         self.lineno = n
 
 
-class Pointer:
+class Pointer(Node):
     def __init__(self, id):
         self.id = id
         self.lineno = None
@@ -187,7 +209,7 @@ class Pointer:
 ##########################################################################
 # Address : For cases like &a
 ##########################################################################
-class Address:
+class Address(Node):
     def __init__(self, value):
         self.value = value
         self.lineno = None
@@ -196,7 +218,7 @@ class Address:
         self.lineno = n
 
 
-class Array:
+class Array(Node):
     def __init__(self, name, length):
         self.type = None
         self.name = name
@@ -210,7 +232,7 @@ class Array:
         self.lineno = n
 
 
-class Array_index:
+class Array_index(Node):
     def __init__(self, name, index):
         self.name = name
         self.index = index
@@ -220,7 +242,7 @@ class Array_index:
         self.lineno = n
 
 
-class Function:
+class Function(Node):
     def __init__(self, type, name, param_list, body):
         self.type = type
         self.name = name
@@ -239,7 +261,7 @@ class Function:
         print('\tbody: {}'.format(self.body))
 
 
-class Binop:
+class Binop(Node):
     def __init__(self, left, binop, right):
         self.left = left
         self.binop = binop
@@ -261,48 +283,7 @@ class Binop:
             return None
 
 
-# class Negation:
-#     def __init__(self, expr):
-#         self.expr = expr
-#
-#     def evaluate(self):
-#         return -self.expr.evaluate()
-
-
-
-
-# class GetValue:
-#     def __init__(self, expr):
-#         self.expr = expr
-
-    # need to make memory
-    # def evaluate(self):
-    #     return memory[self.expr.evaluate()]
-
-
-
-
-
-# class GetAddress:
-#     def __init__(self, expr):
-#         self.expr = expr
-
-    # def evaluate(self):
-    #     return memory.index(self.expr.evaluate)
-
-
-
-
-
-# class Increment:
-#     def __init__(self, expr):
-#         self.expr = expr
-#
-#     def evaluate(self):
-#         return self.expr.evaluate() + 1
-
-
-class DeclStmt:
+class DeclStmt(Node):
     def __init__(self, type, name):
         self.type = type
         self.name = name
@@ -313,7 +294,7 @@ class DeclStmt:
         self.lineno = i
 
 
-class For:
+class For(Node):
     def __init__(self, init_stmt, cond_stmt, incr_stmt, body):
         self.init_stmt = init_stmt
         self.cond_stmt = cond_stmt
@@ -325,7 +306,7 @@ class For:
         self.lineno = n
 
 
-class If:
+class If(Node):
     def __init__(self, cond_stmt, body, else_body):
         self.cond_stmt = cond_stmt
         self.body = body
@@ -336,7 +317,7 @@ class If:
         self.lineno = n
 
 
-class Assignment:
+class Assignment(Node):
     def __init__(self, id, value):
         self.id = id
         self.value = value
@@ -347,7 +328,7 @@ class Assignment:
 
 
 # TODO should make evaluation to handle formatting.
-class Printf:
+class Printf(Node):
     def __init__(self, arguments):
         self.arguments = arguments
         self.lineno = None
@@ -356,74 +337,86 @@ class Printf:
         self.lineno = n
 
 
-class StmtList:
-    def __init__(self):
-        self.stmtlist = []
+class NodeList(Node):
+    def __init__(self, node=None):
+        self.nodes = []
         self.lineno = None
+        self.type = None
+        if node:
+            self.nodes.append(node)
+
+
+class StmtList(NodeList):
+    # def __init__(self):
+    #     self.stmtlist = []
+    #     self.lineno = None
 
     def setlineno(self, n):
         self.lineno = n
 
     def add(self, stmt):
-        self.stmtlist.append(stmt)
+        self.nodes.append(stmt)
 
 
-class DeclStmtList:
-    def __init__(self, type):
-        self.decllist = []
+class DeclStmtList(NodeList):
+    # def __init__(self, type):
+    #     self.decllist = []
+    #     self.type = type
+    #     self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
+
+    def add(self, stmt):
+        self.nodes.append(stmt)
+
+    def settype(self, type):
         self.type = type
-        self.lineno = None
-
-    def setlineno(self, n):
-        self.lineno = n
-
-    def add(self, stmt):
-        self.decllist.append(stmt)
 
     def gettype(self):
         return self.type
 
 
-class ParameterList:
-    def __init__(self):
-        self.paramlist = []
-        self.lineno = None
+class ParameterList(NodeList):
+    # def __init__(self):
+    #     self.paramlist = []
+    #     self.lineno = None
 
     def setlineno(self, n):
         self.lineno = n
 
     def add(self, arg):
-        self.paramlist.append(arg)
+        self.nodes.append(arg)
 
 
-class ArgumentList:
-    def __init__(self):
-        self.arglist = []
-        self.lineno = None
+class ArgumentList(NodeList):
+    # def __init__(self):
+    #     self.arglist = []
+    #     self.lineno = None
 
     def setlineno(self, n):
         self.lineno = n
 
     def add(self, arg):
-        self.arglist.append(arg)
+        self.nodes.append(arg)
 
 
-class GlobalList:
-    def __init__(self):
-        self.globallist = []
-        self.symboltable = None
-        self.lineno = None
+class GlobalList(NodeList):
+    # def __init__(self):
+    #     self.globallist = []
+    #     self.symboltable = None
+    #     self.lineno = None
 
     def setlineno(self, n):
         self.lineno = n
 
     def add(self, func):
-        self.globallist.append(func)
+        self.nodes.append(func)
 
     def print(self):
         print('In functionlist ,')
         print(self)
-        for func in self.globallist:
+        for func in self.nodes:
             print(func)
 
 

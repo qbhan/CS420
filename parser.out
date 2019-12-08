@@ -39,12 +39,12 @@ Rule 24    stmt -> stmt_return
 Rule 25    stmt -> SEMICOLON
 Rule 26    stmt -> expr error
 Rule 27    stmt -> PRINT LPAREN argument_list RPAREN
-Rule 28    declaration -> type id_list
-Rule 29    id_list -> idbracket
-Rule 30    id_list -> id_list COMMA idbracket
-Rule 31    idbracket -> ID
-Rule 32    idbracket -> ID LBRACKET INUM RBRACKET
-Rule 33    idbracket -> TIMES ID
+Rule 28    declaration -> declaration COMMA idbracket
+Rule 29    declaration -> declaration COMMA TIMES idbracket
+Rule 30    declaration -> type idbracket
+Rule 31    declaration -> type TIMES idbracket
+Rule 32    idbracket -> ID
+Rule 33    idbracket -> ID LBRACKET INUM RBRACKET
 Rule 34    type -> INT
 Rule 35    type -> FLOAT
 Rule 36    type -> VOID
@@ -79,20 +79,21 @@ Rule 64    arith_expr -> INUM
 Rule 65    arith_expr -> TIMES ID
 Rule 66    arith_expr -> ADDRESS ID
 Rule 67    arith_expr -> ID LBRACKET arith_expr RBRACKET
-Rule 68    arith_expr -> ID LPAREN argument_list RPAREN
-Rule 69    argument_list -> argument
-Rule 70    argument_list -> argument_list COMMA argument
-Rule 71    argument -> empty
-Rule 72    argument -> arith_expr
-Rule 73    argument -> LITERAL
-Rule 74    argument -> error
-Rule 75    empty -> <empty>
+Rule 68    arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET
+Rule 69    arith_expr -> ID LPAREN argument_list RPAREN
+Rule 70    argument_list -> argument
+Rule 71    argument_list -> argument_list COMMA argument
+Rule 72    argument -> empty
+Rule 73    argument -> arith_expr
+Rule 74    argument -> LITERAL
+Rule 75    argument -> error
+Rule 76    empty -> <empty>
 
 Terminals, with rules where they appear
 
 ADDRESS              : 66
 COLON                : 
-COMMA                : 11 30 70
+COMMA                : 11 28 29 71
 DIV                  : 61
 DOUBLEQUOTE          : 
 ELSE                 : 16 19
@@ -103,15 +104,15 @@ FLOAT                : 35
 FNUM                 : 63
 FOR                  : 40
 GT                   : 52
-ID                   : 5 6 12 13 31 32 33 43 44 45 54 55 62 65 66 67 68
+ID                   : 5 6 12 13 32 33 43 44 45 54 55 62 65 66 67 68 69
 IF                   : 16 18 19
 INCREMENT            : 54 55
 INT                  : 34
-INUM                 : 32 64
+INUM                 : 33 64
 LBRACE               : 37
-LBRACKET             : 32 44 67
-LITERAL              : 73
-LPAREN               : 5 6 7 16 18 19 27 40 57 68
+LBRACKET             : 33 44 67 68
+LITERAL              : 74
+LPAREN               : 5 6 7 16 18 19 27 40 57 69
 LT                   : 53
 MAIN                 : 7
 MINUS                : 56 59
@@ -122,29 +123,28 @@ POINTER              :
 PRINT                : 27
 QUOTE                : 
 RBRACE               : 37
-RBRACKET             : 32 44 67
+RBRACKET             : 33 44 67 68
 RETURN               : 41 42
-RPAREN               : 5 6 7 16 18 19 27 40 57 68
+RPAREN               : 5 6 7 16 18 19 27 40 57 69
 SEMICOLON            : 20 21 25 40 40 41 42
-TIMES                : 6 13 33 45 60 65
+TIMES                : 6 13 29 31 45 60 65 68
 VOID                 : 8 36
-error                : 26 74
+error                : 26 75
 
 Nonterminals, with rules where they appear
 
-argument             : 69 70
-argument_list        : 27 68 70
-arith_expr           : 44 48 49 56 57 58 58 59 59 60 60 61 61 67 72
+argument             : 70 71
+argument_list        : 27 69 71
+arith_expr           : 44 48 49 56 57 58 58 59 59 60 60 61 61 67 68 73
 basic_expr           : 47 48
 compare              : 48
-declaration          : 3 21
+declaration          : 3 21 28 29
 declaration_list     : 1 2 3
-empty                : 4 39 71
+empty                : 4 39 72
 expr                 : 16 18 19 20 26 40 40 40 41 43 44 45
 func_declaration     : 2
 genstmt              : 18 38
-id_list              : 28 30
-idbracket            : 29 30
+idbracket            : 28 29 30 31
 incr_expr            : 46
 mstmt                : 14 16 16 19
 param                : 10 11
@@ -156,7 +156,7 @@ stmt_block           : 5 6 7 22
 stmt_forloop         : 23
 stmt_list            : 37 38
 stmt_return          : 24
-type                 : 5 6 7 12 13 28
+type                 : 5 6 7 12 13 30 31
 umstmt               : 15 19
 
 Parsing method: LALR
@@ -168,12 +168,12 @@ state 0
     (2) declaration_list -> . declaration_list func_declaration
     (3) declaration_list -> . declaration_list declaration
     (4) declaration_list -> . empty
-    (75) empty -> .
+    (76) empty -> .
 
-    INT             reduce using rule 75 (empty -> .)
-    FLOAT           reduce using rule 75 (empty -> .)
-    VOID            reduce using rule 75 (empty -> .)
-    $end            reduce using rule 75 (empty -> .)
+    INT             reduce using rule 76 (empty -> .)
+    FLOAT           reduce using rule 76 (empty -> .)
+    VOID            reduce using rule 76 (empty -> .)
+    $end            reduce using rule 76 (empty -> .)
 
     program                        shift and go to state 1
     declaration_list               shift and go to state 2
@@ -193,7 +193,10 @@ state 2
     (5) func_declaration -> . type ID LPAREN params RPAREN stmt_block
     (6) func_declaration -> . type TIMES ID LPAREN params RPAREN stmt_block
     (7) func_declaration -> . type MAIN LPAREN params RPAREN stmt_block
-    (28) declaration -> . type id_list
+    (28) declaration -> . declaration COMMA idbracket
+    (29) declaration -> . declaration COMMA TIMES idbracket
+    (30) declaration -> . type idbracket
+    (31) declaration -> . type TIMES idbracket
     (34) type -> . INT
     (35) type -> . FLOAT
     (36) type -> . VOID
@@ -230,11 +233,14 @@ state 4
 state 5
 
     (3) declaration_list -> declaration_list declaration .
+    (28) declaration -> declaration . COMMA idbracket
+    (29) declaration -> declaration . COMMA TIMES idbracket
 
     INT             reduce using rule 3 (declaration_list -> declaration_list declaration .)
     FLOAT           reduce using rule 3 (declaration_list -> declaration_list declaration .)
     VOID            reduce using rule 3 (declaration_list -> declaration_list declaration .)
     $end            reduce using rule 3 (declaration_list -> declaration_list declaration .)
+    COMMA           shift and go to state 10
 
 
 state 6
@@ -242,18 +248,15 @@ state 6
     (5) func_declaration -> type . ID LPAREN params RPAREN stmt_block
     (6) func_declaration -> type . TIMES ID LPAREN params RPAREN stmt_block
     (7) func_declaration -> type . MAIN LPAREN params RPAREN stmt_block
-    (28) declaration -> type . id_list
-    (29) id_list -> . idbracket
-    (30) id_list -> . id_list COMMA idbracket
-    (31) idbracket -> . ID
-    (32) idbracket -> . ID LBRACKET INUM RBRACKET
-    (33) idbracket -> . TIMES ID
+    (30) declaration -> type . idbracket
+    (31) declaration -> type . TIMES idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
 
-    ID              shift and go to state 10
-    TIMES           shift and go to state 11
-    MAIN            shift and go to state 12
+    ID              shift and go to state 11
+    TIMES           shift and go to state 12
+    MAIN            shift and go to state 13
 
-    id_list                        shift and go to state 13
     idbracket                      shift and go to state 14
 
 state 7
@@ -285,60 +288,98 @@ state 9
 
 state 10
 
-    (5) func_declaration -> type ID . LPAREN params RPAREN stmt_block
-    (31) idbracket -> ID .
-    (32) idbracket -> ID . LBRACKET INUM RBRACKET
+    (28) declaration -> declaration COMMA . idbracket
+    (29) declaration -> declaration COMMA . TIMES idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
 
-    LPAREN          shift and go to state 15
-    COMMA           reduce using rule 31 (idbracket -> ID .)
-    INT             reduce using rule 31 (idbracket -> ID .)
-    FLOAT           reduce using rule 31 (idbracket -> ID .)
-    VOID            reduce using rule 31 (idbracket -> ID .)
-    $end            reduce using rule 31 (idbracket -> ID .)
-    LBRACKET        shift and go to state 16
+    TIMES           shift and go to state 16
+    ID              shift and go to state 17
 
+    idbracket                      shift and go to state 15
 
 state 11
 
-    (6) func_declaration -> type TIMES . ID LPAREN params RPAREN stmt_block
-    (33) idbracket -> TIMES . ID
+    (5) func_declaration -> type ID . LPAREN params RPAREN stmt_block
+    (32) idbracket -> ID .
+    (33) idbracket -> ID . LBRACKET INUM RBRACKET
 
-    ID              shift and go to state 17
+    LPAREN          shift and go to state 18
+    COMMA           reduce using rule 32 (idbracket -> ID .)
+    INT             reduce using rule 32 (idbracket -> ID .)
+    FLOAT           reduce using rule 32 (idbracket -> ID .)
+    VOID            reduce using rule 32 (idbracket -> ID .)
+    $end            reduce using rule 32 (idbracket -> ID .)
+    LBRACKET        shift and go to state 19
 
 
 state 12
 
-    (7) func_declaration -> type MAIN . LPAREN params RPAREN stmt_block
+    (6) func_declaration -> type TIMES . ID LPAREN params RPAREN stmt_block
+    (31) declaration -> type TIMES . idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
 
-    LPAREN          shift and go to state 18
+    ID              shift and go to state 20
 
+    idbracket                      shift and go to state 21
 
 state 13
 
-    (28) declaration -> type id_list .
-    (30) id_list -> id_list . COMMA idbracket
+    (7) func_declaration -> type MAIN . LPAREN params RPAREN stmt_block
 
-    INT             reduce using rule 28 (declaration -> type id_list .)
-    FLOAT           reduce using rule 28 (declaration -> type id_list .)
-    VOID            reduce using rule 28 (declaration -> type id_list .)
-    $end            reduce using rule 28 (declaration -> type id_list .)
-    SEMICOLON       reduce using rule 28 (declaration -> type id_list .)
-    COMMA           shift and go to state 19
+    LPAREN          shift and go to state 22
 
 
 state 14
 
-    (29) id_list -> idbracket .
+    (30) declaration -> type idbracket .
 
-    COMMA           reduce using rule 29 (id_list -> idbracket .)
-    INT             reduce using rule 29 (id_list -> idbracket .)
-    FLOAT           reduce using rule 29 (id_list -> idbracket .)
-    VOID            reduce using rule 29 (id_list -> idbracket .)
-    $end            reduce using rule 29 (id_list -> idbracket .)
-    SEMICOLON       reduce using rule 29 (id_list -> idbracket .)
+    COMMA           reduce using rule 30 (declaration -> type idbracket .)
+    INT             reduce using rule 30 (declaration -> type idbracket .)
+    FLOAT           reduce using rule 30 (declaration -> type idbracket .)
+    VOID            reduce using rule 30 (declaration -> type idbracket .)
+    $end            reduce using rule 30 (declaration -> type idbracket .)
+    SEMICOLON       reduce using rule 30 (declaration -> type idbracket .)
 
 
 state 15
+
+    (28) declaration -> declaration COMMA idbracket .
+
+    COMMA           reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+    INT             reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+    FLOAT           reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+    VOID            reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+    $end            reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+    SEMICOLON       reduce using rule 28 (declaration -> declaration COMMA idbracket .)
+
+
+state 16
+
+    (29) declaration -> declaration COMMA TIMES . idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
+
+    ID              shift and go to state 17
+
+    idbracket                      shift and go to state 23
+
+state 17
+
+    (32) idbracket -> ID .
+    (33) idbracket -> ID . LBRACKET INUM RBRACKET
+
+    COMMA           reduce using rule 32 (idbracket -> ID .)
+    INT             reduce using rule 32 (idbracket -> ID .)
+    FLOAT           reduce using rule 32 (idbracket -> ID .)
+    VOID            reduce using rule 32 (idbracket -> ID .)
+    $end            reduce using rule 32 (idbracket -> ID .)
+    SEMICOLON       reduce using rule 32 (idbracket -> ID .)
+    LBRACKET        shift and go to state 19
+
+
+state 18
 
     (5) func_declaration -> type ID LPAREN . params RPAREN stmt_block
     (8) params -> . VOID
@@ -351,36 +392,50 @@ state 15
     (35) type -> . FLOAT
     (36) type -> . VOID
 
-    VOID            shift and go to state 22
+    VOID            shift and go to state 26
     INT             shift and go to state 7
     FLOAT           shift and go to state 8
 
-    type                           shift and go to state 20
-    params                         shift and go to state 21
-    param_list                     shift and go to state 23
-    param                          shift and go to state 24
+    type                           shift and go to state 24
+    params                         shift and go to state 25
+    param_list                     shift and go to state 27
+    param                          shift and go to state 28
 
-state 16
+state 19
 
-    (32) idbracket -> ID LBRACKET . INUM RBRACKET
+    (33) idbracket -> ID LBRACKET . INUM RBRACKET
 
-    INUM            shift and go to state 25
+    INUM            shift and go to state 29
 
 
-state 17
+state 20
 
     (6) func_declaration -> type TIMES ID . LPAREN params RPAREN stmt_block
-    (33) idbracket -> TIMES ID .
+    (32) idbracket -> ID .
+    (33) idbracket -> ID . LBRACKET INUM RBRACKET
 
-    LPAREN          shift and go to state 26
-    COMMA           reduce using rule 33 (idbracket -> TIMES ID .)
-    INT             reduce using rule 33 (idbracket -> TIMES ID .)
-    FLOAT           reduce using rule 33 (idbracket -> TIMES ID .)
-    VOID            reduce using rule 33 (idbracket -> TIMES ID .)
-    $end            reduce using rule 33 (idbracket -> TIMES ID .)
+    LPAREN          shift and go to state 30
+    COMMA           reduce using rule 32 (idbracket -> ID .)
+    INT             reduce using rule 32 (idbracket -> ID .)
+    FLOAT           reduce using rule 32 (idbracket -> ID .)
+    VOID            reduce using rule 32 (idbracket -> ID .)
+    $end            reduce using rule 32 (idbracket -> ID .)
+    LBRACKET        shift and go to state 19
 
 
-state 18
+state 21
+
+    (31) declaration -> type TIMES idbracket .
+
+    COMMA           reduce using rule 31 (declaration -> type TIMES idbracket .)
+    INT             reduce using rule 31 (declaration -> type TIMES idbracket .)
+    FLOAT           reduce using rule 31 (declaration -> type TIMES idbracket .)
+    VOID            reduce using rule 31 (declaration -> type TIMES idbracket .)
+    $end            reduce using rule 31 (declaration -> type TIMES idbracket .)
+    SEMICOLON       reduce using rule 31 (declaration -> type TIMES idbracket .)
+
+
+state 22
 
     (7) func_declaration -> type MAIN LPAREN . params RPAREN stmt_block
     (8) params -> . VOID
@@ -393,44 +448,44 @@ state 18
     (35) type -> . FLOAT
     (36) type -> . VOID
 
-    VOID            shift and go to state 22
+    VOID            shift and go to state 26
     INT             shift and go to state 7
     FLOAT           shift and go to state 8
 
-    type                           shift and go to state 20
-    params                         shift and go to state 27
-    param_list                     shift and go to state 23
-    param                          shift and go to state 24
+    type                           shift and go to state 24
+    params                         shift and go to state 31
+    param_list                     shift and go to state 27
+    param                          shift and go to state 28
 
-state 19
+state 23
 
-    (30) id_list -> id_list COMMA . idbracket
-    (31) idbracket -> . ID
-    (32) idbracket -> . ID LBRACKET INUM RBRACKET
-    (33) idbracket -> . TIMES ID
+    (29) declaration -> declaration COMMA TIMES idbracket .
 
-    ID              shift and go to state 29
-    TIMES           shift and go to state 30
+    COMMA           reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
+    INT             reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
+    FLOAT           reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
+    VOID            reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
+    $end            reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
+    SEMICOLON       reduce using rule 29 (declaration -> declaration COMMA TIMES idbracket .)
 
-    idbracket                      shift and go to state 28
 
-state 20
+state 24
 
     (12) param -> type . ID
     (13) param -> type . TIMES ID
 
-    ID              shift and go to state 31
-    TIMES           shift and go to state 32
+    ID              shift and go to state 32
+    TIMES           shift and go to state 33
 
 
-state 21
+state 25
 
     (5) func_declaration -> type ID LPAREN params . RPAREN stmt_block
 
-    RPAREN          shift and go to state 33
+    RPAREN          shift and go to state 34
 
 
-state 22
+state 26
 
     (8) params -> VOID .
     (36) type -> VOID .
@@ -440,16 +495,16 @@ state 22
     TIMES           reduce using rule 36 (type -> VOID .)
 
 
-state 23
+state 27
 
     (9) params -> param_list .
     (11) param_list -> param_list . COMMA param
 
     RPAREN          reduce using rule 9 (params -> param_list .)
-    COMMA           shift and go to state 34
+    COMMA           shift and go to state 35
 
 
-state 24
+state 28
 
     (10) param_list -> param .
 
@@ -457,14 +512,14 @@ state 24
     RPAREN          reduce using rule 10 (param_list -> param .)
 
 
-state 25
+state 29
 
-    (32) idbracket -> ID LBRACKET INUM . RBRACKET
+    (33) idbracket -> ID LBRACKET INUM . RBRACKET
 
-    RBRACKET        shift and go to state 35
+    RBRACKET        shift and go to state 36
 
 
-state 26
+state 30
 
     (6) func_declaration -> type TIMES ID LPAREN . params RPAREN stmt_block
     (8) params -> . VOID
@@ -477,56 +532,23 @@ state 26
     (35) type -> . FLOAT
     (36) type -> . VOID
 
-    VOID            shift and go to state 22
+    VOID            shift and go to state 26
     INT             shift and go to state 7
     FLOAT           shift and go to state 8
 
-    type                           shift and go to state 20
-    params                         shift and go to state 36
-    param_list                     shift and go to state 23
-    param                          shift and go to state 24
+    type                           shift and go to state 24
+    params                         shift and go to state 37
+    param_list                     shift and go to state 27
+    param                          shift and go to state 28
 
-state 27
+state 31
 
     (7) func_declaration -> type MAIN LPAREN params . RPAREN stmt_block
 
-    RPAREN          shift and go to state 37
+    RPAREN          shift and go to state 38
 
 
-state 28
-
-    (30) id_list -> id_list COMMA idbracket .
-
-    COMMA           reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-    INT             reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-    FLOAT           reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-    VOID            reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-    $end            reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-    SEMICOLON       reduce using rule 30 (id_list -> id_list COMMA idbracket .)
-
-
-state 29
-
-    (31) idbracket -> ID .
-    (32) idbracket -> ID . LBRACKET INUM RBRACKET
-
-    COMMA           reduce using rule 31 (idbracket -> ID .)
-    INT             reduce using rule 31 (idbracket -> ID .)
-    FLOAT           reduce using rule 31 (idbracket -> ID .)
-    VOID            reduce using rule 31 (idbracket -> ID .)
-    $end            reduce using rule 31 (idbracket -> ID .)
-    SEMICOLON       reduce using rule 31 (idbracket -> ID .)
-    LBRACKET        shift and go to state 16
-
-
-state 30
-
-    (33) idbracket -> TIMES . ID
-
-    ID              shift and go to state 38
-
-
-state 31
+state 32
 
     (12) param -> type ID .
 
@@ -534,14 +556,14 @@ state 31
     RPAREN          reduce using rule 12 (param -> type ID .)
 
 
-state 32
+state 33
 
     (13) param -> type TIMES . ID
 
     ID              shift and go to state 39
 
 
-state 33
+state 34
 
     (5) func_declaration -> type ID LPAREN params RPAREN . stmt_block
     (37) stmt_block -> . LBRACE stmt_list RBRACE
@@ -550,7 +572,7 @@ state 33
 
     stmt_block                     shift and go to state 40
 
-state 34
+state 35
 
     (11) param_list -> param_list COMMA . param
     (12) param -> . type ID
@@ -564,28 +586,28 @@ state 34
     VOID            shift and go to state 9
 
     param                          shift and go to state 42
-    type                           shift and go to state 20
-
-state 35
-
-    (32) idbracket -> ID LBRACKET INUM RBRACKET .
-
-    COMMA           reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-    INT             reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-    FLOAT           reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-    VOID            reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-    $end            reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-    SEMICOLON       reduce using rule 32 (idbracket -> ID LBRACKET INUM RBRACKET .)
-
+    type                           shift and go to state 24
 
 state 36
+
+    (33) idbracket -> ID LBRACKET INUM RBRACKET .
+
+    COMMA           reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+    INT             reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+    FLOAT           reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+    VOID            reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+    $end            reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+    SEMICOLON       reduce using rule 33 (idbracket -> ID LBRACKET INUM RBRACKET .)
+
+
+state 37
 
     (6) func_declaration -> type TIMES ID LPAREN params . RPAREN stmt_block
 
     RPAREN          shift and go to state 43
 
 
-state 37
+state 38
 
     (7) func_declaration -> type MAIN LPAREN params RPAREN . stmt_block
     (37) stmt_block -> . LBRACE stmt_list RBRACE
@@ -593,18 +615,6 @@ state 37
     LBRACE          shift and go to state 41
 
     stmt_block                     shift and go to state 44
-
-state 38
-
-    (33) idbracket -> TIMES ID .
-
-    COMMA           reduce using rule 33 (idbracket -> TIMES ID .)
-    INT             reduce using rule 33 (idbracket -> TIMES ID .)
-    FLOAT           reduce using rule 33 (idbracket -> TIMES ID .)
-    VOID            reduce using rule 33 (idbracket -> TIMES ID .)
-    $end            reduce using rule 33 (idbracket -> TIMES ID .)
-    SEMICOLON       reduce using rule 33 (idbracket -> TIMES ID .)
-
 
 state 39
 
@@ -629,26 +639,26 @@ state 41
     (37) stmt_block -> LBRACE . stmt_list RBRACE
     (38) stmt_list -> . stmt_list genstmt
     (39) stmt_list -> . empty
-    (75) empty -> .
+    (76) empty -> .
 
-    RBRACE          reduce using rule 75 (empty -> .)
-    IF              reduce using rule 75 (empty -> .)
-    SEMICOLON       reduce using rule 75 (empty -> .)
-    PRINT           reduce using rule 75 (empty -> .)
-    ID              reduce using rule 75 (empty -> .)
-    TIMES           reduce using rule 75 (empty -> .)
-    LBRACE          reduce using rule 75 (empty -> .)
-    FOR             reduce using rule 75 (empty -> .)
-    RETURN          reduce using rule 75 (empty -> .)
-    INCREMENT       reduce using rule 75 (empty -> .)
-    INT             reduce using rule 75 (empty -> .)
-    FLOAT           reduce using rule 75 (empty -> .)
-    VOID            reduce using rule 75 (empty -> .)
-    MINUS           reduce using rule 75 (empty -> .)
-    LPAREN          reduce using rule 75 (empty -> .)
-    FNUM            reduce using rule 75 (empty -> .)
-    INUM            reduce using rule 75 (empty -> .)
-    ADDRESS         reduce using rule 75 (empty -> .)
+    RBRACE          reduce using rule 76 (empty -> .)
+    IF              reduce using rule 76 (empty -> .)
+    SEMICOLON       reduce using rule 76 (empty -> .)
+    PRINT           reduce using rule 76 (empty -> .)
+    ID              reduce using rule 76 (empty -> .)
+    TIMES           reduce using rule 76 (empty -> .)
+    LBRACE          reduce using rule 76 (empty -> .)
+    FOR             reduce using rule 76 (empty -> .)
+    RETURN          reduce using rule 76 (empty -> .)
+    INCREMENT       reduce using rule 76 (empty -> .)
+    INT             reduce using rule 76 (empty -> .)
+    FLOAT           reduce using rule 76 (empty -> .)
+    VOID            reduce using rule 76 (empty -> .)
+    MINUS           reduce using rule 76 (empty -> .)
+    LPAREN          reduce using rule 76 (empty -> .)
+    FNUM            reduce using rule 76 (empty -> .)
+    INUM            reduce using rule 76 (empty -> .)
+    ADDRESS         reduce using rule 76 (empty -> .)
 
     stmt_list                      shift and go to state 45
     empty                          shift and go to state 46
@@ -703,7 +713,10 @@ state 45
     (45) expr -> . TIMES ID EQUAL expr
     (46) expr -> . incr_expr
     (47) expr -> . basic_expr
-    (28) declaration -> . type id_list
+    (28) declaration -> . declaration COMMA idbracket
+    (29) declaration -> . declaration COMMA TIMES idbracket
+    (30) declaration -> . type idbracket
+    (31) declaration -> . type TIMES idbracket
     (37) stmt_block -> . LBRACE stmt_list RBRACE
     (40) stmt_forloop -> . FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt
     (41) stmt_return -> . RETURN expr SEMICOLON
@@ -727,7 +740,8 @@ state 45
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     RBRACE          shift and go to state 48
     IF              shift and go to state 52
@@ -918,7 +932,8 @@ state 53
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -992,8 +1007,11 @@ state 56
 state 57
 
     (21) stmt -> declaration . SEMICOLON
+    (28) declaration -> declaration . COMMA idbracket
+    (29) declaration -> declaration . COMMA TIMES idbracket
 
     SEMICOLON       shift and go to state 81
+    COMMA           shift and go to state 10
 
 
 state 58
@@ -1085,7 +1103,7 @@ state 62
     (54) incr_expr -> ID . INCREMENT
     (62) arith_expr -> ID .
     (67) arith_expr -> ID . LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> ID . LPAREN argument_list RPAREN
+    (69) arith_expr -> ID . LPAREN argument_list RPAREN
 
     EQUAL           shift and go to state 83
     LBRACKET        shift and go to state 84
@@ -1129,6 +1147,7 @@ state 64
 
     (45) expr -> TIMES . ID EQUAL expr
     (65) arith_expr -> TIMES . ID
+    (68) arith_expr -> TIMES . ID LBRACKET arith_expr RBRACKET
 
     ID              shift and go to state 91
 
@@ -1163,24 +1182,21 @@ state 66
 
 state 67
 
-    (28) declaration -> type . id_list
-    (29) id_list -> . idbracket
-    (30) id_list -> . id_list COMMA idbracket
-    (31) idbracket -> . ID
-    (32) idbracket -> . ID LBRACKET INUM RBRACKET
-    (33) idbracket -> . TIMES ID
+    (30) declaration -> type . idbracket
+    (31) declaration -> type . TIMES idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
 
-    ID              shift and go to state 29
-    TIMES           shift and go to state 30
+    TIMES           shift and go to state 97
+    ID              shift and go to state 17
 
-    id_list                        shift and go to state 13
     idbracket                      shift and go to state 14
 
 state 68
 
     (40) stmt_forloop -> FOR . LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt
 
-    LPAREN          shift and go to state 97
+    LPAREN          shift and go to state 98
 
 
 state 69
@@ -1208,9 +1224,10 @@ state 69
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
-    SEMICOLON       shift and go to state 99
+    SEMICOLON       shift and go to state 100
     ID              shift and go to state 62
     TIMES           shift and go to state 64
     INCREMENT       shift and go to state 70
@@ -1220,7 +1237,7 @@ state 69
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 98
+    expr                           shift and go to state 99
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
@@ -1229,7 +1246,7 @@ state 70
 
     (55) incr_expr -> INCREMENT . ID
 
-    ID              shift and go to state 100
+    ID              shift and go to state 101
 
 
 state 71
@@ -1247,7 +1264,8 @@ state 71
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1257,7 +1275,7 @@ state 71
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 101
+    arith_expr                     shift and go to state 102
 
 state 72
 
@@ -1301,7 +1319,7 @@ state 74
 
     (66) arith_expr -> ADDRESS . ID
 
-    ID              shift and go to state 102
+    ID              shift and go to state 103
 
 
 state 75
@@ -1330,7 +1348,8 @@ state 75
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -1341,7 +1360,7 @@ state 75
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 103
+    expr                           shift and go to state 104
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
@@ -1354,7 +1373,7 @@ state 76
     (60) arith_expr -> arith_expr . TIMES arith_expr
     (61) arith_expr -> arith_expr . DIV arith_expr
 
-    RPAREN          shift and go to state 104
+    RPAREN          shift and go to state 105
     PLUS            shift and go to state 87
     MINUS           shift and go to state 88
     TIMES           shift and go to state 89
@@ -1364,15 +1383,16 @@ state 76
 state 77
 
     (65) arith_expr -> TIMES . ID
+    (68) arith_expr -> TIMES . ID LBRACKET arith_expr RBRACKET
 
-    ID              shift and go to state 105
+    ID              shift and go to state 106
 
 
 state 78
 
     (62) arith_expr -> ID .
     (67) arith_expr -> ID . LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> ID . LPAREN argument_list RPAREN
+    (69) arith_expr -> ID . LPAREN argument_list RPAREN
 
     RPAREN          reduce using rule 62 (arith_expr -> ID .)
     PLUS            reduce using rule 62 (arith_expr -> ID .)
@@ -1387,7 +1407,7 @@ state 78
     error           reduce using rule 62 (arith_expr -> ID .)
     COMMA           reduce using rule 62 (arith_expr -> ID .)
     RBRACKET        reduce using rule 62 (arith_expr -> ID .)
-    LBRACKET        shift and go to state 106
+    LBRACKET        shift and go to state 107
     LPAREN          shift and go to state 86
 
 
@@ -1469,13 +1489,13 @@ state 81
 state 82
 
     (27) stmt -> PRINT LPAREN . argument_list RPAREN
-    (69) argument_list -> . argument
-    (70) argument_list -> . argument_list COMMA argument
-    (71) argument -> . empty
-    (72) argument -> . arith_expr
-    (73) argument -> . LITERAL
-    (74) argument -> . error
-    (75) empty -> .
+    (70) argument_list -> . argument
+    (71) argument_list -> . argument_list COMMA argument
+    (72) argument -> . empty
+    (73) argument -> . arith_expr
+    (74) argument -> . LITERAL
+    (75) argument -> . error
+    (76) empty -> .
     (56) arith_expr -> . MINUS arith_expr
     (57) arith_expr -> . LPAREN arith_expr RPAREN
     (58) arith_expr -> . arith_expr PLUS arith_expr
@@ -1488,12 +1508,13 @@ state 82
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
-    LITERAL         shift and go to state 111
-    error           shift and go to state 112
-    RPAREN          reduce using rule 75 (empty -> .)
-    COMMA           reduce using rule 75 (empty -> .)
+    LITERAL         shift and go to state 112
+    error           shift and go to state 113
+    RPAREN          reduce using rule 76 (empty -> .)
+    COMMA           reduce using rule 76 (empty -> .)
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
     ID              shift and go to state 78
@@ -1502,10 +1523,10 @@ state 82
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    argument_list                  shift and go to state 107
-    argument                       shift and go to state 108
-    empty                          shift and go to state 109
-    arith_expr                     shift and go to state 110
+    argument_list                  shift and go to state 108
+    argument                       shift and go to state 109
+    empty                          shift and go to state 110
+    arith_expr                     shift and go to state 111
 
 state 83
 
@@ -1531,7 +1552,8 @@ state 83
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -1542,7 +1564,7 @@ state 83
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 113
+    expr                           shift and go to state 114
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
@@ -1563,7 +1585,8 @@ state 84
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1573,7 +1596,7 @@ state 84
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 114
+    arith_expr                     shift and go to state 115
 
 state 85
 
@@ -1586,14 +1609,14 @@ state 85
 
 state 86
 
-    (68) arith_expr -> ID LPAREN . argument_list RPAREN
-    (69) argument_list -> . argument
-    (70) argument_list -> . argument_list COMMA argument
-    (71) argument -> . empty
-    (72) argument -> . arith_expr
-    (73) argument -> . LITERAL
-    (74) argument -> . error
-    (75) empty -> .
+    (69) arith_expr -> ID LPAREN . argument_list RPAREN
+    (70) argument_list -> . argument
+    (71) argument_list -> . argument_list COMMA argument
+    (72) argument -> . empty
+    (73) argument -> . arith_expr
+    (74) argument -> . LITERAL
+    (75) argument -> . error
+    (76) empty -> .
     (56) arith_expr -> . MINUS arith_expr
     (57) arith_expr -> . LPAREN arith_expr RPAREN
     (58) arith_expr -> . arith_expr PLUS arith_expr
@@ -1606,12 +1629,13 @@ state 86
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
-    LITERAL         shift and go to state 111
-    error           shift and go to state 112
-    RPAREN          reduce using rule 75 (empty -> .)
-    COMMA           reduce using rule 75 (empty -> .)
+    LITERAL         shift and go to state 112
+    error           shift and go to state 113
+    RPAREN          reduce using rule 76 (empty -> .)
+    COMMA           reduce using rule 76 (empty -> .)
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
     ID              shift and go to state 78
@@ -1620,10 +1644,10 @@ state 86
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    argument_list                  shift and go to state 115
-    argument                       shift and go to state 108
-    empty                          shift and go to state 109
-    arith_expr                     shift and go to state 110
+    argument_list                  shift and go to state 116
+    argument                       shift and go to state 109
+    empty                          shift and go to state 110
+    arith_expr                     shift and go to state 111
 
 state 87
 
@@ -1640,7 +1664,8 @@ state 87
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1650,7 +1675,7 @@ state 87
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 116
+    arith_expr                     shift and go to state 117
 
 state 88
 
@@ -1667,7 +1692,8 @@ state 88
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1677,7 +1703,7 @@ state 88
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 117
+    arith_expr                     shift and go to state 118
 
 state 89
 
@@ -1694,7 +1720,8 @@ state 89
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1704,7 +1731,7 @@ state 89
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 118
+    arith_expr                     shift and go to state 119
 
 state 90
 
@@ -1721,7 +1748,8 @@ state 90
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1731,14 +1759,15 @@ state 90
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 119
+    arith_expr                     shift and go to state 120
 
 state 91
 
     (45) expr -> TIMES ID . EQUAL expr
     (65) arith_expr -> TIMES ID .
+    (68) arith_expr -> TIMES ID . LBRACKET arith_expr RBRACKET
 
-    EQUAL           shift and go to state 120
+    EQUAL           shift and go to state 121
     PLUS            reduce using rule 65 (arith_expr -> TIMES ID .)
     MINUS           reduce using rule 65 (arith_expr -> TIMES ID .)
     TIMES           reduce using rule 65 (arith_expr -> TIMES ID .)
@@ -1750,6 +1779,7 @@ state 91
     SEMICOLON       reduce using rule 65 (arith_expr -> TIMES ID .)
     error           reduce using rule 65 (arith_expr -> TIMES ID .)
     RPAREN          reduce using rule 65 (arith_expr -> TIMES ID .)
+    LBRACKET        shift and go to state 122
 
 
 state 92
@@ -1767,7 +1797,8 @@ state 92
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -1777,7 +1808,7 @@ state 92
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 121
+    arith_expr                     shift and go to state 123
 
 state 93
 
@@ -1833,6 +1864,16 @@ state 96
 
 state 97
 
+    (31) declaration -> type TIMES . idbracket
+    (32) idbracket -> . ID
+    (33) idbracket -> . ID LBRACKET INUM RBRACKET
+
+    ID              shift and go to state 17
+
+    idbracket                      shift and go to state 21
+
+state 98
+
     (40) stmt_forloop -> FOR LPAREN . expr SEMICOLON expr SEMICOLON expr RPAREN stmt
     (43) expr -> . ID EQUAL expr
     (44) expr -> . ID LBRACKET arith_expr RBRACKET EQUAL expr
@@ -1855,7 +1896,8 @@ state 97
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -1866,19 +1908,19 @@ state 97
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 122
+    expr                           shift and go to state 124
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
 
-state 98
+state 99
 
     (41) stmt_return -> RETURN expr . SEMICOLON
 
-    SEMICOLON       shift and go to state 123
+    SEMICOLON       shift and go to state 125
 
 
-state 99
+state 100
 
     (42) stmt_return -> RETURN SEMICOLON .
 
@@ -1903,7 +1945,7 @@ state 99
     ELSE            reduce using rule 42 (stmt_return -> RETURN SEMICOLON .)
 
 
-state 100
+state 101
 
     (55) incr_expr -> INCREMENT ID .
 
@@ -1912,7 +1954,7 @@ state 100
     RPAREN          reduce using rule 55 (incr_expr -> INCREMENT ID .)
 
 
-state 101
+state 102
 
     (56) arith_expr -> MINUS arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -1940,7 +1982,7 @@ state 101
   ! DIV             [ shift and go to state 90 ]
 
 
-state 102
+state 103
 
     (66) arith_expr -> ADDRESS ID .
 
@@ -1959,16 +2001,16 @@ state 102
     RBRACKET        reduce using rule 66 (arith_expr -> ADDRESS ID .)
 
 
-state 103
+state 104
 
     (16) mstmt -> IF LPAREN expr . RPAREN mstmt ELSE mstmt
     (18) umstmt -> IF LPAREN expr . RPAREN genstmt
     (19) umstmt -> IF LPAREN expr . RPAREN mstmt ELSE umstmt
 
-    RPAREN          shift and go to state 124
+    RPAREN          shift and go to state 126
 
 
-state 104
+state 105
 
     (57) arith_expr -> LPAREN arith_expr RPAREN .
 
@@ -1987,9 +2029,10 @@ state 104
     RBRACKET        reduce using rule 57 (arith_expr -> LPAREN arith_expr RPAREN .)
 
 
-state 105
+state 106
 
     (65) arith_expr -> TIMES ID .
+    (68) arith_expr -> TIMES ID . LBRACKET arith_expr RBRACKET
 
     RPAREN          reduce using rule 65 (arith_expr -> TIMES ID .)
     PLUS            reduce using rule 65 (arith_expr -> TIMES ID .)
@@ -2004,9 +2047,10 @@ state 105
     error           reduce using rule 65 (arith_expr -> TIMES ID .)
     COMMA           reduce using rule 65 (arith_expr -> TIMES ID .)
     RBRACKET        reduce using rule 65 (arith_expr -> TIMES ID .)
+    LBRACKET        shift and go to state 122
 
 
-state 106
+state 107
 
     (67) arith_expr -> ID LBRACKET . arith_expr RBRACKET
     (56) arith_expr -> . MINUS arith_expr
@@ -2021,7 +2065,8 @@ state 106
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
@@ -2031,66 +2076,66 @@ state 106
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    arith_expr                     shift and go to state 125
-
-state 107
-
-    (27) stmt -> PRINT LPAREN argument_list . RPAREN
-    (70) argument_list -> argument_list . COMMA argument
-
-    RPAREN          shift and go to state 126
-    COMMA           shift and go to state 127
-
+    arith_expr                     shift and go to state 127
 
 state 108
 
-    (69) argument_list -> argument .
+    (27) stmt -> PRINT LPAREN argument_list . RPAREN
+    (71) argument_list -> argument_list . COMMA argument
 
-    RPAREN          reduce using rule 69 (argument_list -> argument .)
-    COMMA           reduce using rule 69 (argument_list -> argument .)
+    RPAREN          shift and go to state 128
+    COMMA           shift and go to state 129
 
 
 state 109
 
-    (71) argument -> empty .
+    (70) argument_list -> argument .
 
-    RPAREN          reduce using rule 71 (argument -> empty .)
-    COMMA           reduce using rule 71 (argument -> empty .)
+    RPAREN          reduce using rule 70 (argument_list -> argument .)
+    COMMA           reduce using rule 70 (argument_list -> argument .)
 
 
 state 110
 
-    (72) argument -> arith_expr .
+    (72) argument -> empty .
+
+    RPAREN          reduce using rule 72 (argument -> empty .)
+    COMMA           reduce using rule 72 (argument -> empty .)
+
+
+state 111
+
+    (73) argument -> arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
     (59) arith_expr -> arith_expr . MINUS arith_expr
     (60) arith_expr -> arith_expr . TIMES arith_expr
     (61) arith_expr -> arith_expr . DIV arith_expr
 
-    RPAREN          reduce using rule 72 (argument -> arith_expr .)
-    COMMA           reduce using rule 72 (argument -> arith_expr .)
+    RPAREN          reduce using rule 73 (argument -> arith_expr .)
+    COMMA           reduce using rule 73 (argument -> arith_expr .)
     PLUS            shift and go to state 87
     MINUS           shift and go to state 88
     TIMES           shift and go to state 89
     DIV             shift and go to state 90
 
 
-state 111
-
-    (73) argument -> LITERAL .
-
-    RPAREN          reduce using rule 73 (argument -> LITERAL .)
-    COMMA           reduce using rule 73 (argument -> LITERAL .)
-
-
 state 112
 
-    (74) argument -> error .
+    (74) argument -> LITERAL .
 
-    RPAREN          reduce using rule 74 (argument -> error .)
-    COMMA           reduce using rule 74 (argument -> error .)
+    RPAREN          reduce using rule 74 (argument -> LITERAL .)
+    COMMA           reduce using rule 74 (argument -> LITERAL .)
 
 
 state 113
+
+    (75) argument -> error .
+
+    RPAREN          reduce using rule 75 (argument -> error .)
+    COMMA           reduce using rule 75 (argument -> error .)
+
+
+state 114
 
     (43) expr -> ID EQUAL expr .
 
@@ -2099,7 +2144,7 @@ state 113
     RPAREN          reduce using rule 43 (expr -> ID EQUAL expr .)
 
 
-state 114
+state 115
 
     (44) expr -> ID LBRACKET arith_expr . RBRACKET EQUAL expr
     (67) arith_expr -> ID LBRACKET arith_expr . RBRACKET
@@ -2108,23 +2153,23 @@ state 114
     (60) arith_expr -> arith_expr . TIMES arith_expr
     (61) arith_expr -> arith_expr . DIV arith_expr
 
-    RBRACKET        shift and go to state 128
+    RBRACKET        shift and go to state 130
     PLUS            shift and go to state 87
     MINUS           shift and go to state 88
     TIMES           shift and go to state 89
     DIV             shift and go to state 90
 
 
-state 115
-
-    (68) arith_expr -> ID LPAREN argument_list . RPAREN
-    (70) argument_list -> argument_list . COMMA argument
-
-    RPAREN          shift and go to state 129
-    COMMA           shift and go to state 127
-
-
 state 116
+
+    (69) arith_expr -> ID LPAREN argument_list . RPAREN
+    (71) argument_list -> argument_list . COMMA argument
+
+    RPAREN          shift and go to state 131
+    COMMA           shift and go to state 129
+
+
+state 117
 
     (58) arith_expr -> arith_expr PLUS arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2152,7 +2197,7 @@ state 116
   ! MINUS           [ shift and go to state 88 ]
 
 
-state 117
+state 118
 
     (59) arith_expr -> arith_expr MINUS arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2180,7 +2225,7 @@ state 117
   ! MINUS           [ shift and go to state 88 ]
 
 
-state 118
+state 119
 
     (60) arith_expr -> arith_expr TIMES arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2208,7 +2253,7 @@ state 118
   ! DIV             [ shift and go to state 90 ]
 
 
-state 119
+state 120
 
     (61) arith_expr -> arith_expr DIV arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2236,7 +2281,7 @@ state 119
   ! DIV             [ shift and go to state 90 ]
 
 
-state 120
+state 121
 
     (45) expr -> TIMES ID EQUAL . expr
     (43) expr -> . ID EQUAL expr
@@ -2260,7 +2305,8 @@ state 120
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -2271,12 +2317,40 @@ state 120
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 130
+    expr                           shift and go to state 132
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
 
-state 121
+state 122
+
+    (68) arith_expr -> TIMES ID LBRACKET . arith_expr RBRACKET
+    (56) arith_expr -> . MINUS arith_expr
+    (57) arith_expr -> . LPAREN arith_expr RPAREN
+    (58) arith_expr -> . arith_expr PLUS arith_expr
+    (59) arith_expr -> . arith_expr MINUS arith_expr
+    (60) arith_expr -> . arith_expr TIMES arith_expr
+    (61) arith_expr -> . arith_expr DIV arith_expr
+    (62) arith_expr -> . ID
+    (63) arith_expr -> . FNUM
+    (64) arith_expr -> . INUM
+    (65) arith_expr -> . TIMES ID
+    (66) arith_expr -> . ADDRESS ID
+    (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
+
+    MINUS           shift and go to state 71
+    LPAREN          shift and go to state 53
+    ID              shift and go to state 78
+    FNUM            shift and go to state 72
+    INUM            shift and go to state 73
+    TIMES           shift and go to state 77
+    ADDRESS         shift and go to state 74
+
+    arith_expr                     shift and go to state 133
+
+state 123
 
     (48) basic_expr -> basic_expr compare arith_expr .
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2297,14 +2371,14 @@ state 121
     DIV             shift and go to state 90
 
 
-state 122
+state 124
 
     (40) stmt_forloop -> FOR LPAREN expr . SEMICOLON expr SEMICOLON expr RPAREN stmt
 
-    SEMICOLON       shift and go to state 131
+    SEMICOLON       shift and go to state 134
 
 
-state 123
+state 125
 
     (41) stmt_return -> RETURN expr SEMICOLON .
 
@@ -2329,7 +2403,7 @@ state 123
     ELSE            reduce using rule 41 (stmt_return -> RETURN expr SEMICOLON .)
 
 
-state 124
+state 126
 
     (16) mstmt -> IF LPAREN expr RPAREN . mstmt ELSE mstmt
     (18) umstmt -> IF LPAREN expr RPAREN . genstmt
@@ -2353,7 +2427,10 @@ state 124
     (45) expr -> . TIMES ID EQUAL expr
     (46) expr -> . incr_expr
     (47) expr -> . basic_expr
-    (28) declaration -> . type id_list
+    (28) declaration -> . declaration COMMA idbracket
+    (29) declaration -> . declaration COMMA TIMES idbracket
+    (30) declaration -> . type idbracket
+    (31) declaration -> . type TIMES idbracket
     (37) stmt_block -> . LBRACE stmt_list RBRACE
     (40) stmt_forloop -> . FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt
     (41) stmt_return -> . RETURN expr SEMICOLON
@@ -2377,7 +2454,8 @@ state 124
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     IF              shift and go to state 52
     SEMICOLON       shift and go to state 56
@@ -2398,8 +2476,8 @@ state 124
     ADDRESS         shift and go to state 74
 
     expr                           shift and go to state 54
-    mstmt                          shift and go to state 132
-    genstmt                        shift and go to state 133
+    mstmt                          shift and go to state 135
+    genstmt                        shift and go to state 136
     umstmt                         shift and go to state 51
     stmt                           shift and go to state 55
     declaration                    shift and go to state 57
@@ -2411,7 +2489,7 @@ state 124
     basic_expr                     shift and go to state 66
     type                           shift and go to state 67
 
-state 125
+state 127
 
     (67) arith_expr -> ID LBRACKET arith_expr . RBRACKET
     (58) arith_expr -> arith_expr . PLUS arith_expr
@@ -2419,14 +2497,14 @@ state 125
     (60) arith_expr -> arith_expr . TIMES arith_expr
     (61) arith_expr -> arith_expr . DIV arith_expr
 
-    RBRACKET        shift and go to state 134
+    RBRACKET        shift and go to state 137
     PLUS            shift and go to state 87
     MINUS           shift and go to state 88
     TIMES           shift and go to state 89
     DIV             shift and go to state 90
 
 
-state 126
+state 128
 
     (27) stmt -> PRINT LPAREN argument_list RPAREN .
 
@@ -2451,14 +2529,14 @@ state 126
     ELSE            reduce using rule 27 (stmt -> PRINT LPAREN argument_list RPAREN .)
 
 
-state 127
+state 129
 
-    (70) argument_list -> argument_list COMMA . argument
-    (71) argument -> . empty
-    (72) argument -> . arith_expr
-    (73) argument -> . LITERAL
-    (74) argument -> . error
-    (75) empty -> .
+    (71) argument_list -> argument_list COMMA . argument
+    (72) argument -> . empty
+    (73) argument -> . arith_expr
+    (74) argument -> . LITERAL
+    (75) argument -> . error
+    (76) empty -> .
     (56) arith_expr -> . MINUS arith_expr
     (57) arith_expr -> . LPAREN arith_expr RPAREN
     (58) arith_expr -> . arith_expr PLUS arith_expr
@@ -2471,12 +2549,13 @@ state 127
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
-    LITERAL         shift and go to state 111
-    error           shift and go to state 112
-    RPAREN          reduce using rule 75 (empty -> .)
-    COMMA           reduce using rule 75 (empty -> .)
+    LITERAL         shift and go to state 112
+    error           shift and go to state 113
+    RPAREN          reduce using rule 76 (empty -> .)
+    COMMA           reduce using rule 76 (empty -> .)
     MINUS           shift and go to state 71
     LPAREN          shift and go to state 53
     ID              shift and go to state 78
@@ -2485,16 +2564,16 @@ state 127
     TIMES           shift and go to state 77
     ADDRESS         shift and go to state 74
 
-    argument                       shift and go to state 135
-    empty                          shift and go to state 109
-    arith_expr                     shift and go to state 110
+    argument                       shift and go to state 138
+    empty                          shift and go to state 110
+    arith_expr                     shift and go to state 111
 
-state 128
+state 130
 
     (44) expr -> ID LBRACKET arith_expr RBRACKET . EQUAL expr
     (67) arith_expr -> ID LBRACKET arith_expr RBRACKET .
 
-    EQUAL           shift and go to state 136
+    EQUAL           shift and go to state 139
     PLUS            reduce using rule 67 (arith_expr -> ID LBRACKET arith_expr RBRACKET .)
     MINUS           reduce using rule 67 (arith_expr -> ID LBRACKET arith_expr RBRACKET .)
     TIMES           reduce using rule 67 (arith_expr -> ID LBRACKET arith_expr RBRACKET .)
@@ -2508,26 +2587,26 @@ state 128
     RPAREN          reduce using rule 67 (arith_expr -> ID LBRACKET arith_expr RBRACKET .)
 
 
-state 129
+state 131
 
-    (68) arith_expr -> ID LPAREN argument_list RPAREN .
+    (69) arith_expr -> ID LPAREN argument_list RPAREN .
 
-    PLUS            reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    MINUS           reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    TIMES           reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    DIV             reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    EQ              reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    NEQ             reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    GT              reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    LT              reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    SEMICOLON       reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    error           reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    RPAREN          reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    COMMA           reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
-    RBRACKET        reduce using rule 68 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    PLUS            reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    MINUS           reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    TIMES           reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    DIV             reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    EQ              reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    NEQ             reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    GT              reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    LT              reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    SEMICOLON       reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    error           reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    RPAREN          reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    COMMA           reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
+    RBRACKET        reduce using rule 69 (arith_expr -> ID LPAREN argument_list RPAREN .)
 
 
-state 130
+state 132
 
     (45) expr -> TIMES ID EQUAL expr .
 
@@ -2536,7 +2615,22 @@ state 130
     RPAREN          reduce using rule 45 (expr -> TIMES ID EQUAL expr .)
 
 
-state 131
+state 133
+
+    (68) arith_expr -> TIMES ID LBRACKET arith_expr . RBRACKET
+    (58) arith_expr -> arith_expr . PLUS arith_expr
+    (59) arith_expr -> arith_expr . MINUS arith_expr
+    (60) arith_expr -> arith_expr . TIMES arith_expr
+    (61) arith_expr -> arith_expr . DIV arith_expr
+
+    RBRACKET        shift and go to state 140
+    PLUS            shift and go to state 87
+    MINUS           shift and go to state 88
+    TIMES           shift and go to state 89
+    DIV             shift and go to state 90
+
+
+state 134
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON . expr SEMICOLON expr RPAREN stmt
     (43) expr -> . ID EQUAL expr
@@ -2560,7 +2654,8 @@ state 131
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -2571,18 +2666,18 @@ state 131
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 137
+    expr                           shift and go to state 141
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
 
-state 132
+state 135
 
     (16) mstmt -> IF LPAREN expr RPAREN mstmt . ELSE mstmt
     (19) umstmt -> IF LPAREN expr RPAREN mstmt . ELSE umstmt
     (14) genstmt -> mstmt .
 
-    ELSE            shift and go to state 138
+    ELSE            shift and go to state 142
     RBRACE          reduce using rule 14 (genstmt -> mstmt .)
     IF              reduce using rule 14 (genstmt -> mstmt .)
     SEMICOLON       reduce using rule 14 (genstmt -> mstmt .)
@@ -2603,7 +2698,7 @@ state 132
     ADDRESS         reduce using rule 14 (genstmt -> mstmt .)
 
 
-state 133
+state 136
 
     (18) umstmt -> IF LPAREN expr RPAREN genstmt .
 
@@ -2627,7 +2722,7 @@ state 133
     ADDRESS         reduce using rule 18 (umstmt -> IF LPAREN expr RPAREN genstmt .)
 
 
-state 134
+state 137
 
     (67) arith_expr -> ID LBRACKET arith_expr RBRACKET .
 
@@ -2646,15 +2741,15 @@ state 134
     RBRACKET        reduce using rule 67 (arith_expr -> ID LBRACKET arith_expr RBRACKET .)
 
 
-state 135
+state 138
 
-    (70) argument_list -> argument_list COMMA argument .
+    (71) argument_list -> argument_list COMMA argument .
 
-    RPAREN          reduce using rule 70 (argument_list -> argument_list COMMA argument .)
-    COMMA           reduce using rule 70 (argument_list -> argument_list COMMA argument .)
+    RPAREN          reduce using rule 71 (argument_list -> argument_list COMMA argument .)
+    COMMA           reduce using rule 71 (argument_list -> argument_list COMMA argument .)
 
 
-state 136
+state 139
 
     (44) expr -> ID LBRACKET arith_expr RBRACKET EQUAL . expr
     (43) expr -> . ID EQUAL expr
@@ -2678,7 +2773,8 @@ state 136
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -2690,18 +2786,37 @@ state 136
     ADDRESS         shift and go to state 74
 
     arith_expr                     shift and go to state 63
-    expr                           shift and go to state 139
+    expr                           shift and go to state 143
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
 
-state 137
+state 140
+
+    (68) arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .
+
+    PLUS            reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    MINUS           reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    TIMES           reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    DIV             reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    EQ              reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    NEQ             reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    GT              reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    LT              reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    SEMICOLON       reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    error           reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    RPAREN          reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    COMMA           reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+    RBRACKET        reduce using rule 68 (arith_expr -> TIMES ID LBRACKET arith_expr RBRACKET .)
+
+
+state 141
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON expr . SEMICOLON expr RPAREN stmt
 
-    SEMICOLON       shift and go to state 140
+    SEMICOLON       shift and go to state 144
 
 
-state 138
+state 142
 
     (16) mstmt -> IF LPAREN expr RPAREN mstmt ELSE . mstmt
     (19) umstmt -> IF LPAREN expr RPAREN mstmt ELSE . umstmt
@@ -2722,7 +2837,10 @@ state 138
     (45) expr -> . TIMES ID EQUAL expr
     (46) expr -> . incr_expr
     (47) expr -> . basic_expr
-    (28) declaration -> . type id_list
+    (28) declaration -> . declaration COMMA idbracket
+    (29) declaration -> . declaration COMMA TIMES idbracket
+    (30) declaration -> . type idbracket
+    (31) declaration -> . type TIMES idbracket
     (37) stmt_block -> . LBRACE stmt_list RBRACE
     (40) stmt_forloop -> . FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt
     (41) stmt_return -> . RETURN expr SEMICOLON
@@ -2746,7 +2864,8 @@ state 138
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     IF              shift and go to state 52
     SEMICOLON       shift and go to state 56
@@ -2767,8 +2886,8 @@ state 138
     ADDRESS         shift and go to state 74
 
     expr                           shift and go to state 54
-    mstmt                          shift and go to state 141
-    umstmt                         shift and go to state 142
+    mstmt                          shift and go to state 145
+    umstmt                         shift and go to state 146
     stmt                           shift and go to state 55
     declaration                    shift and go to state 57
     stmt_block                     shift and go to state 58
@@ -2779,7 +2898,7 @@ state 138
     basic_expr                     shift and go to state 66
     type                           shift and go to state 67
 
-state 139
+state 143
 
     (44) expr -> ID LBRACKET arith_expr RBRACKET EQUAL expr .
 
@@ -2788,7 +2907,7 @@ state 139
     RPAREN          reduce using rule 44 (expr -> ID LBRACKET arith_expr RBRACKET EQUAL expr .)
 
 
-state 140
+state 144
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON expr SEMICOLON . expr RPAREN stmt
     (43) expr -> . ID EQUAL expr
@@ -2812,7 +2931,8 @@ state 140
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     ID              shift and go to state 62
     TIMES           shift and go to state 64
@@ -2823,12 +2943,12 @@ state 140
     INUM            shift and go to state 73
     ADDRESS         shift and go to state 74
 
-    expr                           shift and go to state 143
+    expr                           shift and go to state 147
     arith_expr                     shift and go to state 63
     incr_expr                      shift and go to state 65
     basic_expr                     shift and go to state 66
 
-state 141
+state 145
 
     (16) mstmt -> IF LPAREN expr RPAREN mstmt ELSE mstmt .
 
@@ -2853,7 +2973,7 @@ state 141
     ELSE            reduce using rule 16 (mstmt -> IF LPAREN expr RPAREN mstmt ELSE mstmt .)
 
 
-state 142
+state 146
 
     (19) umstmt -> IF LPAREN expr RPAREN mstmt ELSE umstmt .
 
@@ -2877,14 +2997,14 @@ state 142
     ADDRESS         reduce using rule 19 (umstmt -> IF LPAREN expr RPAREN mstmt ELSE umstmt .)
 
 
-state 143
+state 147
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON expr SEMICOLON expr . RPAREN stmt
 
-    RPAREN          shift and go to state 144
+    RPAREN          shift and go to state 148
 
 
-state 144
+state 148
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN . stmt
     (20) stmt -> . expr SEMICOLON
@@ -2900,7 +3020,10 @@ state 144
     (45) expr -> . TIMES ID EQUAL expr
     (46) expr -> . incr_expr
     (47) expr -> . basic_expr
-    (28) declaration -> . type id_list
+    (28) declaration -> . declaration COMMA idbracket
+    (29) declaration -> . declaration COMMA TIMES idbracket
+    (30) declaration -> . type idbracket
+    (31) declaration -> . type TIMES idbracket
     (37) stmt_block -> . LBRACE stmt_list RBRACE
     (40) stmt_forloop -> . FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt
     (41) stmt_return -> . RETURN expr SEMICOLON
@@ -2924,7 +3047,8 @@ state 144
     (65) arith_expr -> . TIMES ID
     (66) arith_expr -> . ADDRESS ID
     (67) arith_expr -> . ID LBRACKET arith_expr RBRACKET
-    (68) arith_expr -> . ID LPAREN argument_list RPAREN
+    (68) arith_expr -> . TIMES ID LBRACKET arith_expr RBRACKET
+    (69) arith_expr -> . ID LPAREN argument_list RPAREN
 
     SEMICOLON       shift and go to state 56
     PRINT           shift and go to state 61
@@ -2944,7 +3068,7 @@ state 144
     ADDRESS         shift and go to state 74
 
     expr                           shift and go to state 54
-    stmt                           shift and go to state 145
+    stmt                           shift and go to state 149
     declaration                    shift and go to state 57
     stmt_block                     shift and go to state 58
     stmt_forloop                   shift and go to state 59
@@ -2954,7 +3078,7 @@ state 144
     basic_expr                     shift and go to state 66
     type                           shift and go to state 67
 
-state 145
+state 149
 
     (40) stmt_forloop -> FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN stmt .
 

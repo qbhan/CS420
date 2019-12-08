@@ -99,8 +99,9 @@ class GetAddress(Unary):
 
 
 class Increment(Unary):
-    def __init__(self, expr):
+    def __init__(self, expr, delay):
         self.expr = expr
+        self.delay = delay
 
     def evaluate(self):
         return self.expr.evaluate() + 1
@@ -365,6 +366,22 @@ class StmtList:
 
     def add(self, stmt):
         self.stmtlist.append(stmt)
+
+
+class DeclStmtList:
+    def __init__(self, type):
+        self.decllist = []
+        self.type = type
+        self.lineno = None
+
+    def setlineno(self, n):
+        self.lineno = n
+
+    def add(self, stmt):
+        self.decllist.append(stmt)
+
+    def gettype(self):
+        return self.type
 
 
 class ParameterList:

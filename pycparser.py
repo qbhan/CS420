@@ -1,6 +1,6 @@
 import ply.yacc as yacc
-from CS420.pyclexer import *
-from CS420.datastructure import *
+from pyclexer import *
+from datastructure import *
 
 ##########################################################################
 # Define precedence of operators.
@@ -198,15 +198,29 @@ def p_stmt_printf(p):
 # DeclStmt will get declaration with list object.
 ##########################################################################
 def p_declaration_1(p):
-    '''declaration : type id_list'''
+    '''declaration : declaration COMMA idbracket'''
+    ty = p[1].gettype()
+    p[1].add(DeclStmt(ty, p[2]))
+    p[0] = p[1]
 
-    p[0] = DeclStmt(p[1], p[2])
+def p_declaration_2(p):
+    '''declaration : declaration COMMA TIMES idbracket'''
+    ty = p[1].gettype()
+    p[1].add(DeclStmt(PointerType(ty), p[3]))
+    p[0] = p[1]
 
 
-# def p_declaration_2(p):
-#     '''declaration : type TIMES id_list'''
-#
-#     p[0] = DeclStmt(Pointer(p[1]), p[3])
+def p_declaration_3(p):
+    '''declaration : type idbracket'''
+    p[0] = DeclStmtList(p[1])
+    p[0].add(DeclStmt(p[1], p[2]))
+
+
+def p_declaration_4(p):
+    '''declaration : type TIMES idbracket'''
+    p[0] = DeclStmtList(p[1])
+    p[0].add(DeclStmt(PointerType(p[1]), p[3]))
+
 
 ##########################################################################
 # Rules : Derive id_list & id_bracket
@@ -215,17 +229,6 @@ def p_declaration_1(p):
 ##########################################################################
 # TODO might use id_bracket to arith_expr when calling identifier for
 #  simple grammar
-def p_id_list_1(p):
-    '''id_list : idbracket'''
-    p[0] = [p[1]]
-
-
-def p_id_list_2(p):
-    '''id_list : id_list COMMA idbracket'''
-    p[1].append(p[3])
-    p[0] = p[1]
-
-
 def p_id_bracket_1(p):
     '''idbracket : ID'''
     p[0] = Identifier(p[1], p.lineno(1))
@@ -234,12 +237,6 @@ def p_id_bracket_1(p):
 def p_id_bracket_2(p):
     '''idbracket : ID LBRACKET INUM RBRACKET'''
     p[0] = Array(p[1], p[3])
-
-
-def p_id_bracket_3(p):
-    '''idbracket : TIMES ID'''
-    p[0] = Pointer(p[2])
-
 ##########################################################################
 # Rules : Derive basic types
 ##########################################################################
@@ -390,7 +387,7 @@ def p_incr_expr_1(p):
     # id = Identifier(p[2], ty.__name__)
     # id.incr()
 
-    p[0] = Increment(p[1])
+    p[0] = Increment(p[1], True)
 
 
 def p_incr_expr_2(p):
@@ -400,7 +397,7 @@ def p_incr_expr_2(p):
     # id = Identifier(p[2], ty.__name__)
     # id.incr()
 
-    p[0] = Increment(p[2])
+    p[0] = Increment(p[2], False)
 
 ##########################################################################
 # Rules : Derive basic arithmetic expressions.
@@ -509,10 +506,14 @@ def p_arith_array_index(p):
     p[0] = Array_index(p[1], p[3])
 
 
+def p_arith_pointer_array(p):
+    '''arith_expr : TIMES ID LBRACKET arith_expr RBRACKET'''
+    p[0] = Pointer(Array_index(p[2], p[3]))
+
+
 def p_arith_functioncall(p):
     '''arith_expr : ID LPAREN argument_list RPAREN'''
     p[0] = FunctionCall(p[1], p[3])
-
 
 # def p_arith_functioncall_error_1(p):
 #     '''arith_expr : ID LPAREN argument_list RPAREN'''

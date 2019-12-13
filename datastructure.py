@@ -39,12 +39,20 @@ class PointerType:
     def __init__(self, type):
         self.type = type
 
+class ArrayType:
+    def __init__(self, type, length):
+        self.type = type
+        self.length = length
+
 # TODO still dunno usage of function type
 # class FunctionType:
 #     def __init__(self, functype):
 #         self.functype = functype
 
 class Node():
+
+    def __init__(self):
+        self.is_return = False
 
     def accept(self, visitor):
         print("\n\nIN ACCEPT\nvisitor is", visitor)
@@ -53,7 +61,6 @@ class Node():
     def _accept(self, klass, visitor):
         print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
         visitor_method = getattr(visitor, "s%s" % klass.__name__, None)
-        print(visitor_method)
         if visitor_method is None:
             if klass.__name__ == 'object':
                 print("It's an object class.")
@@ -67,13 +74,12 @@ class Node():
             return visitor_method(self)
 
     def interp(self, visitor):
-        print("\n\nIN ACCEPT\nvisitor is", visitor)
+        print("\n\nIN INTERP\nvisitor is", visitor)
         return self._interp(self.__class__, visitor)
 
     def _interp(self, klass, visitor):
-        print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
+        print("\n\nIN _INTERP\nklass is", klass.__name__, "\nvisitor is", visitor)
         visitor_method = getattr(visitor, "i%s" % klass.__name__, None)
-        print(visitor_method)
         if visitor_method is None:
             if klass.__name__ == 'object':
                 print("It's an object class.")
@@ -81,7 +87,7 @@ class Node():
             else:
                 print("It's a subclass of Unary or NodeList.")
                 base = klass.__bases__
-                return self._accept(base[0], visitor)
+                return self._interp(base[0], visitor)
         else:
             print("It's an attribute in InterpVisitor.")
             return visitor_method(self)
@@ -89,9 +95,11 @@ class Node():
 
 class Unary(Node):
 
-    def __init__(self, node):
+    def __init__(self, node, delay = None):
+        Node.__init__(self)
         self.expr = node
         self.lineno = None
+        self.is_prefix = delay
 
     def setlineno(self, n):
         self.lineno = n
@@ -121,9 +129,10 @@ class GetAddress(Unary):
 
 
 class Increment(Unary):
-    def __init__(self, expr, delay):
-        self.expr = expr
-        self.delay = delay
+    # def __init__(self, expr, delay):
+    #     Unary.__init__(self)
+    #     self.expr = expr
+    #     self.delay = delay
 
     def evaluate(self):
         return self.expr.evaluate() + 1
@@ -132,6 +141,7 @@ class Increment(Unary):
 class ReturnStmt(Node):
 
     def __init__(self, expr):
+        Node.__init__(self)
         self.expr = expr
         self.lineno = None
 
@@ -141,6 +151,7 @@ class ReturnStmt(Node):
 
 class StmtBlock(Node):
     def __init__(self, stmt_list, sym_table):
+        Node.__init__(self)
         self.stmt_list = stmt_list
         self.sym_table = sym_table
         self.lineno = None
@@ -151,6 +162,7 @@ class StmtBlock(Node):
 
 class FunctionCall(Node):
     def __init__(self, function, arglist):
+        Node.__init__(self)
         self.function = function
         self.arglist = arglist
         self.lineno = None
@@ -161,6 +173,7 @@ class FunctionCall(Node):
 
 class Constant(Node):
     def __init__(self, value):
+        Node.__init__(self)
         self.type = type(value).__name__
         self.value = value
         self.lineno = None
@@ -178,6 +191,7 @@ class Constant(Node):
 ##########################################################################
 class Literal(Node):
     def __init__(self, literal):
+        Node.__init__(self)
         self.value = literal
         self.lineno = None
 
@@ -187,6 +201,7 @@ class Literal(Node):
 
 class Identifier(Node):
     def __init__(self, name, lineno):
+        Node.__init__(self)
         self.name = name
         self.lineno = lineno
 
@@ -198,7 +213,9 @@ class Identifier(Node):
 
 
 class Pointer(Node):
+
     def __init__(self, id):
+        Node.__init__(self)
         self.id = id
         self.lineno = None
 
@@ -211,6 +228,7 @@ class Pointer(Node):
 ##########################################################################
 class Address(Node):
     def __init__(self, value):
+        Node.__init__(self)
         self.value = value
         self.lineno = None
 
@@ -220,6 +238,7 @@ class Address(Node):
 
 class Array(Node):
     def __init__(self, name, length):
+        Node.__init__(self)
         self.type = None
         self.name = name
         self.length = length
@@ -234,6 +253,7 @@ class Array(Node):
 
 class Array_index(Node):
     def __init__(self, name, index):
+        Node.__init__(self)
         self.name = name
         self.index = index
         self.lineno = None
@@ -244,6 +264,7 @@ class Array_index(Node):
 
 class Function(Node):
     def __init__(self, type, name, param_list, body):
+        Node.__init__(self)
         self.type = type
         self.name = name
         self.param_list = param_list
@@ -263,6 +284,7 @@ class Function(Node):
 
 class Binop(Node):
     def __init__(self, left, binop, right):
+        Node.__init__(self)
         self.left = left
         self.binop = binop
         self.right = right
@@ -285,6 +307,7 @@ class Binop(Node):
 
 class DeclStmt(Node):
     def __init__(self, type, name):
+        Node.__init__(self)
         self.type = type
         self.name = name
         self.value = None
@@ -296,6 +319,7 @@ class DeclStmt(Node):
 
 class For(Node):
     def __init__(self, init_stmt, cond_stmt, incr_stmt, body):
+        Node.__init__(self)
         self.init_stmt = init_stmt
         self.cond_stmt = cond_stmt
         self.incr_stmt = incr_stmt
@@ -308,6 +332,7 @@ class For(Node):
 
 class If(Node):
     def __init__(self, cond_stmt, body, else_body):
+        Node.__init__(self)
         self.cond_stmt = cond_stmt
         self.body = body
         self.else_body = else_body
@@ -319,6 +344,7 @@ class If(Node):
 
 class Assignment(Node):
     def __init__(self, id, value):
+        Node.__init__(self)
         self.id = id
         self.value = value
         self.lineno = None
@@ -339,6 +365,7 @@ class Printf(Node):
 
 class NodeList(Node):
     def __init__(self, node=None):
+        Node.__init__(self)
         self.nodes = []
         self.lineno = None
         self.type = None

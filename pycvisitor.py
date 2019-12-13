@@ -23,8 +23,18 @@ class Symtab:
             self.parent.children.append(self)
         self.children = []
 
+    def add_recursive(self,name, value):
+        if name in self.entry:
+            self.entry[name] = value
+            return True
+        if self.parent:
+            return self.parent.add_recursive(name,value)
+        else: return False
+
     def add(self, name, value):
-        self.entry[name] = value
+        if not self.add_recursive(name,value):
+            self.entry[name] = value
+
 
 
     def get(self, name):
@@ -37,6 +47,26 @@ class Symtab:
                 print("Error : Cannot find a key", name, "in all Symbol Table.")
                 return None
 
+    def get_history(self, name):
+        if name in self.history:
+            return self.history[name]
+        else:
+            if self.parent:
+                return self.parent.get_history(name)
+            else:
+                print("Error : Cannot find a key", name, "in all Symbol Table.")
+                return None
+
+    def history_update(self, name, value):
+        if name in self.history:
+            # value is a tuple.
+            self.history[name].append(value)
+        else:
+            if self.parent:
+                return self.parent.history_update(name, value)
+            else:
+                print("Error : Cannot find a key", name, "in all Symbol Table.")
+                return None
 
 class SymtabVisitor(Visitor):
 
@@ -160,7 +190,9 @@ class SymtabVisitor(Visitor):
 
     # Function expressions e.g. f(1.0)
     def sFunctionCall(self, node):
-        node.function.accept(self)
+        # node.function is string, so we should lookup symboltable to find function node
+        func = self.currSymtab.get(node.function)
+        func.accept(self)
         node.arglist.accept(self)
 
     # Parameter List for function definitions.
@@ -175,6 +207,8 @@ class InterpVisitor(Visitor):
 
     def __init__(self):
         Visitor.__init__(self)
+        self.memory = [None] * 100000000
+        self.curr_ptr = 0
         self.message = "Interpreter VISITOR"
 
     # Push new symbol table to the stack.
@@ -196,23 +230,31 @@ class InterpVisitor(Visitor):
         self.iNodeList(node)
         node.symtab = self.root
 
+    def iDeclStmtList(self,node):
+        list = node.nodes
+        res = []
+        for i in range(1, len(list)):
+            res.append(list[i].interp(self))
+        return res
+
     def iNodeList(self, node):
         list = node.nodes
-        print(node.nodes)
         res = []
         for ast in list:
             res.append(ast.interp(self))
         return res
 
     def iIdentifier(self, node):
-        return self.currSymtab.history[node.name][-1][0]
+        history = self.currSymtab.get_history(node.name)
+        return history[-1][0]
 
     def iDeclStmt(self, node):
-        self.currSymtab.add(node.name, node)
-        self.currSymtab.history[node.name] = []
+        self.currSymtab.add(node.name.name, node)
+        self.currSymtab.history[node.name.name] = []
 
     def iAssignment(self, node):
-        self.currSymtab.history[node.id.name].append((node.value.interp(self), node.id.lineno))
+        self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
+        self.currSymtab.add(node.id.name, node)
 
     def iConstant(self, node):
         return node.value
@@ -221,26 +263,27 @@ class InterpVisitor(Visitor):
         return (-1) * node.expr.interp(self)
 
     def iIncrement(self, node):
-
+        id = Identifier(node.expr, node.lineno)
         # Dive down deeply but not too far or you'll get drown...
         if node.is_prefix:
-            val = node.expr.interp(self)+1
-            self.currSymtab.history[node.expr.name].append((val, node.lineno))
+            val = id.interp(self)+1
+            self.currSymtab.history_update(node.expr, (val, node.lineno))
         else:
-            val = node.expr.interp(self)
-            self.currSymtab.history[node.expr.name].append((val+1, node.lineno))
+            val = id.interp(self)
+            self.currSymtab.history_update(node.expr, (val+1, node.lineno))
         return val
 
     def iBinop(self, node):
         l = node.left.interp(self)
         r = node.right.interp(self)
-        if l and r:
+        if l is not None and r is not None:
             return eval(str(l) + node.binop + str(r))
         else:
             print("Error : Binary operation error")
             return None
 
     def iReturnStmt(self, node):
+        node.is_return = True
         return node.expr.interp(self)
 
     def iFunction(self, node):
@@ -259,25 +302,69 @@ class InterpVisitor(Visitor):
     # TODO when datastructure's function call has an attribute lineno, 99999999->lineno
     def iFunctionCall(self, node):
         arguments = node.arglist.interp(self)
-        function = node.function
-        parameters = function.param_list.nodes # List of DeclStmt Nodes
+        self.NewSymTab(node)
+        func = self.currSymtab.get(node.function)
+        self.currSymtab.history = func.symtab.history
+        self.currSymtab.entry = func.symtab.entry
+        parameters = func.param_list.nodes # List of DeclStmt Nodes
         for i in range(len(arguments)):
             arg = arguments[i]
             par = parameters[i]
-            node.function.symtab.history[par.name].append((arg, 99999999))
-        res = function.body.interp(self)
+            self.currSymtab.history_update(par.name.name, (arg, node.lineno))
+
+        res = func.body.interp(self)
+
+        if not func.body.is_return:
+            print("Error : no return statement in function call")
+
         for i in range(len(arguments)):
             par = parameters[i]
-            node.function.symtab.history[par.name] = []
+            #self.currSymtab.history[par.name.name] = []
+        self.PopSymTab(node)
         return res
 
     def iStmtList(self, node):
+        node.is_return = False
         list = node.nodes
         res = None
         for ast in list:
             res = ast.interp(self)
+            if ast.is_return:
+                node.is_return = True
+                break
         return res
 
 
     def iFor(self, node):
+        node.init_stmt.interp(self)
+        self.NewSymTab(node)
+        node.is_return = False
+        while True:
+            cond = node.cond_stmt.interp(self)
+            if not cond:
+                self.PopSymTab(node)
+                return
+            res = node.body.interp(self)
+            node.is_return = node.body.is_return
+            if node.is_return:
+                self.PopSymTab(node)
+                return res
+            node.incr_stmt.interp(self)
+
+    def iIf(self, node):
+        self.NewSymTab(node)
+        cond = node.cond_stmt.interp(self)
+        is_ret = False;
+        res = None
+        if cond:
+            res = node.body.interp(self)
+            is_ret = node.body.is_return
+        elif node.else_body:
+            res = node.else_body.interp(self)
+            is_ret = node.else_body.is_return
+        node.is_return = is_ret
+        self.PopSymTab(node)
+        return res
+
+    def iPointer(self, node):
         pass

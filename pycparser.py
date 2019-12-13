@@ -1,8 +1,8 @@
 import ply.yacc as yacc
 from pyclexer import *
 from datastructure import *
-from CS420.pyclexer import *
-from CS420.datastructure import *
+from pyclexer import *
+from datastructure import *
 
 ##########################################################################
 # Define precedence of operators.
@@ -40,7 +40,7 @@ def p_declaration_list_1(p):
 
 # TODO Add new declared variable to symbol table.
 def p_declaration_list_2(p):
-    '''declaration_list : declaration_list declaration'''
+    '''declaration_list : declaration_list declaration SEMICOLON'''
     p[1].add(p[2])
     p[0] = p[1]
 
@@ -112,13 +112,13 @@ def p_param_list_2(p):
 def p_param_1(p):
     '''param : type ID'''
 
-    p[0] = DeclStmt(p[1], p[2])
+    p[0] = DeclStmt(p[1], Identifier(p[2], p.lineno(2)))
 
 
 def p_param_2(p):
     '''param : type TIMES ID'''
 
-    p[0] = DeclStmt(Pointer(p[1]), p[3])
+    p[0] = DeclStmt(Pointer(p[1]), Identifier(p[3], p.lineno(3)))
 
 
 ##########################################################################
@@ -199,30 +199,73 @@ def p_stmt_printf(p):
 # Basic type / Pointer Type
 # DeclStmt will get declaration with list object.
 ##########################################################################
+# def p_declaration_1(p):
+#     '''declaration : declaration COMMA idbracket'''
+#     ty = p[1].gettype()
+#     p[1].add(DeclStmt(ty, p[2]))
+#     p[0] = p[1]
+#
+# def p_declaration_2(p):
+#     '''declaration : declaration COMMA TIMES idbracket'''
+#     ty = p[1].gettype()
+#     p[1].add(DeclStmt(PointerType(ty), p[3]))
+#     p[0] = p[1]
+#
+#
+# def p_declaration_3(p):
+#     '''declaration : type idbracket'''
+#     p[0] = DeclStmtList(DeclStmt(p[1], p[2]))
+#     p[0].settype(p[1])
+#
+#
+# def p_declaration_4(p):
+#     '''declaration : type TIMES idbracket'''
+#     p[0] = DeclStmtList(DeclStmt(PointerType(p[1]), p[3]))
+#     p[0].settype(PointerType(p[1]))
+
 def p_declaration_1(p):
     '''declaration : declaration COMMA idbracket'''
     ty = p[1].gettype()
-    p[1].add(DeclStmt(ty, p[2]))
+    if type(p[3]).__name__ == 'Array':
+        length = p[3].length
+        name = p[3].name
+        p[1].add(DeclStmt(ArrayType(ty, length), Identifier(name, None)))
+    else:
+        p[1].add(DeclStmt(ty, p[3]))
     p[0] = p[1]
 
 def p_declaration_2(p):
     '''declaration : declaration COMMA TIMES idbracket'''
     ty = p[1].gettype()
-    p[1].add(DeclStmt(PointerType(ty), p[3]))
+    if type(p[4]).__name__ == 'Array':
+        length = p[4].length
+        name = p[4].name
+        p[1].add(DeclStmt(ArrayType(PointerType(ty), length), Identifier(name, None)))
+    else:
+        p[1].add(DeclStmt(PointerType(ty), p[4]))
     p[0] = p[1]
 
 
 def p_declaration_3(p):
     '''declaration : type idbracket'''
-    p[0] = DeclStmtList(DeclStmt(p[1], p[2]))
-    p[0].settype(p[1])
+    p[0] = DeclStmtList(p[1])
+    if type(p[2]).__name__ == 'Array':
+        length = p[2].length
+        name = p[2].name
+        p[0].add(DeclStmt(ArrayType(p[1], length), Identifier(name, None)))
+    else:
+        p[0].add(DeclStmt(p[1], p[2]))
 
 
 def p_declaration_4(p):
     '''declaration : type TIMES idbracket'''
-    p[0] = DeclStmtList(DeclStmt(PointerType(p[1]), p[3]))
-    p[0].settype(PointerType(p[1]))
-
+    p[0] = DeclStmtList(p[1])
+    if type(p[3]).__name__ == 'Array':
+        length = p[3].length
+        name = p[3].name
+        p[0].add(DeclStmt(ArrayType(PointerType(p[1]),length), Identifier(name, None)))
+    else:
+        p[0].add(DeclStmt(PointerType(p[1]), p[3]))
 
 ##########################################################################
 # Rules : Derive id_list & id_bracket
@@ -578,28 +621,28 @@ def p_error(p):
 
 
 
-parser = yacc.yacc()
+# parser = yacc.yacc()
 
 # res = parser.parse("int main (){x = 1;\n1+1*2;\n}")  # the input
 
-input = ''
-f = open('test.txt', 'r')
-while True:
-    line = f.readline()
-    input += line
-    if not line:
-        break
-    # lexer.input(line)
-    # while True:
-    #     tok = lexer.token()
-    #     if not tok:
-    #         break
-    #     print(tok)
-f.close()
-# print(input)
+# input = ''
+# f = open('test.txt', 'r')
+# while True:
+#     line = f.readline()
+#     input += line
+#     if not line:
+#         break
+#     # lexer.input(line)
+#     # while True:
+#     #     tok = lexer.token()
+#     #     if not tok:
+#     #         break
+#     #     print(tok)
+# f.close()
+# # print(input)
 
-res = parser.parse(input)
+# res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())
-print(res.nodes[1].body.nodes[1].nodes)
+# print(res.nodes[1].body.nodes[1].nodes)

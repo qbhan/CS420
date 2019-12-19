@@ -63,16 +63,30 @@ def p_func_declaration_1(p):
 
 
 def p_func_declaration_2(p):
+    '''func_declaration : type ID LPAREN RPAREN stmt_block'''
+    p[0] = Function(p[1], p[2], ParameterList(), p[5])
+
+
+def p_func_declaration_3(p):
     '''func_declaration : type TIMES ID LPAREN params RPAREN stmt_block'''
 
     p[0] = Function(Pointer(p[1]), p[2], p[4], p[6])
 
 
-def p_func_declaration_3(p):
+def p_func_declaration_4(p):
+    '''func_declaration : type TIMES ID LPAREN RPAREN stmt_block'''
+
+    p[0] = Function(Pointer(p[1]), p[2], ParameterList(), p[5])
+
+
+def p_func_declaration_5(p):
     '''func_declaration : type MAIN LPAREN params RPAREN stmt_block'''
 
     p[0] = Function(p[1], 'main', p[4], p[6])
 
+def p_func_declaration_6(p):
+    '''func_declaration : type MAIN LPAREN RPAREN stmt_block'''
+    p[0] = Function(p[1], 'main', ParameterList(), p[5])
 
 ##########################################################################
 # Rules : Derive list of parameters.
@@ -170,6 +184,7 @@ def p_statement(p):
     if p[1] != ';':
         if len(p) > 2 and p[2] == ';':
             p[1].setlineno(p.lineno(2))
+            # print(p.lineno(2))
         p[0] = p[1]
     else:
         p[0] = None
@@ -189,7 +204,7 @@ def p_statement_error_1(p):
 # Rules : Derive calling prinf() function
 ##########################################################################
 def p_stmt_printf(p):
-    '''stmt : PRINT LPAREN argument_list RPAREN'''
+    '''stmt : PRINT LPAREN argument_list RPAREN SEMICOLON'''
     p[0] = Printf(p[3])
 
 
@@ -229,9 +244,13 @@ def p_declaration_1(p):
     if type(p[3]).__name__ == 'Array':
         length = p[3].length
         name = p[3].name
-        p[1].add(DeclStmt(ArrayType(ty, length), Identifier(name, None)))
+        a = DeclStmt(ArrayType(ty, length), Identifier(name, None))
+        a.setlineno(p[3].lineno)
+        p[1].add(a)
     else:
-        p[1].add(DeclStmt(ty, p[3]))
+        b = DeclStmt(ty, p[3])
+        b.setlineno(p[3].lineno)
+        p[1].add(b)
     p[0] = p[1]
 
 def p_declaration_2(p):
@@ -240,32 +259,47 @@ def p_declaration_2(p):
     if type(p[4]).__name__ == 'Array':
         length = p[4].length
         name = p[4].name
-        p[1].add(DeclStmt(ArrayType(PointerType(ty), length), Identifier(name, None)))
+        a = DeclStmt(ArrayType(PointerType(ty), length), Identifier(name, None))
+        a.setlineno(p[4].lineno)
+        p[1].add(a)
     else:
-        p[1].add(DeclStmt(PointerType(ty), p[4]))
+        b = DeclStmt(PointerType(ty), p[4])
+        b.setlineno(p[4].lineno)
+        p[1].add(b)
     p[0] = p[1]
 
 
 def p_declaration_3(p):
     '''declaration : type idbracket'''
     p[0] = DeclStmtList(p[1])
+    p[0].settype(p[1])
     if type(p[2]).__name__ == 'Array':
         length = p[2].length
         name = p[2].name
-        p[0].add(DeclStmt(ArrayType(p[1], length), Identifier(name, None)))
+        a = DeclStmt(ArrayType(p[1], length), Identifier(name, None))
+        a.setlineno(p[2].lineno)
+        # print(p[2].lineno)
+        p[0].add(a)
     else:
-        p[0].add(DeclStmt(p[1], p[2]))
+        b = DeclStmt(p[1], p[2])
+        b.setlineno(p[2].lineno)
+        p[0].add(b)
 
 
 def p_declaration_4(p):
     '''declaration : type TIMES idbracket'''
     p[0] = DeclStmtList(p[1])
+    p[0].settype(p[1])
     if type(p[3]).__name__ == 'Array':
         length = p[3].length
         name = p[3].name
-        p[0].add(DeclStmt(ArrayType(PointerType(p[1]),length), Identifier(name, None)))
+        a = DeclStmt(ArrayType(PointerType(p[1]),length), Identifier(name, None))
+        a.setlineno(p[3].lineno)
+        p[0].add(a)
     else:
-        p[0].add(DeclStmt(PointerType(p[1]), p[3]))
+        b = DeclStmt(PointerType(p[1]), p[3])
+        b.setlineno(p[3].lineno)
+        p[0].add(b)
 
 ##########################################################################
 # Rules : Derive id_list & id_bracket
@@ -282,6 +316,7 @@ def p_id_bracket_1(p):
 def p_id_bracket_2(p):
     '''idbracket : ID LBRACKET INUM RBRACKET'''
     p[0] = Array(p[1], p[3])
+    p[0].setlineno(p.lineno(4))
 ##########################################################################
 # Rules : Derive basic types
 ##########################################################################
@@ -433,6 +468,7 @@ def p_incr_expr_1(p):
     # id.incr()
 
     p[0] = Increment(p[1], True)
+    p[0].setlineno(p.lineno(2))
 
 
 def p_incr_expr_2(p):
@@ -443,6 +479,7 @@ def p_incr_expr_2(p):
     # id.incr()
 
     p[0] = Increment(p[2], False)
+    p[0].setlineno(p.lineno(1))
 
 ##########################################################################
 # Rules : Derive basic arithmetic expressions.
@@ -535,9 +572,22 @@ def p_arith_inum(p):
 
 
 # TODO should implement symbol table to refer to
-def p_arith_pointer(p):
+def p_arith_pointer_1(p):
     '''arith_expr : TIMES ID'''
     p[0] = Pointer(p[2])
+
+
+def p_arith_pointer_2(p):
+    # '''arith_expr : TIMES ID'''
+    # p[0] = Pointer(p[2])
+    '''arith_expr : TIMES LPAREN arith_expr RPAREN'''
+    p[0] = Pointer(p[3])
+
+
+def p_arith_pointer_3(p):
+    '''arith_expr : TIMES ID LPAREN argument_list RPAREN'''
+    p[0] = Pointer(FunctionCall(p[2], p[4]))
+
 
 # TODO should implement symbol table to refer to
 def p_arith_address(p):
@@ -622,9 +672,9 @@ def p_error(p):
 
 
 # parser = yacc.yacc()
-
-# res = parser.parse("int main (){x = 1;\n1+1*2;\n}")  # the input
-
+# #
+# # # res = parser.parse("int main (){x = 1;\n1+1*2;\n}")  # the input
+# #
 # input = ''
 # f = open('test.txt', 'r')
 # while True:
@@ -639,8 +689,8 @@ def p_error(p):
 #     #         break
 #     #     print(tok)
 # f.close()
-# # print(input)
-
+# # # # print(input)
+# #
 # res = parser.parse(input)
 
 # print(res)

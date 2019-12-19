@@ -108,12 +108,13 @@ while True:
         break
 print(input)
 f.close()
-print(input)
 ast = parser.parse(input)
-print(ast)
-# visitor1.visit_symtab(ast)
+# print(ast)
+# print(ast.nodes[2].body.nodes[0].nodes[2].type)
+visitor1.visit_symtab(ast)
 visitor2.visit_interp(ast)
 print(ast.nodes[2].symtab.history)
+# print(ast.nodes[2].symtab.entry['c'])
 
 # # (Return Statement in IF, FOR)
 # ast0 = GlobalList()

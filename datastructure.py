@@ -7,6 +7,10 @@
 #  Each class will have evaluate(). Should update and use symbol table here for
 #  line-by-line interpretation.
 
+import globalVar
+import threading
+import time
+
 
 # class Memory:
 #     def __init__(self):
@@ -73,23 +77,38 @@ class Node():
             print("It's an attribute in SymtabVisitor.")
             return visitor_method(self)
 
+    # def interp(self, visitor):
+    #     print("\n\nIN INTERP\nvisitor is", visitor)
+    #     return self._interp(self.__class__, visitor)
+
     def interp(self, visitor):
-        print("\n\nIN INTERP\nvisitor is", visitor)
+        if globalVar.lineno_diff != "continue":
+            if self.lineno is not None and visitor.curr_lineno != self.lineno:
+                visitor.curr_lineno = self.lineno
+                globalVar.lineno_diff -= 1
+                print('\t#' + str(self.lineno), globalVar.codelist[self.lineno-1], end='')
+            if globalVar.lineno_diff == 0:
+                globalVar.lock.release()
+                time.sleep(0.1)
+                globalVar.lock.acquire()
+
+        # print(self, self.lineno)
+        # print("\n\nIN INTERP\nvisitor is", visitor)
         return self._interp(self.__class__, visitor)
 
     def _interp(self, klass, visitor):
-        print("\n\nIN _INTERP\nklass is", klass.__name__, "\nvisitor is", visitor)
+        # print("\n\nIN _INTERP\nklass is", klass.__name__, "\nvisitor is", visitor)
         visitor_method = getattr(visitor, "i%s" % klass.__name__, None)
         if visitor_method is None:
             if klass.__name__ == 'object':
-                print("It's an object class.")
+                # print("It's an object class.")
                 return
             else:
-                print("It's a subclass of Unary or NodeList.")
+                # print("It's a subclass of Unary or NodeList.")
                 base = klass.__bases__
                 return self._interp(base[0], visitor)
         else:
-            print("It's an attribute in InterpVisitor.")
+            # print("It's an attribute in InterpVisitor.")
             return visitor_method(self)
 
 
@@ -103,6 +122,7 @@ class Unary(Node):
 
     def setlineno(self, n):
         self.lineno = n
+
 
 
 class Negation(Unary):
@@ -356,6 +376,7 @@ class Assignment(Node):
 # TODO should make evaluation to handle formatting.
 class Printf(Node):
     def __init__(self, arguments):
+        Node.__init__(self)
         self.arguments = arguments
         self.lineno = None
 

@@ -1,4 +1,5 @@
 from datastructure import *
+import globalVar
 
 class Visitor:
 
@@ -9,7 +10,14 @@ class Visitor:
         return node.accept(self)
 
     def visit_interp(self, node):
-        return node.interp(self)
+        globalVar.lock.acquire()
+        ret = node.interp(self)
+        globalVar.lock.release()
+        print("System) execute success\n\n")
+        return ret
+
+    # def visit_interp(self, node):
+    #     return node.interp(self)
 
 class Symtab:
 
@@ -73,7 +81,6 @@ class SymtabVisitor(Visitor):
     def __init__(self):
         Visitor.__init__(self)
         self.message = "SYMBOL TABLE VISITOR"
-        # TODO make current symbol table
 
     # 0. Basic classes for defining symbol table visitor.
     # Base class for all ast nodes.
@@ -105,10 +112,10 @@ class SymtabVisitor(Visitor):
     # Just add the symbol to the right key in the table.
     def sDeclStmt(self, node):
         entry = self.currSymtab.entry
-        if node.name in entry:
+        if node.name.name in entry:
             print("Error : Cannot declare same identifier twice.")
         else:
-            self.currSymtab.add(node.name, node)
+            self.currSymtab.add(node.name.name, node)
 
     # Assigning a value to the identifier. e.g. a = x + 3;
     def sAssignment(self, node):
@@ -139,6 +146,13 @@ class SymtabVisitor(Visitor):
     def sUnary(self, node):
         node.expr.accept(self)
 
+    def sIncrement(self, node):
+        expression = self.currSymtab.entry.get(node.expr)
+        if expression:
+            expression.accept(self)
+        else:
+            print("Error : Cannot find the expression in Increment.")
+
     def sBinop(self, node):
         node.left.accept(self)
         node.right.accept(self)
@@ -146,17 +160,23 @@ class SymtabVisitor(Visitor):
     def sIf(self, node):
         self.NewSymTab(node)
         node.cond_stmt.accept(self)
-        node.body.accept(self)
-        node.else_body.accept(self)
+        res_body = node.body.accept(self)
+        if node.else_body:
+            res_else_body = node.else_body.accept(self)
         self.PopSymTab(node)
+        if node.else_body:
+            return (res_body and res_else_body)
+        else:
+            return res_body
 
     def sFor(self, node):
         self.NewSymTab(node)
         node.init_stmt.accept(self)
         node.cond_stmt.accept(self)
         node.incr_stmt.accept(self)
-        node.body.accept(self)
+        res = node.body.accept(self)
         self.PopSymTab(node)
+        return res
 
     # 4. Subclasses of NodeList.
     # Compiling the whole program.
@@ -171,6 +191,13 @@ class SymtabVisitor(Visitor):
         res = None
         for ast in list:
             res = ast.accept(self)
+        return res
+
+    def sDeclStmtList(self, node):
+        list = node.nodes
+        res = None
+        for ast in range(1, len(list)):
+            res = list[ast].accept(self)
         return res
 
     def sStmtList(self, node):
@@ -207,9 +234,10 @@ class InterpVisitor(Visitor):
 
     def __init__(self):
         Visitor.__init__(self)
-        self.memory = [None] * 100000000
+        self.memory = [[] for i in range(100000)]
         self.curr_ptr = 0
         self.message = "Interpreter VISITOR"
+        self.curr_lineno = 0
 
     # Push new symbol table to the stack.
     def NewSymTab(self, node):
@@ -248,13 +276,52 @@ class InterpVisitor(Visitor):
         history = self.currSymtab.get_history(node.name)
         return history[-1][0]
 
+    def iPointer(self, node):
+        history = self.currSymtab.get_history(node.id)
+        addr = history[-1][0]
+        return self.memory[addr][-1][0]
+
+    def iArray_index(self, node):
+        array = self.currSymtab.get(node.name)
+        idx = node.index.interp(self)
+        if array.type.__class__.__name__ == 'ArrayType' and array.type.length - 1 < idx:
+            print("Segmentation fault : index out of range error")
+        addr = self.currSymtab.get_history(node.name)[-1][0]
+        return self.memory[addr + idx][-1][0]
+
     def iDeclStmt(self, node):
+        assert (node.name.__class__.__name__ == 'Identifier')
+        if node.type.__class__.__name__ == 'PointerType':
+            self.currSymtab.history[node.name.name] = [(self.curr_ptr, node.lineno)]
+            self.curr_ptr += 1
+        elif node.type.__class__.__name__ == 'ArrayType':
+            self.currSymtab.history[node.name.name] = [(self.curr_ptr, node.lineno)]
+            self.curr_ptr += node.type.length
+        else:
+            self.currSymtab.history[node.name.name] = []
         self.currSymtab.add(node.name.name, node)
-        self.currSymtab.history[node.name.name] = []
+
+    # def iDeclStmt(self, node):
+    #     self.currSymtab.add(node.name.name, node)
+    #     self.currSymtab.history[node.name.name] = []
+
+    # def iAssignment(self, node):
+    #     self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
+    #     self.currSymtab.add(node.id.name, node)
 
     def iAssignment(self, node):
-        self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
-        self.currSymtab.add(node.id.name, node)
+        assign = node.id.__class__.__name__
+        if assign == 'Identifier':
+            self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
+            # self.currSymtab.add(node.id.name, node)
+        elif assign == 'Pointer':
+            addr = self.currSymtab.get_history(node.id.id)[-1][0]
+            self.memory[addr].append((node.value.interp(self), node.lineno))
+        elif assign == 'Array_index':
+            addr = self.currSymtab.get_history(node.id.name)[-1][0]
+            self.memory[addr + node.id.index.interp(self)].append((node.value.interp(self), node.lineno))
+        else:
+            print("Error : something wrong!")
 
     def iConstant(self, node):
         return node.value
@@ -366,5 +433,24 @@ class InterpVisitor(Visitor):
         self.PopSymTab(node)
         return res
 
-    def iPointer(self, node):
-        pass
+    def iPrintf(self, node):
+        list = node.arguments.nodes
+        if len(list) == 1:
+            print(list[0].value[1:-1])
+            return
+        else:
+            def interpret(node):
+                return node.interp(self)
+            args = list[1:]
+            interpreted_args = tuple(map(interpret, args))
+            try:
+                s = list[0].value[1:-1] % interpreted_args
+                # print(list[0].value[1:-1])
+                # print(s.slice("\n"), end='')
+                strlist = [x for x in s.split('\\n')]
+                for i in range(len(strlist)-1):
+                    print(strlist[i])
+                print(strlist[-1], end = '')
+            except:
+                print('Error : print format error in run time.')
+            return

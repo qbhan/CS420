@@ -48,7 +48,7 @@ def run (file_name):
             globalVar.lineno_diff = "continue"
             code.continue_code()
             globalVar.lock.release()
-            return
+            break
         elif cmd == "q" or cmd == "quit":
             code.file.close()
             print("\nQuit current execution\n\n")
@@ -60,11 +60,15 @@ def run (file_name):
                     continue
                 globalVar.lineno_diff = int(cmd_parse[1])
                 code.continue_code()
+                if not execute.is_alive():
+                    break
 
             elif cmd == "p" or cmd == "print": code.print_var(cmd_parse[1])
             elif cmd == "t" or cmd == "trace": code.trace_var(cmd_parse[1])
             else: print("wrong command on shell")
         else: print("wrong command on shell")
+    execute.join()
+    print(execute)
 
 
 class Executing_code:
@@ -95,6 +99,7 @@ class Executing_code:
             if not line:
                 break
         self.file.close()
+        lexer = lex.lex()
         self.ast = self.parser.parse(input)
         # self.symtab_visitor.visit_symtab(self.ast)
 
@@ -104,6 +109,7 @@ class Executing_code:
         globalVar.lock.release()
         time.sleep(0.1)
         globalVar.lock.acquire()
+
 
     def print_var(self, var):
         if '*' not in var and '[' not in var:
@@ -118,7 +124,7 @@ class Executing_code:
         elif '[' not in var:
             # case referencing pointer
             if len(var) < 2 and var[0] != '*':
-                print("wrong args in print.")
+                print("System) wrong args in print.")
                 return
             ptr = var[1: len(var)]
             history = self.interp_visitor.currSymtab.get_history(ptr)
@@ -141,6 +147,24 @@ class Executing_code:
                     print('\t' + var + ' :', self.interp_visitor.memory[addr+idx][-1][0])
                 except:
                     print("System) Not assigned yet.")
+            else:
+                print("System) wrong args in print.")
+
+        else:
+            il = var.index('[')
+            ir = var.index(']')
+            idx = int(var[il + 1:ir])
+            array = var[1:il]
+            history = self.interp_visitor.currSymtab.get_history(array)
+            if history is not None:
+                addr = history[-1][0]
+                ptr = self.interp_visitor.memory[addr + idx][-1][0]
+                try:
+                    print('\t' + var + ' :', self.interp_visitor.memory[ptr][-1][0])
+                except:
+                    print("System) Not assigned yet.")
+            else:
+                print("System) wrong args in print.")
 
     def trace_var(self, var):
         if '*' not in var and '[' not in var:
@@ -151,7 +175,7 @@ class Executing_code:
         elif '[' not in var:
             # case referencing pointer
             if len(var) < 2 and var[0] != '*':
-                print("wrong args in print.")
+                print("System) wrong args in trace.")
                 return
             ptr = var[1: len(var)]
             history = self.interp_visitor.currSymtab.get_history(ptr)
@@ -168,6 +192,23 @@ class Executing_code:
             if history:
                 addr = history[-1][0]
                 print(self.interp_visitor.memory[addr + idx])
+            else:
+                print("System) wrong args in trace.")
+        else:
+            il = var.index('[')
+            ir = var.index(']')
+            idx = int(var[il + 1:ir])
+            array = var[1:il]
+            history = self.interp_visitor.currSymtab.get_history(array)
+            if history is not None:
+                addr = history[-1][0]
+                ptr = self.interp_visitor.memory[addr + idx][-1][0]
+                try:
+                    print('\t' + var + ' :', self.interp_visitor.memory[ptr])
+                except:
+                    print("System) Not assigned yet.")
+            else:
+                print("System) wrong args in trace.")
 
 
 
@@ -179,7 +220,9 @@ def shell():
             print("wrong command")
             continue
         # exit shell
-        if command == "q" or command == "quit" : return
+        if command == "q" or command == "quit" :
+            print("Close shell...")
+            return
         else:
             cmd_parse = [x for x in command.split(' ') if x.strip()]
             cmd = cmd_parse[0]

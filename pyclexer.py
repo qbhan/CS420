@@ -128,7 +128,7 @@ def t_error(t):
 
 
 # Build the lexer
-lexer = lex.lex()
+# lexer = lex.lex()
 
 # read file in same directory by line
 # comment it when not in use

@@ -1,5 +1,6 @@
 from datastructure import *
 import globalVar
+import sys
 
 class Visitor:
 
@@ -13,7 +14,7 @@ class Visitor:
         globalVar.lock.acquire()
         ret = node.interp(self)
         globalVar.lock.release()
-        print("System) execute success\n\n")
+        print("\nSystem) execute finished\n\n")
         return ret
 
     # def visit_interp(self, node):
@@ -209,10 +210,10 @@ class SymtabVisitor(Visitor):
         self.currSymtab.add(node.name, node)
         self.NewSymTab(node)
         node.param_list.accept(self)
-        errorprone = node.body.accept(self)
-        if node.type is not 'void':
-            if not errorprone == 'ReturnStmt':
-                print("Error : There is no Return Statement.")
+        # errorprone = node.body.accept(self)
+        # if node.type is not 'void':
+        #     if not errorprone == 'ReturnStmt':
+        #         print("Error : There is no Return Statement.")
         self.PopSymTab(node)
 
     # Function expressions e.g. f(1.0)
@@ -277,15 +278,24 @@ class InterpVisitor(Visitor):
         return history[-1][0]
 
     def iPointer(self, node):
-        history = self.currSymtab.get_history(node.id)
-        addr = history[-1][0]
-        return self.memory[addr][-1][0]
+        if type(node.id) is str:
+            history = self.currSymtab.get_history(node.id)
+            addr = history[-1][0]
+        else:
+            addr = node.id.interp(self)
+        if len(self.memory[addr]) != 0:
+            return self.memory[addr][-1][0]
+        else:
+            return None
+
 
     def iArray_index(self, node):
         array = self.currSymtab.get(node.name)
         idx = node.index.interp(self)
         if array.type.__class__.__name__ == 'ArrayType' and array.type.length - 1 < idx:
             print("Segmentation fault : index out of range error")
+            globalVar.lock.release()
+            sys.exit()
         addr = self.currSymtab.get_history(node.name)[-1][0]
         return self.memory[addr + idx][-1][0]
 
@@ -296,18 +306,15 @@ class InterpVisitor(Visitor):
             self.curr_ptr += 1
         elif node.type.__class__.__name__ == 'ArrayType':
             self.currSymtab.history[node.name.name] = [(self.curr_ptr, node.lineno)]
+            if node.type.type.__class__.__name__ == 'PointerType':
+                for i in range(node.type.length):
+                    self.memory[self.curr_ptr] = [(self.curr_ptr + node.type.length, node.lineno)]
+                    self.curr_ptr += 1
             self.curr_ptr += node.type.length
         else:
             self.currSymtab.history[node.name.name] = []
         self.currSymtab.add(node.name.name, node)
 
-    # def iDeclStmt(self, node):
-    #     self.currSymtab.add(node.name.name, node)
-    #     self.currSymtab.history[node.name.name] = []
-
-    # def iAssignment(self, node):
-    #     self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
-    #     self.currSymtab.add(node.id.name, node)
 
     def iAssignment(self, node):
         assign = node.id.__class__.__name__
@@ -315,13 +322,32 @@ class InterpVisitor(Visitor):
             self.currSymtab.history_update(node.id.name, (node.value.interp(self), node.id.lineno))
             # self.currSymtab.add(node.id.name, node)
         elif assign == 'Pointer':
-            addr = self.currSymtab.get_history(node.id.id)[-1][0]
+            if node.id.id.__class__.__name__ == "Array_index":
+                array = self.currSymtab.get(node.id.id.name)
+                idx = node.id.id.index.interp(self)
+                if array.type.length - 1 < idx:
+                    print("Segmentation fault : index out of range error")
+                    globalVar.lock.release()
+                    sys.exit()
+                array_addr = self.currSymtab.get_history(node.id.id.name)[-1][0]
+                addr = self.memory[array_addr + idx][-1][0]
+            else:
+                addr = self.currSymtab.get_history(node.id.id)[-1][0]
             self.memory[addr].append((node.value.interp(self), node.lineno))
         elif assign == 'Array_index':
+            array = self.currSymtab.get(node.id.name)
+            idx = node.id.index.interp(self)
+            if array.type.length - 1 < idx:
+                print("Segmentation fault : index out of range error")
+                globalVar.lock.release()
+                sys.exit()
+
             addr = self.currSymtab.get_history(node.id.name)[-1][0]
             self.memory[addr + node.id.index.interp(self)].append((node.value.interp(self), node.lineno))
         else:
             print("Error : something wrong!")
+            globalVar.lock.release()
+            sys.exit()
 
     def iConstant(self, node):
         return node.value
@@ -347,7 +373,8 @@ class InterpVisitor(Visitor):
             return eval(str(l) + node.binop + str(r))
         else:
             print("Error : Binary operation error")
-            return None
+            globalVar.lock.release()
+            sys.exit()
 
     def iReturnStmt(self, node):
         node.is_return = True
@@ -383,6 +410,8 @@ class InterpVisitor(Visitor):
 
         if not func.body.is_return:
             print("Error : no return statement in function call")
+            globalVar.lock.release()
+            sys.exit()
 
         for i in range(len(arguments)):
             par = parameters[i]
@@ -433,24 +462,37 @@ class InterpVisitor(Visitor):
         self.PopSymTab(node)
         return res
 
+
     def iPrintf(self, node):
         list = node.arguments.nodes
         if len(list) == 1:
-            print(list[0].value[1:-1])
+            s = list[0].value[1:-1]
+            i = 0
+            while i < len(s):
+                if s[i] == '\\' and s[i + 1] == 'n':
+                    print()
+                    i += 2
+                    continue
+                print(s[i], end='')
+                i += 1
             return
         else:
             def interpret(node):
                 return node.interp(self)
+
             args = list[1:]
             interpreted_args = tuple(map(interpret, args))
             try:
                 s = list[0].value[1:-1] % interpreted_args
-                # print(list[0].value[1:-1])
-                # print(s.slice("\n"), end='')
-                strlist = [x for x in s.split('\\n')]
-                for i in range(len(strlist)-1):
-                    print(strlist[i])
-                print(strlist[-1], end = '')
+                i = 0
+                while i < len(s):
+                    if s[i] == '\\' and s[i + 1] == 'n':
+                        print()
+                        i += 2
+                        continue
+                    print(s[i], end='')
+                    i += 1
             except:
                 print('Error : print format error in run time.')
-            return
+                globalVar.lock.release()
+                sys.exit()

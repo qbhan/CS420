@@ -62,40 +62,6 @@ def p_func_declaration_1(p):
     p[0] = Function(p[1], p[2], p[4], p[6])
 
 
-# def p_func_declaration_error_1(p):
-#     '''func_declaration : type ID LBRACE params RPAREN stmt_block
-#                         | type ID LPAREN params RBRACE stmt_block
-#                         | type ID LBRACE params RBRACKET stmt_block
-#                         | type ID LBRACE params RBRACE stmt_block
-#                         | type ID LBRACKET params RPAREN stmt_block
-#                         | type ID LPAREN params RBRACKET stmt_block
-#                         | type ID LBRACKET params RBRACE stmt_block
-#                         | type ID LBRACKET params RBRACKET stmt_block'''
-#     print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
-#     p[0] = Function(p[1], p[2], p[4], p[6])
-# #
-# #
-# def p_func_declaration_error_2(p):
-#     '''func_declaration : type ID LPAREN params stmt_block
-#                         | type ID LBRACE params stmt_block
-#                         | type ID LBRACKET params stmt_block'''
-#     print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
-#     p[0] = Function(p[1], p[2], p[4], p[5])
-# #
-# #
-# def p_func_declaration_error_3(p):
-#     '''func_declaration :  type ID params RPAREN stmt_block
-#                         | type ID params RBRACE stmt_block
-#                         | type ID params RBRACKET stmt_block'''
-#     print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
-#     p[0] = Function(p[1], p[2], p[3], p[5])
-# #
-# #
-# def p_func_declaration_error_4(p):
-#     '''func_declaration : type ID params stmt_block'''
-#     p[0] = Function(p[1], p[2], p[3], p[4])
-
-
 def p_func_declaration_error_1_2(p):
     '''func_declaration : type ID error params error stmt_block
                         | type ID LBRACE params error stmt_block
@@ -105,9 +71,7 @@ def p_func_declaration_error_1_2(p):
                         | type ID error params RBRACE stmt_block
                         | type ID error params RBRACKET stmt_block'''
 
-    print('parentheses mismatch for function decl. line :', int(p.lineno(2)))
-
-
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
 
 
 def p_func_declaration_2(p):
@@ -124,7 +88,7 @@ def p_func_declaration_error_5(p):
                         | type ID LBRACKET RPAREN stmt_block
                         | type ID LBRACKET RBRACE stmt_block
                         | type ID LBRACKET RBRACKET stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], p[2], ParameterList(), p[5])
 #
 #
@@ -135,7 +99,7 @@ def p_func_declaration_error_6(p):
                         | type ID RPAREN stmt_block
                         | type ID RBRACKET stmt_block
                         | type ID RBRACE stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], p[2], ParameterList(), p[4])
 #
 #
@@ -160,7 +124,7 @@ def p_func_declaration_error_8(p):
                         | type TIMES ID LPAREN params RBRACKET stmt_block
                         | type TIMES ID LBRACE params RBRACKET stmt_block
                         | type TIMES ID LBRACKET params RBRACKET stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], p[5], p[7])
 #
 #
@@ -168,7 +132,7 @@ def p_func_declaration_error_9(p):
     '''func_declaration : type TIMES ID params RPAREN stmt_block
                         | type TIMES ID params RBRACE stmt_block
                         | type TIMES ID params RBRACKET stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], p[4], p[6])
 #
 #
@@ -176,13 +140,13 @@ def p_func_declaration_error_10(p):
     '''func_declaration : type TIMES ID LPAREN params stmt_block
                         | type TIMES ID LBRACE params stmt_block
                         | type TIMES ID LBRACKET params stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], p[5], p[6])
 #
 #
 def p_func_declaration_error_11(p):
     '''func_declaration : type TIMES ID params stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], p[4], p[5])
 
 
@@ -201,7 +165,7 @@ def p_func_declaration_error_12(p):
                         | type TIMES ID LPAREN RBRACKET stmt_block
                         | type TIMES ID LBRACE RBRACKET stmt_block
                         | type TIMES ID LBRACKET RBRACKET stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], ParameterList(), p[6])
 #
 #
@@ -212,7 +176,7 @@ def p_func_declaration_error_13(p):
                         | type TIMES ID LPAREN stmt_block
                         | type TIMES ID LBRACE stmt_block
                         | type TIMES ID LBRACKET stmt_block'''
-    print('parentheses mismatch for function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(Pointer(p[1]), p[3], ParameterList(), p[5])
 #
 #
@@ -237,7 +201,7 @@ def p_func_declaration_error_15(p):
                             | type MAIN LBRACE params RBRACKET stmt_block
                             | type MAIN LPAREN params RBRACKET stmt_block
                             | type MAIN LBRACKET params RBRACKET stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', p[4], p[6])
 #
 #
@@ -245,7 +209,7 @@ def p_func_declaration_error_16(p):
     '''func_declaration : type MAIN params RPAREN stmt_block
                         | type MAIN params RBRACE stmt_block
                         | type MAIN params RBRACKET stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', p[3], p[5])
 #
 #
@@ -253,13 +217,13 @@ def p_func_declaration_error_17(p):
     '''func_declaration : type MAIN LPAREN params stmt_block
                         | type MAIN LBRACE params stmt_block
                         | type MAIN LBRACKET params stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', p[4], p[5])
 #
 #
 def p_func_declaration_error_18(p):
     '''func_declaration : type MAIN params stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', p[3], p[4])
 
 
@@ -277,7 +241,7 @@ def p_func_declaration_error_19(p):
                         | type MAIN LBRACE RBRACKET stmt_block
                         | type MAIN LPAREN RBRACKET stmt_block
                         | type MAIN LBRACKET RBRACKET stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', ParameterList(), p[5])
 #
 #
@@ -288,7 +252,7 @@ def p_func_declaration_error_20(p):
                         | type MAIN LPAREN stmt_block
                         | type MAIN LBRACE stmt_block
                         | type MAIN LBRACKET stmt_block'''
-    print('parentheses mismatch for main function declaration line :', int(p.lineno(2)))
+    print('parentheses mismatch for main function declaration handled in line :', int(p.lineno(2)))
     p[0] = Function(p[1], 'main', ParameterList(), p[4])
 #
 #
@@ -402,14 +366,7 @@ def p_statement(p):
 
 def p_statement_error_1(p):
     '''stmt : expr error'''
-    print('statement lack semicolon line :', int(p.lineno(2)) - 1)
-
-
-# def p_statement_error_2(p):
-#     '''stmt : error stmt_forloop'''
-#     print('statement lack semicolon line :', p.lineno(1))
-
-
+    print('statement lack semicolon handled in line :', int(p.lineno(2)) - 1)
 ##########################################################################
 # Rules : Derive calling prinf() function
 ##########################################################################
@@ -420,72 +377,45 @@ def p_stmt_printf(p):
 
 
 def p_stmt_printf_error_1(p):
-    '''stmt : PRINT error argument_list RPAREN SEMICOLON
+    '''stmt : PRINT LPAREN argument_list RBRACE SEMICOLON
+            | PRINT LPAREN argument_list RBRACKET SEMICOLON
+            | PRINT LPAREN argument_list SEMICOLON
+            | PRINT LBRACE argument_list RPAREN SEMICOLON
+            | PRINT LBRACKET argument_list RPAREN SEMICOLON
+            | PRINT LBRACE argument_list RBRACE SEMICOLON
+            | PRINT LBRACKET argument_list RBRACE SEMICOLON
+            | PRINT LBRACE argument_list RBRACKET SEMICOLON
+            | PRINT LBRACKET argument_list RBRACKET SEMICOLON
+            | PRINT LBRACE argument_list SEMICOLON
+            | PRINT LBRACKET argument_list SEMICOLON
+            | PRINT error argument_list SEMICOLON
+            | PRINT error argument_list RPAREN SEMICOLON
             | PRINT error argument_list RBRACE SEMICOLON
-            | PRINT error argument_list RBRACKET SEMICOLON
-            | PRINT error argument_list SEMICOLON'''
-    print('parentheses mismatch for printf statement line:', int(p.lineno(1)))
+            | PRINT error argument_list RBRACKET SEMICOLON'''
+
+    print('parentheses mismatch for printf statement handled in line:', int(p.lineno(1)))
     p[0] = Printf(p[3])
-
-# def p_stmt_printf_error_1(p):
-#     '''stmt : PRINT LPAREN argument_list RBRACE SEMICOLON
-#                 | PRINT LPAREN argument_list RBRACKET SEMICOLON
-#                 | PRINT LBRACE argument_list RPAREN SEMICOLON
-#                 | PRINT LBRACE argument_list RBRACE SEMICOLON
-#                 | PRINT LBRACE argument_list RBRACKET SEMICOLON
-#                 | PRINT LBRACKET argument_list RPAREN SEMICOLON
-#                 | PRINT LBRACKET argument_list RBRACE SEMICOLON
-#                 | PRINT LBRACKET argument_list RBRACKET SEMICOLON
-#                 | PRINT LPAREN argument_list SEMICOLON
-#                 | PRINT LBRACE argument_list SEMICOLON
-#                 | PRINT LBRACKET argument_list SEMICOLON'''
-#     print('parentheses mismatch for printf statement line:', int(p.lineno(1)))
-#     p[0] = Printf(p[3])
+    p[0].setlineno(p.lineno(1))
 
 
-# def p_stmt_printf_error_2(p):
-#     '''stmt : PRINT LPAREN argument_list error SEMICOLON'''
+def p_stmt_print_error_2(p):
+    '''stmt : PRINT LPAREN argument_list RBRACE error
+            | PRINT LPAREN argument_list RBRACKET error
+            | PRINT LBRACE argument_list RPAREN error
+            | PRINT LBRACKET argument_list RPAREN error
+            | PRINT LBRACE argument_list RBRACE error
+            | PRINT LBRACKET argument_list RBRACE error
+            | PRINT LBRACE argument_list RBRACKET error
+            | PRINT LBRACKET argument_list RBRACKET error
+            | PRINT error argument_list RPAREN error
+            | PRINT error argument_list RBRACE error
+            | PRINT error argument_list RBRACKET error'''
+
+    print('parentheses mismatch for printf statement handled in line:', int(p.lineno(1)))
+    p[0] = Printf(p[3])
+    p[0].setlineno(p.lineno(1))
 
 
-
-# def p_stmt_printf_error_2(p):
-#     '''stmt : PRINT argument_list RPAREN SEMICOLON
-#             | PRINT argument_list RBRACE SEMICOLON
-#             | PRINT argument_list RBRACKET SEMICOLON
-#             | PRINT argument_list SEMICOLON'''
-#     print('parentheses mismatch for printf statement line:', int(p.lineno(1)))
-#     p[0] = Printf(p[2])
-
-
-# def p_stmt_printf_error_3(p):
-#     '''stmt : PRINT LPAREN argument_list RPAREN'''
-#     print('printf statement lack semicolon line :', int(p.lineno(2)))
-#     p[0] = Printf(p[3])
-
-
-# def p_stmt_printf_error_4(p):
-#     '''stmt : PRINT LPAREN argument_list RBRACE
-#                 | PRINT LPAREN argument_list RBRACKET
-#                 | PRINT LBRACE argument_list RPAREN
-#                 | PRINT LBRACE argument_list RBRACE
-#                 | PRINT LBRACE argument_list RBRACKET
-#                 | PRINT LBRACKET argument_list RPAREN
-#                 | PRINT LBRACKET argument_list RBRACE
-#                 | PRINT LBRACKET argument_list RBRACKET
-#                 | PRINT LPAREN argument_list
-#                 | PRINT LBRACE argument_list
-#                 | PRINT LBRACKET argument_list'''
-#     print('printf statement lack semicolon line :', int(p.lineno(2)))
-#     p[0] = Printf(p[3])
-
-
-# def p_stmt_print_error_5(p):
-#     '''stmt : PRINT argument_list RPAREN
-#             | PRINT argument_list RBRACE
-#             | PRINT argument_list RBRACKET
-#             | PRINT argument_list'''
-#     print('printf statement lack semicolon line :', int(p.lineno(2)))
-#     p[0] = Printf(p[2])
 
 ##########################################################################
 # Rules : Derive local declarations
@@ -493,30 +423,6 @@ def p_stmt_printf_error_1(p):
 # Basic type / Pointer Type
 # DeclStmt will get declaration with list object.
 ##########################################################################
-# def p_declaration_1(p):
-#     '''declaration : declaration COMMA idbracket'''
-#     ty = p[1].gettype()
-#     p[1].add(DeclStmt(ty, p[2]))
-#     p[0] = p[1]
-#
-# def p_declaration_2(p):
-#     '''declaration : declaration COMMA TIMES idbracket'''
-#     ty = p[1].gettype()
-#     p[1].add(DeclStmt(PointerType(ty), p[3]))
-#     p[0] = p[1]
-#
-#
-# def p_declaration_3(p):
-#     '''declaration : type idbracket'''
-#     p[0] = DeclStmtList(DeclStmt(p[1], p[2]))
-#     p[0].settype(p[1])
-#
-#
-# def p_declaration_4(p):
-#     '''declaration : type TIMES idbracket'''
-#     p[0] = DeclStmtList(DeclStmt(PointerType(p[1]), p[3]))
-#     p[0].settype(PointerType(p[1]))
-
 def p_declaration_1(p):
     '''declaration : declaration COMMA idbracket'''
     ty = p[1].gettype()
@@ -607,7 +513,7 @@ def p_id_bracket_error_1(p):
                      | ID LPAREN INUM RBRACE
                      | ID LPAREN INUM RPAREN
                      | ID LBRACE INUM RBRACE'''
-    print('parenthesis mismatch for array line :', int(p.lineno(1)))
+    print('parenthesis mismatch for array handled in line :', int(p.lineno(1)))
     p[0] = Array(p[1], p[3])
     p[0].setlineno(p.lineno(4))
 ##########################################################################
@@ -634,19 +540,25 @@ def p_stmt_block(p):
     p[0].setlineno(p.lineno(1))
 
 
-# def p_stmt_block_error(p):
-#     '''stmt_block : LBRACKET stmt_list RPAREN
-#                   | LBRACKET stmt_list RBRACKET
-#                   | LBRACKET stmt_list RBRACE
-#                   | LPAREN stmt_list RBRACKET
-#                   | LPAREN stmt_list RPAREN
-#                   | LPAREN stmt_list RBRACE
-#                   | LBRACE stmt_list RPAREN
-#                   | LBRACE stmt_list RBRACKET'''
-#
-#     print('parenthesis mismatch in statement block line :', int(p.lineno(1)), '&', int(p.lineno(3)))
-#     p[0] = p[2]
-#     p[0].setlineno(p.lineno(1))
+def p_stmt_block_error1(p):
+    '''stmt_block : LBRACKET stmt_list RPAREN
+                  | LBRACKET stmt_list RBRACE
+                  | LBRACKET stmt_list RBRACKET
+                  | LBRACE stmt_list RPAREN
+                  | LBRACE stmt_list RBRACKET'''
+
+    print('parenthesis mismatch in statement block handled in line :', int(p.lineno(1)), '&', int(p.lineno(3)))
+    p[0] = p[2]
+    p[0].setlineno(p.lineno(1))
+
+def p_stmt_block_error2(p):
+    '''stmt_block : error stmt_list RBRACKET
+                  | error stmt_list RBRACE
+                  | error stmt_list RPAREN'''
+
+    print('parentheses mismatch in statement block handled in line :', int(p.lineno(1))-1, '&', int(p.lineno(3)))
+    p[0] = p[2]
+    p[0].setlineno(p.lineno(1))
 
 
 ##########################################################################
@@ -684,7 +596,7 @@ def p_forloop_error_1(p):
                        | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RBRACKET stmt
                        | FOR LBRACE expr SEMICOLON expr SEMICOLON error RBRACKET stmt
                        | FOR LBRACKET expr SEMICOLON expr SEMICOLON expr RBRACKET stmt'''
-    print('parenthesis mismatch for for loop line :', int(p.lineno(1)))
+    print('parenthesis mismatch for for loop handled in line :', int(p.lineno(1)))
     p[0] = For(p[3], p[5], p[7], p[9])
     p[0].setlineno(p.lineno(1))
 
@@ -693,25 +605,9 @@ def p_forloop_error_2(p):
     '''stmt_forloop : FOR expr SEMICOLON expr SEMICOLON expr RPAREN stmt
                     | FOR expr SEMICOLON expr SEMICOLON expr RBRACE stmt
                     | FOR expr SEMICOLON expr SEMICOLON expr RBRACKET stmt'''
-    print('parenthesis mismatch for for loop line :', int(p.lineno(1)))
+    print('parenthesis mismatch for for loop handled in line :', int(p.lineno(1)))
     p[0] = For(p[2], p[4], p[6], p[8])
     p[0].setlineno(p.lineno(1))
-
-
-# def p_forloop_error_3(p):
-#     '''stmt_forloop : FOR LPAREN expr SEMICOLON expr SEMICOLON expr stmt
-#                     | FOR LBRACE expr SEMICOLON expr SEMICOLON expr stmt
-#                     | FOR LBRACKET expr SEMICOLON expr SEMICOLON expr stmt'''
-#     print('parenthesis mismatch for for loop line :', int(p.lineno(1)))
-#     p[0] = For(p[3], p[5], p[7], p[8])
-#     p[0].setlineno(p.lineno(1))
-
-
-# def p_forloop_error_4(p):
-#     '''stmt_forloop : FOR expr SEMICOLON expr SEMICOLON expr stmt'''
-#     print('parenthesis mismatch for for loop line :', int(p.lineno(1)))
-#     p[0] = For(p[2], p[4], p[6], p[7])
-#     p[0].setlineno(p.lineno(1))
 
 ##########################################################################
 # Rules : Derive RETURN statement
@@ -727,7 +623,7 @@ def p_return_stmt_1(p):
 def p_return_stmt_error_1(p):
     '''stmt_return : RETURN expr error'''
 
-    print('return statement lack semicolon line :', int(p.lineno(1)))
+    print('return statement lack semicolon handled in line :', int(p.lineno(1)))
     p[0] = ReturnStmt(p[2])
     p[0].setlineno(p.lineno(3))
 
@@ -741,7 +637,7 @@ def p_return_stmt_2(p):
 
 def p_return_stmt_error_2(p):
     '''stmt_return : RETURN error'''
-    print('return statement lack semicolon line :', int(p.lineno(1)))
+    print('return statement lack semicolon handled in line :', int(p.lineno(1)))
     p[0] = ReturnStmt(None)
     p[0].setlineno(p.lineno(3))
 
@@ -1035,31 +931,31 @@ def p_empty(p):
 
 def p_error(p):
     # print('Syntax error not handled!!!')
-    print("Syntax error in input!", p)
+    print("Syntax error in line :", p.lineno)
 
 
-
+lexer = lex.lex()
 parser = yacc.yacc()
 # #
 # # # res = parser.parse("int main (){x = 1;\n1+1*2;\n}")  # the input
 # #
-# input = ''
-# f = open('test.txt', 'r')
-# while True:
-#     line = f.readline()
-#     input += line
-#     if not line:
-#         break
-#     # lexer.input(line)
-#     # while True:
-#     #     tok = lexer.token()
-#     #     if not tok:
-#     #         break
-#     #     print(tok)
-# f.close()
+input = ''
+f = open('test.txt', 'r')
+while True:
+    line = f.readline()
+    input += line
+    if not line:
+        break
+    # lexer.input(line)
+    # while True:
+    #     tok = lexer.token()
+    #     if not tok:
+    #         break
+    #     print(tok)
+f.close()
 # # # # print(input)
 # #
-# res = parser.parse(input)
+res = parser.parse(input)
 
 # print(res)
 # print(res.funclist[0].print())

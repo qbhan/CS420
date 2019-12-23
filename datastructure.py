@@ -59,22 +59,22 @@ class Node():
         self.is_return = False
 
     def accept(self, visitor):
-        print("\n\nIN ACCEPT\nvisitor is", visitor)
+        # print("\n\nIN ACCEPT\nvisitor is", visitor)
         return self._accept(self.__class__, visitor)
 
     def _accept(self, klass, visitor):
-        print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
+        # print("\n\nIN _ACCEPT\nklass is", klass.__name__, "\nvisitor is", visitor)
         visitor_method = getattr(visitor, "s%s" % klass.__name__, None)
         if visitor_method is None:
             if klass.__name__ == 'object':
-                print("It's an object class.")
+                # print("It's an object class.")
                 return
             else:
-                print("It's a subclass of Unary or NodeList.")
+                # print("It's a subclass of Unary or NodeList.")
                 base = klass.__bases__
                 return self._accept(base[0], visitor)
         else:
-            print("It's an attribute in SymtabVisitor.")
+            # print("It's an attribute in SymtabVisitor.")
             return visitor_method(self)
 
     # def interp(self, visitor):

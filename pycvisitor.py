@@ -116,18 +116,33 @@ class SymtabVisitor(Visitor):
         if node.name.name in entry:
             print("Error : Cannot declare same identifier twice.")
         else:
+            assert (node.name.__class__.__name__ == 'Identifier')
+            if node.type.__class__.__name__ == 'PointerType':
+                self.curr_ptr += 1
+            elif node.type.__class__.__name__ == 'ArrayType':
+                self.curr_ptr += node.type.length
+            else:
+                pass
             self.currSymtab.add(node.name.name, node)
 
     # Assigning a value to the identifier. e.g. a = x + 3;
     def sAssignment(self, node):
-        node.id.accept(self)
-        node.value.accept(self)
-        id_name = node.id.name
-        symbol_value = self.currSymtab.get(node.id.name)
-        if symbol_value is None:
-            print("Error : The assignment of", id_name, "at line", node.id.lineno, "is not declared.")
+        assign = node.id.__class__.__name__
+        if assign == 'Identifier':
+            node.id.accept(self)
+            node.value.accept(self)
+            id_name = node.id.name
+            symbol_value = self.currSymtab.get(node.id.name)
+            if symbol_value is None:
+                print("Error : The assignment of", id_name, "at line", node.id.lineno, "is not declared.")
+            else:
+                self.currSymtab.add(id_name, node)
+        elif assign == 'Pointer':
+            pass
+        elif assign == 'Array_index':
+            pass
         else:
-            self.currSymtab.add(id_name, node)
+            print("Error : LHS has to be an identifier, a pointer or an array.")
 
     # Array definitions e.g. int A[10];.
     def sArray(self, node):
